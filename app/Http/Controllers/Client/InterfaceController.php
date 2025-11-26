@@ -38,7 +38,7 @@ class InterfaceController extends Controller
             'photos'       => $this->datas->photo(8),
             'tags'         => $this->datas->tags(8),
             'categories'   => $this->datas->category(8),
-            'ads'         => $this->datas->ads(1, ['image','youtube']),
+            'ads'         => $this->datas->ads(1, ['image','gif']),
         ];
 
         return view('pages.client.beranda', $data);
@@ -204,7 +204,7 @@ class InterfaceController extends Controller
             'recommended'  => $this->datas->recommended(6),
             'banner_1'     => $this->datas->information('banner', 1),
             'relate'      => $this->datas->relate(6, $post),
-            'ads'         => $this->datas->ads(1, ['image', 'gif']),
+            'ads'         => $this->datas->ads(1, ['image','youtube']),
             'post'         => $post,
             'content'         => $modifiedContent,
         ];

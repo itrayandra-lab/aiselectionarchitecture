@@ -17,6 +17,9 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
 
+    <!-- Google Search Console Verification -->
+    <meta name="google-site-verification" content="bv3rh_-FXLuLzRCtFRFxAINk-dKEIcv6LVdN2XM0Qxs" />
+
     <!-- Favicon & Logo -->
     <link rel="shortcut icon" href="{{ getFile($meta->favicon) }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ getFile($meta->logo) }}">

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Posts extends Model
@@ -64,4 +65,20 @@ class Posts extends Model
     {
         return $this->belongsTo(PostCategory::class, 'category_id');
     }
+
+    public static function getTrending($limit)
+    {
+        $posts = self::select('title', 'image', 'slug', 'counter')
+            ->where('status', 'active')
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', Carbon::now())
+            ->inRandomOrder()   
+            ->limit($limit)      
+            ->get()
+            ->sortByDesc('counter') 
+            ->values();
+
+        return $posts;
+    }
+
 }
