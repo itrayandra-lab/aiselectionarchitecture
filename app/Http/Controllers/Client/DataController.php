@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Admin\PostCategories;
 use App\Http\Controllers\Controller;
+use App\Models\Ad;
 use App\Models\AlbumPhoto;
 use App\Models\Information;
 use App\Models\PostCategory;
@@ -62,7 +63,7 @@ class DataController extends Controller
      */
     public static function recommended($limit)
     {
-        $thirtyDaysAgo = Carbon::now()->subDays(30);
+        $thirtyDaysAgo = Carbon::now()->subDays(60);
 
         return Posts::where('status', 'active')
             ->whereNotNull('published_at')
@@ -160,5 +161,24 @@ class DataController extends Controller
         ->limit($limit)
         ->get();
      }
+
+     /**
+     * 9. ads
+     */
+
+    public static function ads($limit, $type = null)
+    {
+        $query = Ad::where('is_active', true)->inRandomOrder();
+
+        if (is_string($type)) {
+            $query->where('type', $type);
+        }
+
+        if (is_array($type)) {
+            $query->whereIn('type', $type);
+        }
+
+        return $query->limit($limit)->get();
+    }
 
 }

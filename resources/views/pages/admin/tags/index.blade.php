@@ -1,64 +1,62 @@
 @extends('layouts.admin.app')
-@section('title', $page)
-@push('styles')
-@endpush
-@section('content')
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Manajemen {{ $page }}</h3>
-                </div>
-                <div class="panel-body">
-                    @can('create tags')
-                        <div class="panel-action">
-                            <a href="{{ route('tags.create') }}" class="btn btn-success btn-sm">
-                                <i class="fa fa-plus"></i> Tambah Data
-                            </a>
-                        </div>
-                    @endcan
+@section('title', 'Manajemen Tags')
 
-                    @can('view tags')
-                        <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap"
-                            cellspacing="0" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($tags as $role)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $role->name }}</td>
-                                        <td>
-                                            @can('edit tags')
-                                                <a href="{{ route('tags.edit', $role->id) }}" class="btn btn-primary btn-xs">
-                                                    <i class="fa fa-edit"></i> Edit
-                                                </a>
-                                            @endcan
-                                            @can('delete tags')
-                                                <form action="{{ route('tags.destroy', $role->id) }}" method="POST"
-                                                    style="display: inline;" onsubmit="return confirmDelete(this)">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-xs">
-                                                        <i class="fa fa-trash"></i> Hapus
-                                                    </button>
-                                                </form>
-                                            @endcan
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @else
-                        <p class="text-danger">Anda tidak memiliki izin untuk melihat daftar role.</p>
-                    @endcan
-                </div>
+@push('styles')
+<style>
+    .text-center .btn { margin: 0 2px; }
+</style>
+@endpush
+
+@section('content')
+<div class="row">
+    <div class="col-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Manajemen Tags</h3>
+            </div>
+            <div class="panel-body">
+
+                @can('create tags')
+                    <a href="{{ route('tags.create') }}" class="btn btn-success btn-sm mb-3">
+                        <i class="fa fa-plus"></i> Tambah Tag
+                    </a>
+                @endcan
+
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show">
+                        {{ session('success') }}
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                    </div>
+                @endif
+
+                <table id="tags-table" class="table table-striped table-bordered dt-responsive nowrap" width="100%">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Tag</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    $('#tags-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{{ route('tags.index') }}',
+        columns: [
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+            { data: 'name', name: 'name' },
+            { data: 'action', name: 'action', orderable: false, searchable: false }
+        ]
+    });
+});
+</script>
+@endpush

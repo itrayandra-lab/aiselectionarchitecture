@@ -10,19 +10,41 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class AlbumController extends Controller
 {
     /**
      * Menampilkan daftar album
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('pages.admin.albums.index', [
-            'albums' => Album::orderBy('id', 'desc')
-                ->with(['photos'])
-                ->get(),
-        ])->with('page', 'Galery');
+        if ($request->ajax()) {
+            $albums = Album::withCount('photos')->latest();
+
+            return DataTables::of($albums)
+                ->addIndexColumn()
+                ->addColumn('link', fn($album) => '<a href="/album/'.$album->slug.'" target="_blank"><i class="fa fa-external-link"></i> Lihat</a>')
+                ->addColumn('photo_count', fn($album) => $album->photos_count . ' foto')
+                ->addColumn('action', function ($album) {
+                    $edit = auth()->user()->can('edit album')
+                        ? '<a href="'.route('album.edit', $album->id).'" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>'
+                        : '';
+
+                    $delete = auth()->user()->can('delete album')
+                        ? '<form action="'.route('album.destroy', $album->id).'" method="POST" style="display:inline" onsubmit="return confirm(\'Yakin hapus?\')">
+                                '.csrf_field().method_field('DELETE').'
+                                <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
+                        </form>'
+                        : '';
+
+                    return '<div class="text-center">'.$edit.' '.$delete.'</div>';
+                })
+                ->rawColumns(['link', 'action'])
+                ->make(true);
+        }
+
+        return view('pages.admin.albums.index')->with('page', 'Galery');
     }
 
     /**

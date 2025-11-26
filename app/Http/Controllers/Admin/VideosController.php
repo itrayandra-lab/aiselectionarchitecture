@@ -8,13 +8,44 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class VideosController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $video = Video::orderBy('id', 'desc')->get();
-        return view('pages.admin.video.index', compact('video'))->with('page', 'Video');
+        if ($request->ajax()) {
+            $videos = Video::with('createdBy')->latest();
+
+            return DataTables::of($videos)
+                ->addIndexColumn()
+                ->addColumn('link', fn($video) => '<a href="/video/'.$video->slug.'" target="_blank"><i class="fa fa-external-link"></i> Lihat</a>')
+                ->addColumn('image', function ($video) {
+                    return $video->image
+                        ? '<img src="'.getFile($video->image).'" class="img-thumbnail" style="width:70px;height:50px;object-fit:cover;">'
+                        : '<span class="text-muted">Tidak ada</span>';
+                })
+                ->addColumn('created_by', fn($video) => $video->createdBy?->name ?? '-')
+                ->editColumn('created_at', fn($video) => $video->created_at->translatedFormat('d M Y H:i'))
+                ->addColumn('action', function ($video) {
+                    $edit = auth()->user()->can('edit video')
+                        ? '<a href="'.route('video.edit', $video->id).'" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>'
+                        : '';
+
+                    $delete = auth()->user()->can('delete video')
+                        ? '<form action="'.route('video.destroy', $video->id).'" method="POST" style="display:inline" onsubmit="return confirm(\'Yakin hapus?\')">
+                                '.csrf_field().method_field('DELETE').'
+                                <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
+                        </form>'
+                        : '';
+
+                    return '<div class="text-center">'.$edit.' '.$delete.'</div>';
+                })
+                ->rawColumns(['link', 'image', 'action'])
+                ->make(true);
+        }
+
+        return view('pages.admin.video.index')->with('page', 'Video');
     }
 
     public function create()

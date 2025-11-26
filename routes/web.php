@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdsController;
 use App\Http\Controllers\Admin\AlbumController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\InformationController;
@@ -156,6 +157,17 @@ Route::group(['prefix' => 'portal', 'middleware' => ['auth']], function () {
         Route::get('/{id}/edit', 'edit')->name('information.edit')->middleware('permission:edit information');
         Route::put('/{id}', 'update')->name('information.update')->middleware('permission:edit information');
         Route::delete('/{id}', 'destroy')->name('information.destroy')->middleware('permission:delete information');
+    });
+
+    # Menu Ads
+    Route::group(['prefix' => 'ads', 'controller' => AdsController::class], function () {
+        Route::get('/', 'index')->name('ads.index')->middleware('permission:view ads');
+        Route::get('/create', 'create')->name('ads.create')->middleware('permission:create ads');
+        Route::post('/{id}/toggle', 'toggle')->name('ads.toggle')->middleware('permission:create ads');
+        Route::post('/', 'store')->name('ads.store')->middleware('permission:create ads');
+        Route::get('/{id}/edit', 'edit')->name('ads.edit')->middleware('permission:edit ads');
+        Route::put('/{id}', 'update')->name('ads.update')->middleware('permission:edit ads');
+        Route::delete('/{id}', 'destroy')->name('ads.destroy')->middleware('permission:delete ads');
     });
 
 

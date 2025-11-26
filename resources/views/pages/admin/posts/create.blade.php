@@ -1,76 +1,219 @@
 @extends('layouts.admin.app')
 @section('title', $page)
+
 @push('styles')
     <link href="{{ asset('dist/plugins/summernote/summernote.css') }}" rel="stylesheet" />
-    <!-- Select2 CSS dari CDN -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
-        .form-group {
-            margin-bottom: 15px;
+        .form-group { margin-bottom: 15px; }
+        .select2-container { width: 100% !important; }
+        .editor-container { border: 1px solid #ddd; border-radius: 4px; padding: 0; }
+        
+        .main-editor-panel { box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        /* Style untuk input Gambar Utama di atas Judul */
+        .featured-image-upload {
+            border: 1px solid #ddd;
+            border-bottom: none;
+            padding: 10px 15px;
+            border-radius: 4px 4px 0 0;
+            background-color: #f9f9f9;
         }
-        .select2-container {
-            width: 100% !important;
-        }
-        #imagePreview {
-            max-width: 200px;
+        #mainImagePreview {
+            max-width: 100%;
             max-height: 200px;
             margin-top: 10px;
             display: none;
+            border: 1px dashed #ccc;
+            border-radius: 4px;
+        }
+        
+        /* Style untuk input Judul yang minimalis */
+        .judul-input-group {
+            border: 1px solid #ddd;
+            border-top: none; 
+            padding: 10px 15px;
+            border-radius: 0 0 0 0; 
+        }
+
+        .judul-input-group input {
+            border: 1px solid rgb(123, 123, 123);
+            padding: 2px 6px;
+            height: auto;
+            font-size: 20px;
+            font-weight: 500;
+        }
+        
+        .summernote-wrapper .note-editor {
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+        
+        /* Kanan Panel */
+        .setting-panel {
+            background: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        
+        .setting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .setting-header .btn { border-radius: 4px; }
+        
+        .btn-success {
+            background-color: #ff8c00;
+            border-color: #ff8c00;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-success:hover, .btn-success:focus {
+            background-color: #e67e22;
+            border-color: #e67e22;
+        }
+        
+        .setting-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .setting-item:last-child { border-bottom: none; }
+
+        .setting-item .title {
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .setting-content {
+            padding-top: 10px;
+            display: none;
+        }
+        .setting-item.open .setting-content { display: block; }
+        
+        .setting-item .fa-angle-down { transition: transform 0.2s; }
+        .setting-item.open .fa-angle-down { transform: rotate(180deg); }
+        
+        /* NEW Domain Share Styling (Minimalist Card) */
+        .domain-card-list {
+            max-height: 400px; /* Batasi tinggi untuk scrolable */
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .domain-card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+        .domain-card:hover {
+             border-color: #ff8c00;
+        }
+        .domain-card.checked {
+            background-color: #fff9f0; /* Warna lembut saat dicek */
+            border-left: 5px solid #ff8c00;
+            padding-left: 5px;
+        }
+        .domain-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .domain-header label {
+            font-weight: bold;
+            margin: 0;
+            flex-grow: 1;
+            cursor: pointer;
+        }
+        .domain-header input[type="checkbox"] {
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .domain-details {
+            border-top: 1px dashed #eee;
+            padding-top: 10px;
+        }
+        .domain-details label {
+            font-weight: normal;
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 3px;
+        }
+        .domain-details img {
+            max-width: 100%; 
+            max-height: 100px; 
+            margin-top: 5px; 
+            border: 1px dashed #ccc; 
+            padding: 3px; 
+            display: none;
+            border-radius: 3px;
         }
     </style>
 @endpush
+
 @section('content')
+
+<form id="submit-form" enctype="multipart/form-data">
+    @csrf
     <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Tambah {{ $page }}</h3>
+        
+        <div class="col-md-8">
+            <div class="main-editor-panel">
+                
+                {{-- Gambar Utama --}}
+                <div class="featured-image-upload">
+                    <label for="featured_image" style="font-weight: bold; color: #555;">Gambar Utama</label>
+                    <input type="file" name="featured_image" id="featured_image" class="form-control" accept="image/*">
+                    <img id="mainImagePreview" src="#" alt="Main Image Preview" />
+                    @error('featured_image') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
-                <div class="panel-body">
-                    <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="form-group">
-                            <label for="title">Judul</label>
-                            <input type="text" name="title" id="title" class="form-control" value="{{ old('title') }}" required>
-                            @error('title')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
 
-                        <div class="form-group">
-                            <label for="image">Gambar</label>
-                            <input type="file" name="image" id="image" class="form-control" accept="image/*">
-                            @error('image')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                            <img id="imagePreview" src="#" alt="Image Preview" />
-                        </div>
+                {{-- Judul --}}
+                <div class="judul-input-group">
+                    <input type="text" name="title" id="title" class="form-control" placeholder="Tulis Judul..." value="{{ old('title') }}" required>
+                    @error('title') <span class="text-danger">{{ $message }}</span> @enderror
+                </div>
+                
+                {{-- Konten Editor --}}
+                <div class="summernote-wrapper">
+                    <textarea name="content" id="content" class="form-control summernote" rows="5">{{ old('content') }}</textarea>
+                    @error('content') <span class="text-danger">{{ $message }}</span> @enderror
+                </div>
+            </div>
+        </div>
 
-                        <div class="form-group">
-                            <label for="content">Konten</label>
-                            <textarea name="content" id="content" class="form-control summernote" rows="5">{{ old('content') }}</textarea>
-                            @error('content')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
+        {{-- KANAN: Pengaturan Postingan --}}
+        <div class="col-md-4">
+            <div class="setting-panel">
+                <div class="setting-header">
+                    <div class="btn-group">
+                        {{-- <button type="button" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> Pratinjau</button> --}}
+                    </div>
+                    <button type="submit" id="submit-btn" class="btn btn-success">
+                        <i class="fa fa-paper-plane"></i> <span>Publikasikan</span>
+                    </button>
+                </div>
 
-                        <div class="form-group">
-                            <label for="category_id">Kategori</label>
-                            <select name="category_id" id="category_id" class="form-control" required>
-                                <option value="">Pilih Kategori</option>
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('category_id')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <label for="tags">Tags</label>
+                {{-- Label / Tags --}}
+                <div class="setting-item open" id="setting-label">
+                    <div class="title" data-target="#content-label">
+                        Label <i class="fa fa-angle-down"></i>
+                    </div>
+                    <div class="setting-content" id="content-label">
+                        <div class="form-group" style="margin-bottom: 0;">
                             <select name="tags[]" id="tags" class="form-control select2" multiple="multiple" required>
                                 @foreach ($tags as $tag)
                                     <option value="{{ $tag->id }}" {{ in_array($tag->id, old('tags', [])) ? 'selected' : '' }}>
@@ -78,167 +221,228 @@
                                     </option>
                                 @endforeach
                             </select>
-                            @error('tags')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
                         </div>
+                    </div>
+                </div>
 
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <select name="status" id="status" class="form-control" required>
+                {{-- Status --}}
+                <div class="setting-item open" id="setting-status">
+                    <div class="title" data-target="#content-status">
+                        Status <i class="fa fa-angle-down"></i>
+                    </div>
+                    <div class="setting-content" id="content-status">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <select name="status" class="form-control input-sm">
                                 <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>
                                 <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                             </select>
-                            @error('status')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
                         </div>
-
-                        <div class="form-group">
-                            <label for="published_at">Tanggal Publikasi</label>
-                            <input type="datetime-local" required name="published_at" id="published_at" class="form-control" value="{{ old('published_at') ? date('Y-m-d\TH:i', strtotime(old('published_at'))) : '' }}">
-                            @error('published_at')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <button type="submit" class="btn btn-success">Simpan</button>
-                        <a href="{{ route('posts.index') }}" class="btn btn-default">Batal</a>
-                    </form>
+                    </div>
                 </div>
+
+                {{-- Kategori (Opsi) --}}
+                <div class="setting-item" id="setting-category">
+                    <div class="title" data-target="#content-category">
+                        Kategori Utama <i class="fa fa-angle-down"></i>
+                    </div>
+                    <div class="setting-content" id="content-category">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <select name="category_id" class="form-control input-sm">
+                                <option value="">Pilih Kategori</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- NEW: Domain Share & Pengaturan Individu (Card Style) --}}
+                <div class="setting-item" id="setting-domains">
+                    <div class="title" data-target="#content-domains">
+                        Domain Share & Waktu Publikasi <i class="fa fa-angle-down"></i>
+                    </div>
+                    <div class="setting-content" id="content-domains">
+                        <div class="domain-card-list">
+                            @php
+                                $old_domains_checked = old('domains');
+                            @endphp
+
+                            @forelse($domains as $index => $domain)
+                                @php
+                                    $domain_key = str_replace('.', '_', $domain);
+                                    $is_checked = ($old_domains_checked === null) ? true : in_array($domain, $old_domains_checked);
+                                @endphp
+                                
+                                <div class="domain-card {{ $is_checked ? 'checked' : '' }}" id="domain-card-{{ $domain_key }}">
+                                    <div class="domain-header">
+                                        <label for="domain-checkbox-{{ $domain_key }}">
+                                            <input type="checkbox" name="domains[]" id="domain-checkbox-{{ $domain_key }}" 
+                                                   value="{{ $domain }}" data-domain-key="{{ $domain_key }}" 
+                                                   {{ $is_checked ? 'checked' : '' }}>
+                                            {{ $domain }}
+                                        </label>
+                                    </div>
+                                    <div class="domain-details">
+                                        <div class="form-group">
+                                            <label>Waktu Publikasi</label>
+                                            <input type="datetime-local" name="published_at[{{ $domain_key }}]" class="form-control input-sm"
+                                                   value="{{ old("published_at.{$domain_key}", now()->addMinutes(5)->format('Y-m-d\TH:i')) }}" required>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label>Gambar Kustom (Opsional)</label>
+                                            <input type="file" name="image[{{ $domain_key }}]" class="form-control input-sm domain-image-input" data-preview="#preview-{{ $domain_key }}" accept="image/*">
+                                            <img id="preview-{{ $domain_key }}" src="#" alt="Preview" />
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <p class="text-muted" style="padding: 10px; font-size: 12px;">Tidak ada domain yang dikonfigurasi.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
+</form>
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('dist/plugins/summernote/summernote.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Inisialisasi Select2 untuk tags
-            $('#tags').select2({
-                placeholder: "Pilih tags",
-                allowClear: true
-            });
+<script src="{{ asset('dist/plugins/summernote/summernote.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            // Preview gambar saat file dipilih
-            $('#image').change(function(e) {
-                var file = e.target.files[0];
-                var preview = $('#imagePreview');
-                
-                if (file) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        preview.attr('src', e.target.result);
-                        preview.css('display', 'block');
-                    }
-                    reader.readAsDataURL(file);
-                } else {
-                    preview.attr('src', '#');
-                    preview.css('display', 'none');
-                }
-            });
-        });
+<script>
+$(document).ready(function() {
+    $('#tags').select2({ placeholder: "Pilih tags", allowClear: true });
 
-        jQuery(document).ready(function() {
-            $('.summernote').summernote({
-                height: 300,
-                minHeight: null,
-                maxHeight: null,
-                callbacks: {
-                    onImageUpload: function(files) {
-                        var formData = new FormData();
-                        formData.append('file', files[0]);
-                        formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+    $('#featured_image').change(function(e) {
+        var file = e.target.files[0];
+        var preview = $('#mainImagePreview');
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                preview.attr('src', e.target.result).css('display', 'block');
+            }
+            reader.readAsDataURL(file);
+        } else {
+            preview.hide();
+        }
+    });
 
-                        Swal.fire({
-                            title: 'Uploading...',
-                            text: 'Harap tunggu, gambar sedang diunggah.',
-                            allowOutsideClick: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
+    $('.domain-image-input').change(function(e) {
+        var file = e.target.files[0];
+        var preview = $($(this).data('preview'));
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                preview.attr('src', e.target.result).css('display', 'block');
+            }
+            reader.readAsDataURL(file);
+        } else {
+            preview.hide();
+        }
+    });
+    
+    $('.domain-card input[type="checkbox"]').on('change', function() {
+        if ($(this).is(':checked')) {
+            $(this).closest('.domain-card').addClass('checked');
+        } else {
+            $(this).closest('.domain-card').removeClass('checked');
+        }
+    });
+    
+    $('.domain-card input[type="checkbox"]').each(function() {
+         if ($(this).is(':checked')) {
+            $(this).closest('.domain-card').addClass('checked');
+        }
+    });
 
-                        $.ajax({
-                            url: '{{ route('uploadImage') }}',
-                            method: 'POST',
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function(response) {
-                                Swal.close(); 
 
-                                if (response.url) {
-                                    var imageUrl = response.url;
-                                    var image = $('<img>').attr('src', imageUrl);
-                                    $('.summernote').summernote('insertNode', image[0]);
+    $('.summernote').summernote({
+        height: 700,
+        toolbar: [
+            ['style', ['style']], ['font', ['bold', 'italic', 'underline', 'clear']],
+            ['fontname', ['fontname']], ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']], ['table', ['table']],
+            ['insert', ['link', 'picture', 'video', 'hr']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+        ],
+        callbacks: {
+            onImageUpload: function(files) {
+                var formData = new FormData();
+                formData.append('file', files[0]);
+                formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
 
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Berhasil!',
-                                        text: 'Gambar berhasil diunggah.',
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    });
-                                }
-                            },
-                            error: function(e) {
-                                Swal.close();
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Oops!',
-                                    text: 'Terjadi kesalahan saat mengunggah gambar.',
-                                });
-                            }
-                        });
+                Swal.fire({ title: 'Uploading...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+                $.ajax({
+                    url: '{{ route('uploadImage') }}', 
+                    method: 'POST', data: formData, processData: false, contentType: false,
+                    success: function(response) {
+                        Swal.close();
+                        if (response.url) {
+                            var img = $('<img>').attr('src', response.url);
+                            $('.summernote').summernote('insertNode', img[0]);
+                        }
                     },
+                    error: function() { Swal.close(); Swal.fire('Error', 'Gagal mengunggah gambar.', 'error'); }
+                });
+            },
+            onMediaDelete: function(target) {
+                var fullUrl = target[0].src;
+                var imagePath = fullUrl.replace(window.location.origin + '/', '');
 
-                    onMediaDelete: function(target) {
-                         var fullUrl = target[0].src;
-                        var imagePath = fullUrl.replace(window.location.origin + '/', '');
+                $.post('{{ route('deleteImage') }}', { image_path: imagePath, _token: $('meta[name="csrf-token"]').attr('content') });
+            }
+        }
+    });
 
-                        Swal.fire({
-                            title: 'Menghapus...',
-                            text: 'Harap tunggu, gambar sedang dihapus.',
-                            allowOutsideClick: false,
-                            didOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
+    $('.setting-item .title').click(function() {
+        var parent = $(this).closest('.setting-item');
+        
+        if(parent.hasClass('open')) {
+            parent.removeClass('open');
+            parent.find('.setting-content').slideUp(200);
+        } else {
+             $('.setting-item.open').removeClass('open').find('.setting-content').slideUp(200);
+             parent.addClass('open').find('.setting-content').slideDown(200);
+        }
+    });
 
-                        $.ajax({
-                            url: '{{ route('deleteImage') }}',
-                            method: 'POST',
-                            data: {
-                                image_path: imagePath,
-                                _token: $('meta[name="csrf-token"]').attr('content')
-                            },
-                            success: function(response) {
-                                Swal.close();
-                                if (response.success) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Berhasil!',
-                                        text: 'Gambar berhasil dihapus.',
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    });
-                                }
-                            },
-                            error: function(e) {
-                                Swal.close();
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Oops!',
-                                    text: 'Terjadi kesalahan saat menghapus gambar.',
-                                });
-                            }
-                        });
-                    }
-                }
-            });
+    $('#submit-form').submit(function(e) {
+        e.preventDefault();
+        const btn = $('#submit-btn');
+        const span = btn.find('span');
+        
+        const formData = new FormData(this);
+        formData.set('content', $('.summernote').summernote('code'));
+
+        btn.prop('disabled', true).addClass('btn-loading');
+        span.html('<i class="fa fa-spinner fa-spin"></i> Memproses...');
+
+        $.ajax({
+            url: '{{ route('posts.store') }}', 
+            method: 'POST', data: formData, processData: false, contentType: false,
+            success: res => {
+                Swal.fire('Sukses!', res.message, 'success').then(() => {
+                    window.location = '{{ route('posts.index') }}';
+                });
+            },
+            error: xhr => {
+                const msg = xhr.responseJSON?.message || 'Terjadi kesalahan.';
+                Swal.fire('Gagal', msg, 'error');
+            },
+            complete: () => {
+                btn.prop('disabled', false).removeClass('btn-loading');
+                span.html('Publikasikan');
+            }
         });
-    </script>
+    });
+});
+</script>
 @endpush

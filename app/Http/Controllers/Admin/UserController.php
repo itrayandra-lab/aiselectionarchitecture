@@ -2,21 +2,56 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Helpers\FileHelper;
 use App\Models\User;
+use App\Helpers\FileHelper;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
-        return view('pages.admin.users.index', compact('users'))->with('page', 'Users');
+        if ($request->ajax()) {
+            $users = User::with('roles')->latest();
+
+            return DataTables::of($users)
+                ->addIndexColumn()
+                ->addColumn('image', function ($user) {
+                    if ($user->image) {
+                        return '<img src="'.getFile($user->image).'" class="img-thumbnail" style="width:50px;height:50px;object-fit:cover;">';
+                    }
+                    return '<span class="text-muted">Tidak Ada</span>';
+                })
+                ->editColumn('status', fn($user) => $user->status === 'active' 
+                    ? '<span class="label label-success">Aktif</span>' 
+                    : '<span class="label label-danger">Tidak Aktif</span>')
+                ->addColumn('role', fn($user) => ucfirst($user->getRoleNames()->first() ?? 'Tidak Ada Role'))
+                ->editColumn('created_at', fn($user) => \Carbon\Carbon::parse($user->created_at)->translatedFormat('d F Y H:i'))
+                ->addColumn('profile_link', fn($user) => '<a href="/author/'.$user->slug.'" target="_blank"><i class="fa fa-external-link"></i> Lihat</a>')
+                ->addColumn('action', function ($user) {
+                    $editBtn   = auth()->user()->can('edit users')
+                        ? '<a href="'.route('users.edit', $user->id).'" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>'
+                        : '';
+
+                    $deleteBtn = auth()->user()->can('delete users')
+                        ? '<form action="'.route('users.destroy', $user->id).'" method="POST" style="display:inline" onsubmit="return confirm(\'Yakin ingin menghapus?\')">
+                                '.csrf_field().method_field('DELETE').'
+                                <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
+                           </form>'
+                        : '';
+
+                    return '<div class="text-center">'.$editBtn.' '.$deleteBtn.'</div>';
+                })
+                ->rawColumns(['image', 'status', 'profile_link', 'action'])
+                ->make(true);
+        }
+
+        return view('pages.admin.users.index')->with('page', 'Users');
     }
 
     public function create()

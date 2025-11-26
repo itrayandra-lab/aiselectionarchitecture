@@ -8,19 +8,54 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class InformationController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Information::orderBy('id', 'desc');
+        if ($request->ajax()) {
+            $query = Information::with('createdBy')->latest();
 
-        if ($request->has('type') && in_array($request->type, ['banner', 'text'])) {
-            $query->where('type', $request->type);
+            if ($request->has('type') && in_array($request->type, ['banner', 'text'])) {
+                $query->where('type', $request->type);
+            }
+
+            return DataTables::of($query)
+                ->addIndexColumn()
+                ->addColumn('link', function ($info) {
+                    $prefix = $info->type === 'banner' ? 'banner' : 'info';
+                    return '<a href="/'.$prefix.'/'.$info->slug.'" target="_blank"><i class="fa fa-external-link"></i> Lihat</a>';
+                })
+                ->addColumn('image', function ($info) {
+                    return $info->image
+                        ? '<img src="'.getFile($info->image).'" class="img-thumbnail" style="width:70px;height:50px;object-fit:cover;">'
+                        : '<span class="text-muted">Tidak ada</span>';
+                })
+                ->editColumn('type', fn($info) => $info->type === 'banner'
+                    ? '<span class="label label-info">Banner</span>'
+                    : '<span class="label label-default">Text</span>')
+                ->addColumn('created_by', fn($info) => $info->createdBy?->name ?? '-')
+                ->editColumn('created_at', fn($info) => $info->created_at->translatedFormat('d M Y H:i'))
+                ->addColumn('action', function ($info) {
+                    $edit = auth()->user()->can('edit information')
+                        ? '<a href="'.route('information.edit', $info->id).'" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>'
+                        : '';
+
+                    $delete = auth()->user()->can('delete information')
+                        ? '<form action="'.route('information.destroy', $info->id).'" method="POST" style="display:inline" onsubmit="return confirm(\'Yakin hapus?\')">
+                                '.csrf_field().method_field('DELETE').'
+                                <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
+                        </form>'
+                        : '';
+
+                    return '<div class="text-center">'.$edit.' '.$delete.'</div>';
+                })
+                ->rawColumns(['link', 'image', 'type', 'action'])
+                ->make(true);
         }
 
-        $information = $query->get();
-        return view('pages.admin.information.index', compact('information'))->with('page', 'Informasi');
+        return view('pages.admin.information.index')->with('page', 'Informasi');
     }
 
     public function create()

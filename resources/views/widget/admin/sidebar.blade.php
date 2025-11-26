@@ -97,9 +97,9 @@
                 @endif
 
                 <!-- Menu dropdown untuk post -->
-                @if (auth()->user()->hasAnyPermission(['view album', 'view video']))
+                @if (auth()->user()->hasAnyPermission(['view album', 'view video','view information', 'view ads']))
                     <li class="has_sub">
-                        <a href="javascript:void(0);" class="waves-effect {{ isActive($page, ['Galery','Video']) }}">
+                        <a href="javascript:void(0);" class="waves-effect {{ isActive($page, ['Galery','Video', 'Informasi', 'Iklan']) }}">
                             <i class="fa fa-unlink"></i> <span>Postingan Lain</span> <span class="pull-right"><i class="mdi mdi-plus"></i></span>
                         </a>
                         <ul class="list-unstyled">
@@ -124,18 +124,23 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('view ads')
+                                <li>
+                                    <a class="{{ isActive($page, 'Iklan') }}" href="{{ route('ads.index') }}">
+                                        Iklan
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
                     </li>
                 @endif
 
-                <!-- Menu dropdown untuk hak akses (Roles dan Permissions) -->
                 @if (auth()->user()->hasAnyPermission(['manage roles', 'manage permissions']))
                     <li class="has_sub">
                         <a href="javascript:void(0);" class="waves-effect {{ isActive($page, ['Roles', 'Permissions']) }}">
                             <i class="fa fa-lock"></i> <span>Hak Akses</span> <span class="pull-right"><i class="mdi mdi-plus"></i></span>
                         </a>
                         <ul class="list-unstyled">
-                            <!-- Submenu untuk Roles -->
                             @can('manage roles')
                                 <li>
                                     <a class="{{ isActive($page, 'Roles') }}" href="{{ route('roles.index') }}">
@@ -144,7 +149,6 @@
                                 </li>
                             @endcan
 
-                            <!-- Submenu untuk Permissions -->
                             @can('manage permissions')
                                 <li>
                                     <a class="{{ isActive($page, 'Permissions') }}" href="{{ route('permissions.index') }}">

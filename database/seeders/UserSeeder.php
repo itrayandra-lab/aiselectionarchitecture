@@ -93,7 +93,7 @@ class UserSeeder extends Seeder
                 [
                     'name' => $userData['name'],
                     'slug' => $userData['slug'],
-                    'password' => Hash::make('password123'),
+                    'password' => Hash::make('123'),
                 ]
             );
             $user->assignRole($role);
@@ -106,7 +106,7 @@ class UserSeeder extends Seeder
                 [
                     'name' => "User {$i}",
                     'slug' => "user-{$i}",
-                    'password' => Hash::make('password123'),
+                    'password' => Hash::make('123'),
                 ]
             );
             $randomUser->assignRole('user');

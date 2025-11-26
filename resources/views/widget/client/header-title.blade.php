@@ -1,3 +1,4 @@
+
 <div class="header-title flex justify-between items-center border-b-2 border-dashed border-gray-200 pb-4 mb-4">
     <h2 class="lg:text-lg text-sm font-bold relative">
         {{ $title }}

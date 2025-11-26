@@ -1,4 +1,4 @@
-@if ($data)
+@if ($data->count() != 0)
     <div class="col-span-12 md:col-span-8 p-4 rounded">
         @include('widget.client.header-title', ['title' => 'Galery', 'link' => 'albums'])
         <div class="space-y-2">

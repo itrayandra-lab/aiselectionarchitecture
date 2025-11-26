@@ -1,6 +1,6 @@
-@if ($data)
+@if ($data->count() != 0)
     <div class="col-span-12 bg-slate-100  rounded p-4">
-        @include('widget.client.header-title', ['title' => 'Video Reels', 'link' => 'videos'])
+        @include('widget.client.header-title', ['title' => 'Video Terpopuler', 'link' => 'videos'])
         <div class="space-y-2">
             <div class="flex gap-3 overflow-x-auto custom-scrollbar-x pb-4">
                 @foreach ($data as $item)

@@ -1,93 +1,81 @@
 @extends('layouts.admin.app')
-@section('title', $page)
+@section('title', 'Manajemen Users')
+
 @push('styles')
+
 @endpush
+
 @section('content')
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Manajemen {{ $page }}</h3>
-                </div>
-                <div class="panel-body">
-                    @can('create users')
-                        <div class="panel-action">
-                            <a href="{{ route('users.create') }}" class="btn btn-success btn-sm">
-                                <i class="fa fa-plus"></i> Tambah Data
-                            </a>
-                        </div>
-                    @else
-                        <div class="panel-action">
-                            <p class="text-muted">Anda tidak memiliki izin untuk menambah data user.</p>
-                        </div>
-                    @endcan
+<div class="row">
+    <div class="col-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Manajemen Users</h3>
+            </div>
+            <div class="panel-body">
 
-                    @can('view users')
-                        <table id="datatable-responsive" class="table table-striped table-bordered dt-responsive nowrap"
-                            cellspacing="0" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama</th>
-                                    <th>Tautan</th>
-                                    <th>Email</th>
-                                    <th>Gambar</th>
-                                    <th>Status</th>
-                                    <th>Role</th>
-                                    <th>Nomor Telepon</th>
-                                    <th>Dibuat Pada</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($users as $user)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}.</td>
-                                        <td>{{ $user->name }}</td>
-                                        <td><a href="/author/{{ $user->slug }}" target="_blank" rel="noopener noreferrer"><i
-                                                    class="fa fa-external-link"></i> Lihat</a></td>
-                                        <td>{{ $user->email }}</td>
-                                        <td>
-                                            @if ($user->image)
-                                                <img src="{{ getFile($user->image) }}" alt="{{ $user->name }}"
-                                                    style="max-width: 50px;">
-                                            @else
-                                                Tidak Ada Gambar
-                                            @endif
-                                        </td>
-                                        <td>{{ $user->status === 'active' ? 'Aktif' : 'Tidak Aktif' }}</td>
-                                        <td>{{ ucfirst($user->getRoleNames()->first() ?? 'Tidak Ada Role') }}</td>
-                                        <td>{{ $user->phone_number ?? '-' }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($user->created_at)->translatedFormat('d F Y H:i') }}</td>
-                                        <td>
-                                            @can('edit users')
-                                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary btn-xs">
-                                                    <i class="fa fa-edit"></i> Edit
-                                                </a>
-                                            @endcan
+                @can('create users')
+                    <a href="{{ route('users.create') }}" class="btn btn-success btn-sm mb-3">
+                        <i class="fa fa-plus"></i> Tambah User
+                    </a>
+                @endcan
 
-                                            @can('delete users')
-                                                <form action="{{ route('users.destroy', $user->id) }}" method="POST"
-                                                    class="delete-form" style="display: inline;" onsubmit="return confirmDelete(this)">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-xs show_confirm">
-                                                        <i class="fa fa-trash"></i> Hapus
-                                                    </button>
-                                                </form>
-                                            @endcan
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @else
-                        <p class="text-danger">Anda tidak memiliki izin untuk melihat data user.</p>
-                    @endcan
-                </div>
+                @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show">
+                        {{ session('success') }}
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        {{ session('error') }}
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                    </div>
+                @endif
+
+                <table id="users-table" class="table table-striped table-bordered dt-responsive nowrap" width="100%">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>Tautan</th>
+                            <th>Email</th>
+                            <th>Gambar</th>
+                            <th>Status</th>
+                            <th>Role</th>
+                            <th>No. Telepon</th>
+                            <th>Dibuat Pada</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>
+</div>
 @endsection
+
 @push('scripts')
+<script>
+$(document).ready(function() {
+    $('#users-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{{ route('users.index') }}',
+        columns: [
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+            { data: 'name', name: 'name' },
+            { data: 'profile_link', name: 'profile_link', orderable: false, searchable: false },
+            { data: 'email', name: 'email' },
+            { data: 'image', name: 'image', orderable: false, searchable: false },
+            { data: 'status', name: 'status' },
+            { data: 'role', name: 'role' },
+            { data: 'phone_number', name: 'phone_number', defaultContent: '-' },
+            { data: 'created_at', name: 'created_at' },
+            { data: 'action', name: 'action', orderable: false, searchable: false }
+        ]
+    });
+});
+</script>
 @endpush

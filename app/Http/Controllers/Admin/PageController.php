@@ -7,14 +7,42 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\DataTables;
 
 class PageController extends Controller
 {
     # Display a listing of pages
-    public function index()
+    public function index(Request $request)
     {
-        $pages = Page::all();
-        return view('pages.admin.page.index', compact('pages'))->with('page', 'Halaman');
+        if ($request->ajax()) {
+            $pages = Page::with('creator')->latest();
+
+            return DataTables::of($pages)
+                ->addIndexColumn()
+                ->addColumn('link', fn($page) => '<a href="/page/'.$page->slug.'" target="_blank"><i class="fa fa-external-link"></i> Lihat</a>')
+                ->editColumn('status', fn($page) => $page->status === 'published' 
+                    ? '<span class="label label-success">Published</span>' 
+                    : '<span class="label label-warning">Draft</span>')
+                ->addColumn('creator', fn($page) => $page->creator?->name ?? '-')
+                ->addColumn('action', function ($page) {
+                    $edit = auth()->user()->can('edit pages')
+                        ? '<a href="'.route('pages.edit', $page->id).'" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>'
+                        : '';
+
+                    $delete = auth()->user()->can('delete pages')
+                        ? '<form action="'.route('pages.destroy', $page->id).'" method="POST" style="display:inline" onsubmit="return confirm(\'Yakin hapus?\')">
+                                '.csrf_field().method_field('DELETE').'
+                                <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
+                        </form>'
+                        : '';
+
+                    return '<div class="text-center">'.$edit.' '.$delete.'</div>';
+                })
+                ->rawColumns(['link', 'status', 'action'])
+                ->make(true);
+        }
+
+        return view('pages.admin.page.index')->with('page', 'Halaman');
     }
 
     # Show the form for creating a new page

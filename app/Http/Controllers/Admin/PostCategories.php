@@ -7,15 +7,36 @@ use App\Models\PostCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Yajra\DataTables\Facades\DataTables;
 
 class PostCategories extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = PostCategory::all();
-        return view('pages.admin.categories.index', [
-            'categories' => $categories
-        ])->with('page', 'Kategori');
+        if ($request->ajax()) {
+            $categories = PostCategory::latest();
+
+            return DataTables::of($categories)
+                ->addIndexColumn()
+                ->addColumn('action', function ($category) {
+                    $edit = auth()->user()->can('edit categories')
+                        ? '<a href="'.route('categories.edit', $category->id).'" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>'
+                        : '';
+
+                    $delete = auth()->user()->can('delete categories')
+                        ? '<form action="'.route('categories.destroy', $category->id).'" method="POST" style="display:inline" onsubmit="return confirm(\'Yakin hapus?\')">
+                                '.csrf_field().method_field('DELETE').'
+                                <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
+                        </form>'
+                        : '';
+
+                    return '<div class="text-center">'.$edit.' '.$delete.'</div>';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
+        return view('pages.admin.categories.index')->with('page', 'Kategori');
     }
 
     public function create()

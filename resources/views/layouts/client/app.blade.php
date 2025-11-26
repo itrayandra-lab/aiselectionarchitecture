@@ -30,6 +30,7 @@
 
     @vite('resources/css/app.css')
     @vite('resources/css/styles.css')
+    @vite('resources/js/app.js')
 
 </head>
 {{-- stack ui css --}}
@@ -49,8 +50,6 @@
     </div>
 </body>
 {{-- stack script --}}
-<script src="https://website-widgets.pages.dev/dist/sienna.min.js" defer></script>
-
 @stack('scripts')
 
 </html>
