@@ -330,9 +330,7 @@
                                 </video>
 
                             @elseif($ad->type == 'youtube')
-                            <div id="yt-player" 
-                            data-url="{{ $ad->youtube_url }}" 
-                            class="w-full h-full"></div>
+                                <div id="yt-player" data-url="{{ $ad->youtube_url }}" class="w-full h-full"></div>
                             @endif
                         </a>
                         <script>

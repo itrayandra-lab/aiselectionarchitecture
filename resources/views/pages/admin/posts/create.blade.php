@@ -8,10 +8,7 @@
         .form-group { margin-bottom: 15px; }
         .select2-container { width: 100% !important; }
         .editor-container { border: 1px solid #ddd; border-radius: 4px; padding: 0; }
-        
         .main-editor-panel { box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-
-        /* Style untuk input Gambar Utama di atas Judul */
         .featured-image-upload {
             border: 1px solid #ddd;
             border-bottom: none;
@@ -27,15 +24,12 @@
             border: 1px dashed #ccc;
             border-radius: 4px;
         }
-        
-        /* Style untuk input Judul yang minimalis */
         .judul-input-group {
             border: 1px solid #ddd;
             border-top: none; 
             padding: 10px 15px;
             border-radius: 0 0 0 0; 
         }
-
         .judul-input-group input {
             border: 1px solid rgb(123, 123, 123);
             padding: 2px 6px;
@@ -43,14 +37,11 @@
             font-size: 20px;
             font-weight: 500;
         }
-        
         .summernote-wrapper .note-editor {
             border: 1px solid #ddd;
             border-top: none;
             border-radius: 0 0 4px 4px;
         }
-        
-        /* Kanan Panel */
         .setting-panel {
             background: #fff;
             border-radius: 4px;
@@ -58,7 +49,6 @@
             padding: 0;
             margin-bottom: 20px;
         }
-        
         .setting-header {
             display: flex;
             justify-content: space-between;
@@ -66,28 +56,22 @@
             padding: 10px 15px;
             border-bottom: 1px solid #ddd;
         }
-
         .setting-header .btn { border-radius: 4px; }
-        
         .btn-success {
             background-color: #ff8c00;
             border-color: #ff8c00;
             color: white;
             font-weight: bold;
         }
-
         .btn-success:hover, .btn-success:focus {
             background-color: #e67e22;
             border-color: #e67e22;
         }
-        
         .setting-item {
             padding: 10px 15px;
             border-bottom: 1px solid #eee;
         }
-
         .setting-item:last-child { border-bottom: none; }
-
         .setting-item .title {
             font-weight: bold;
             color: #333;
@@ -96,19 +80,15 @@
             justify-content: space-between;
             align-items: center;
         }
-        
         .setting-content {
             padding-top: 10px;
             display: none;
         }
         .setting-item.open .setting-content { display: block; }
-        
         .setting-item .fa-angle-down { transition: transform 0.2s; }
         .setting-item.open .fa-angle-down { transform: rotate(180deg); }
-        
-        /* NEW Domain Share Styling (Minimalist Card) */
         .domain-card-list {
-            max-height: 400px; /* Batasi tinggi untuk scrolable */
+            max-height: 400px;
             overflow-y: auto;
             padding-right: 5px;
         }
@@ -119,11 +99,9 @@
             border-radius: 5px;
             transition: all 0.2s;
         }
-        .domain-card:hover {
-             border-color: #ff8c00;
-        }
+        .domain-card:hover { border-color: #ff8c00; }
         .domain-card.checked {
-            background-color: #fff9f0; /* Warna lembut saat dicek */
+            background-color: #fff9f0;
             border-left: 5px solid #ff8c00;
             padding-left: 5px;
         }
@@ -173,7 +151,6 @@
         <div class="col-md-8">
             <div class="main-editor-panel">
                 
-                {{-- Gambar Utama --}}
                 <div class="featured-image-upload">
                     <label for="featured_image" style="font-weight: bold; color: #555;">Gambar Utama</label>
                     <input type="file" name="featured_image" id="featured_image" class="form-control" accept="image/*">
@@ -181,13 +158,17 @@
                     @error('featured_image') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
-                {{-- Judul --}}
                 <div class="judul-input-group">
                     <input type="text" name="title" id="title" class="form-control" placeholder="Tulis Judul..." value="{{ old('title') }}" required>
                     @error('title') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
+
+                <div class="" style="margin: 10px 0 15px 15px;">
+                    <label style="font-weight: bold; color: #555;">Tanggal Publish (Web Utama)</label>
+                    <input type="datetime-local" name="published_at" id="published_at" class="form-control" value="{{ old('published_at', now()->format('Y-m-d\TH:i')) }}" required>
+                    @error('published_at') <span class="text-danger">{{ $message }}</span> @enderror
+                </div>
                 
-                {{-- Konten Editor --}}
                 <div class="summernote-wrapper">
                     <textarea name="content" id="content" class="form-control summernote" rows="5">{{ old('content') }}</textarea>
                     @error('content') <span class="text-danger">{{ $message }}</span> @enderror
@@ -195,19 +176,15 @@
             </div>
         </div>
 
-        {{-- KANAN: Pengaturan Postingan --}}
         <div class="col-md-4">
             <div class="setting-panel">
                 <div class="setting-header">
-                    <div class="btn-group">
-                        {{-- <button type="button" class="btn btn-default btn-sm"><i class="fa fa-eye"></i> Pratinjau</button> --}}
-                    </div>
+                    <div class="btn-group"></div>
                     <button type="submit" id="submit-btn" class="btn btn-success">
                         <i class="fa fa-paper-plane"></i> <span>Publikasikan</span>
                     </button>
                 </div>
 
-                {{-- Label / Tags --}}
                 <div class="setting-item open" id="setting-label">
                     <div class="title" data-target="#content-label">
                         Label <i class="fa fa-angle-down"></i>
@@ -225,7 +202,6 @@
                     </div>
                 </div>
 
-                {{-- Status --}}
                 <div class="setting-item open" id="setting-status">
                     <div class="title" data-target="#content-status">
                         Status <i class="fa fa-angle-down"></i>
@@ -240,7 +216,6 @@
                     </div>
                 </div>
 
-                {{-- Kategori (Opsi) --}}
                 <div class="setting-item" id="setting-category">
                     <div class="title" data-target="#content-category">
                         Kategori Utama <i class="fa fa-angle-down"></i>
@@ -259,17 +234,13 @@
                     </div>
                 </div>
 
-                {{-- NEW: Domain Share & Pengaturan Individu (Card Style) --}}
                 <div class="setting-item" id="setting-domains">
                     <div class="title" data-target="#content-domains">
-                        Domain Share & Waktu Publikasi <i class="fa fa-angle-down"></i>
+                        Artikel Share <i class="fa fa-angle-down"></i>
                     </div>
                     <div class="setting-content" id="content-domains">
                         <div class="domain-card-list">
-                            @php
-                                $old_domains_checked = old('domains');
-                            @endphp
-
+                            @php $old_domains_checked = old('domains'); @endphp
                             @forelse($domains as $index => $domain)
                                 @php
                                     $domain_key = str_replace('.', '_', $domain);
@@ -286,11 +257,14 @@
                                         </label>
                                     </div>
                                     <div class="domain-details">
+                                        
                                         <div class="form-group">
-                                            <label>Waktu Publikasi</label>
-                                            <input type="datetime-local" name="published_at[{{ $domain_key }}]" class="form-control input-sm"
-                                                   value="{{ old("published_at.{$domain_key}", now()->addMinutes(5)->format('Y-m-d\TH:i')) }}" required>
+                                            <label>Tanggal Publish (Domain Ini)</label>
+                                            <input type="datetime-local" name="domain_published_at[{{ $domain_key }}]" 
+                                                   class="form-control input-sm" 
+                                                   value="{{ old("domain_published_at.{$domain_key}", now()->format('Y-m-d\TH:i')) }}">
                                         </div>
+
                                         <div class="form-group" style="margin-bottom: 0;">
                                             <label>Gambar Kustom (Opsional)</label>
                                             <input type="file" name="image[{{ $domain_key }}]" class="form-control input-sm domain-image-input" data-preview="#preview-{{ $domain_key }}" accept="image/*">
@@ -362,7 +336,6 @@ $(document).ready(function() {
         }
     });
 
-
     $('.summernote').summernote({
         height: 700,
         toolbar: [
@@ -377,9 +350,7 @@ $(document).ready(function() {
                 var formData = new FormData();
                 formData.append('file', files[0]);
                 formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
-
                 Swal.fire({ title: 'Uploading...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
                 $.ajax({
                     url: '{{ route('uploadImage') }}', 
                     method: 'POST', data: formData, processData: false, contentType: false,
@@ -396,7 +367,6 @@ $(document).ready(function() {
             onMediaDelete: function(target) {
                 var fullUrl = target[0].src;
                 var imagePath = fullUrl.replace(window.location.origin + '/', '');
-
                 $.post('{{ route('deleteImage') }}', { image_path: imagePath, _token: $('meta[name="csrf-token"]').attr('content') });
             }
         }
@@ -404,7 +374,6 @@ $(document).ready(function() {
 
     $('.setting-item .title').click(function() {
         var parent = $(this).closest('.setting-item');
-        
         if(parent.hasClass('open')) {
             parent.removeClass('open');
             parent.find('.setting-content').slideUp(200);

@@ -16,7 +16,6 @@
             </div>
         </div>
         
-        <!--- Divider -->
         <div id="sidebar-menu">
             <ul>
                 <!-- Menu utama untuk dashboard -->

@@ -239,13 +239,47 @@
                                             <div class="mx-auto w-full mb-2">
                                                 <div class="flex flex-col items-center space-y-1">
 
-                                                    <a href="{{ $item->redirect_url ?? '#' }}" 
-                                                    target="_blank" 
-                                                    class="block w-full">
-                                                        <img src="{{ asset($item->file_path) }}" 
-                                                            class="rounded w-full h-auto cursor-pointer" 
-                                                            alt="{{ $item->title }}">
-                                                    </a>
+                                                    @if($item->type == 'video')
+                                                        <video class="rounded w-full h-auto cursor-pointer" 
+                                                            autoplay muted loop playsinline
+                                                            controls>
+                                                            <source src="{{ asset($item->file_path) }}" type="video/mp4">
+                                                            Your browser does not support the video tag.
+                                                        </video>
+                                                    @elseif($item->type == 'youtube')
+                                                        <div id="yt-player" data-url="{{ $item->youtube_url }}" class="w-full h-full"></div>
+                                                        <script>
+                                                            document.addEventListener("DOMContentLoaded", function () {
+                                                                const container = document.getElementById("yt-player");
+                                                                if (!container) return;
+
+                                                                const url = container.dataset.url;
+
+                                                                function extractYoutubeId(link) {
+                                                                    const regex = /(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]+)/;
+                                                                    const match = link.match(regex);
+                                                                    return match ? match[1] : link;
+                                                                }
+
+                                                                const videoId = extractYoutubeId(url);
+
+                                                                container.innerHTML = `
+                                                                    <iframe class="w-full h-full rounded"
+                                                                        src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1"
+                                                                        frameborder="0"
+                                                                        allow="autoplay; encrypted-media; fullscreen"
+                                                                        allowfullscreen>
+                                                                    </iframe>
+                                                                `;
+                                                            });
+                                                        </script>
+                                                    @else
+                                                        <a href="{{ $item->redirect_url ?? '#' }}" target="_blank" class="block w-full">
+                                                            <img src="{{ asset($item->file_path) }}" 
+                                                                class="rounded w-full h-auto cursor-pointer" 
+                                                                alt="{{ $item->title }}">
+                                                        </a>
+                                                    @endif
 
                                                     <p class="text-xs text-gray-400 text-center mt-1 italic">
                                                         Iklan / Ads Sponsored
@@ -255,7 +289,9 @@
                                             </div>
                                         </div>
                                     @endforeach
-
+                                    <script>
+                                        
+                                    </script>
                                 </div>
                             </div>
                         </div>
