@@ -56,10 +56,7 @@
                     @yield('content')
                 </div>
             </div>
-            <footer class="footer text-center">{{ now()->format('Y') }} © Powered By
-                <a href="https://kuliittecno-production.up.railway.app/" target="_blank" class="text-primary">Kuli IT
-                    Tecno</a> - All Rights Reserved. V{{ $meta->version }}
-            </footer>
+           
         </div>
     </div>
 
