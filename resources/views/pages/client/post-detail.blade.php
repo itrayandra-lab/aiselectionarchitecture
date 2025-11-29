@@ -51,7 +51,7 @@
 
                     <div class="lg:pr-4 post-content">
                         <img class="w-full rounded-sm mb-4 bg-gray-900 ring-1 shadow-lg ring-gray-400/10 sm:w-[57rem] post-image" src="{{ getFile($post->image) }}" alt="">
-                        <div class="max-w-xl text-base/7 text-gray-700 lg:max-w-lg">
+                        <div class="text-base/7 text-gray-700 ">
                             {!! $content !!}
                         </div>
                     </div>
