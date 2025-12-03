@@ -1,23 +1,24 @@
 <?php
 
-use App\Http\Controllers\Admin\AdsController;
-use App\Http\Controllers\Admin\AlbumController;
-use App\Http\Controllers\Admin\HomeController;
-use App\Http\Controllers\Admin\InformationController;
-use App\Http\Controllers\Admin\MenusController;
+use App\Http\Middleware\IsActive;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AdsController;
+use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PostCategories;
-use App\Http\Controllers\Admin\PostsController;
-use App\Http\Controllers\Admin\PostTagsController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\AlbumController;
+use App\Http\Controllers\Admin\MenusController;
+use App\Http\Controllers\Admin\PostsController;
+use App\Http\Controllers\Admin\VideosController;
+use App\Http\Controllers\Admin\UploadImageEditor;
+use App\Http\Controllers\Admin\PostTagsController;
+use App\Http\Controllers\Client\InterfaceController;
+use App\Http\Controllers\Admin\DomainShareController;
+use App\Http\Controllers\Admin\InformationController;
 use App\Http\Controllers\Admin\WebIdentityController;
 use App\Http\Controllers\Admin\RolePermissionController;
-use App\Http\Controllers\Admin\UploadImageEditor;
-use App\Http\Controllers\Admin\VideosController;
-use App\Http\Controllers\Client\InterfaceController;
-use App\Http\Middleware\IsActive;
 
 # Auth
 Route::group(['prefix' => 'portal', 'controller' => LoginController::class], function () {
@@ -170,6 +171,16 @@ Route::group(['prefix' => 'portal', 'middleware' => ['auth']], function () {
         Route::delete('/{id}', 'destroy')->name('ads.destroy')->middleware('permission:delete ads');
     });
 
+
+    # Menu Domain Share
+    Route::group(['prefix' => 'domain-share', 'controller' => DomainShareController::class], function () {
+        Route::get('/', 'index')->name('domain-share.index')->middleware('permission:view domain-share');
+        Route::get('/create', 'create')->name('domain-share.create')->middleware('permission:create domain-share');
+        Route::post('/', 'store')->name('domain-share.store')->middleware('permission:create domain-share');
+        Route::get('/{id}/edit', 'edit')->name('domain-share.edit')->middleware('permission:edit domain-share');
+        Route::put('/{id}', 'update')->name('domain-share.update')->middleware('permission:edit domain-share');
+        Route::delete('/{id}', 'destroy')->name('domain-share.destroy')->middleware('permission:delete domain-share');
+    });
 
 });
 

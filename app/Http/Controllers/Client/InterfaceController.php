@@ -390,8 +390,17 @@ class InterfaceController extends Controller
      */
 
     private function applyTailwindClasses($htmlContent) {
+        if (empty($htmlContent)) {
+            return $htmlContent;
+        }
+
         $doc = new \DOMDocument();
-        @$doc->loadHTML('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . $htmlContent);
+        
+        libxml_use_internal_errors(true);
+
+        $htmlWrapper = '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>' . $htmlContent . '</body></html>';
+        
+        $doc->loadHTML($htmlWrapper, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         
         $tags = [
             'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -402,17 +411,22 @@ class InterfaceController extends Controller
             'a',
             'blockquote', 'pre', 'code',
             'hr',
-            'div', 'section'
+            'div', 'section', 'article'
         ];
         
         foreach ($tags as $tag) {
             $elements = $doc->getElementsByTagName($tag);
-            foreach ($elements as $element) {
+            
+            foreach (iterator_to_array($elements) as $element) {
                 $existingClass = $element->getAttribute('class');
                 $tailwindClasses = $this->getTailwindClasses($tag);
     
                 if ($existingClass) {
-                    $newClass = $existingClass . ' ' . $tailwindClasses;
+                    if (strpos($existingClass, $tailwindClasses) === false) {
+                        $newClass = $existingClass . ' ' . $tailwindClasses;
+                    } else {
+                        $newClass = $existingClass;
+                    }
                 } else {
                     $newClass = $tailwindClasses;
                 }
@@ -424,10 +438,18 @@ class InterfaceController extends Controller
         }
     
         $body = $doc->getElementsByTagName('body')->item(0);
+
+        if ($body === null) {
+            libxml_clear_errors();
+            return $htmlContent;
+        }
+
         $modifiedHtml = '';
         foreach ($body->childNodes as $node) {
             $modifiedHtml .= $doc->saveHTML($node);
         }
+
+        libxml_clear_errors();
     
         return $modifiedHtml;
     }

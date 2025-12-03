@@ -53,6 +53,7 @@ class DataController extends Controller
         return Posts::where('status', 'active')
             ->whereNotNull('published_at')
             ->where('published_at', '<=', Carbon::now())
+            ->inRandomOrder()
             ->latest('created_at')
             ->limit($limit)
             ->get();

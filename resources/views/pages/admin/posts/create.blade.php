@@ -243,17 +243,17 @@
                             @php $old_domains_checked = old('domains'); @endphp
                             @forelse($domains as $index => $domain)
                                 @php
-                                    $domain_key = str_replace('.', '_', $domain);
-                                    $is_checked = ($old_domains_checked === null) ? true : in_array($domain, $old_domains_checked);
+                                    $domain_key = str_replace('.', '_', $domain->domain_name);
+                                    $is_checked = ($old_domains_checked === null) ? true : in_array($domain->domain_name, $old_domains_checked);
                                 @endphp
                                 
                                 <div class="domain-card {{ $is_checked ? 'checked' : '' }}" id="domain-card-{{ $domain_key }}">
                                     <div class="domain-header">
                                         <label for="domain-checkbox-{{ $domain_key }}">
                                             <input type="checkbox" name="domains[]" id="domain-checkbox-{{ $domain_key }}" 
-                                                   value="{{ $domain }}" data-domain-key="{{ $domain_key }}" 
+                                                   value="{{ $domain->domain_name }}" data-domain-key="{{ $domain_key }}" 
                                                    {{ $is_checked ? 'checked' : '' }}>
-                                            {{ $domain }}
+                                            {{ $domain->domain_name }}
                                         </label>
                                     </div>
                                     <div class="domain-details">

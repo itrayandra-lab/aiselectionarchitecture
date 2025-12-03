@@ -8,8 +8,10 @@ use App\Helpers\FileHelper;
 use Illuminate\Support\Str;
 use App\Models\PostCategory;
 use Illuminate\Http\Request;
+use App\Jobs\DistributePostJob;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\ShareDomain;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
@@ -82,8 +84,9 @@ class PostsController extends Controller
 
     public function create()
     {
+        $domain = ShareDomain::where('status', 'active')->get();
         $data = [
-            'domains' => ['content-management-system.test', 'domain2.com', 'domain3.com'],
+            'domains' => $domain,
             'categories' => PostCategory::orderBy('id', 'desc')->get(),
             'tags' => PostTags::orderBy('id', 'desc')->get(),
         ];
@@ -124,45 +127,50 @@ class PostsController extends Controller
             'counter' => 0,
         ]);
 
-        $results = [];
+        $domainConfig = ShareDomain::where('status', 'active')
+            ->get()
+            ->keyBy('domain_name');
 
         if ($request->has('domains') && is_array($request->domains)) {
             $categoryName = $request->category_id ? PostCategory::find($request->category_id)->name : null;
             
-            foreach ($request->domains as $domain) {
-                $domainKey = str_replace('.', '_', $domain);
+            foreach ($request->domains as $domainName) {
+                if (!isset($domainConfig[$domainName])) {
+                    continue;
+                }
+
+                $config = $domainConfig[$domainName];
+                $webhookUrl = $config->webhook_url;
+                $apiKey = $config->api_key;
+
+                $domainKey = str_replace('.', '_', $domainName);
                 
-                $domainImageUrl = $mainImagePath ? asset($mainImagePath) : null;
+                $finalImageUrl = $mainImagePath ? asset($mainImagePath) : null;
 
                 if ($request->hasFile("image.{$domainKey}")) {
                     $customImage = FileHelper::saveFile($request->file("image.{$domainKey}"), 'posts/domains', Str::slug($request->title) . '-' . $domainKey);
-                    $domainImageUrl = asset($customImage);
+                    $finalImageUrl = asset($customImage);
                 }
 
                 $domainPublishedAt = $request->input("domain_published_at.{$domainKey}") ?? $request->published_at;
 
-                try {
-                    Http::timeout(5)->post("https://{$domain}/api/posts", [
-                        'title' => $request->title,
-                        'image' => $domainImageUrl,
-                        'tag' => $request->tags ?? [],
-                        'kategori' => $categoryName,
-                        'content' => $request->content,
-                        'published_at' => $domainPublishedAt
-                    ]);
-                    $results[$domain] = 'success';
-                } catch (\Exception $e) {
-                    $results[$domain] = 'failed';
-                }
+                $metaData = [
+                    'session_id' => 'sess-' . $post->id . '-' . Str::random(6),
+                    'original_title' => $request->title,
+                    'original_content' => $request->content,
+                    'image' => $finalImageUrl,
+                    'tags' => $request->tags ?? [],
+                    'category' => $categoryName,
+                    'published_at' => $domainPublishedAt
+                ];
+
+                DistributePostJob::dispatch($webhookUrl, $domainName, $apiKey, $metaData);
             }
         }
 
-        Log::info([$results]);
-
         return response()->json([
             'success' => true,
-            'message' => 'Post berhasil disimpan dan diproses.',
-            'details' => $results
+            'message' => 'Post saved and processing started.',
         ]);
     }
 

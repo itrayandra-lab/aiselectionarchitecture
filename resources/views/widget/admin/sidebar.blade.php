@@ -134,9 +134,9 @@
                     </li>
                 @endif
 
-                @if (auth()->user()->hasAnyPermission(['manage roles', 'manage permissions']))
+                @if (auth()->user()->hasAnyPermission(['manage roles', 'manage permissions', 'view domain-share']))
                     <li class="has_sub">
-                        <a href="javascript:void(0);" class="waves-effect {{ isActive($page, ['Roles', 'Permissions']) }}">
+                        <a href="javascript:void(0);" class="waves-effect {{ isActive($page, ['Roles', 'Permissions', 'Domain Share']) }}">
                             <i class="fa fa-lock"></i> <span>Hak Akses</span> <span class="pull-right"><i class="mdi mdi-plus"></i></span>
                         </a>
                         <ul class="list-unstyled">
@@ -152,6 +152,14 @@
                                 <li>
                                     <a class="{{ isActive($page, 'Permissions') }}" href="{{ route('permissions.index') }}">
                                         Permissions
+                                    </a>
+                                </li>
+                            @endcan
+                            
+                            @can('view domain-share')
+                                <li>
+                                    <a class="{{ isActive($page, 'Domain Share') }}" href="{{ route('domain-share.index') }}">
+                                        Domain Share
                                     </a>
                                 </li>
                             @endcan
