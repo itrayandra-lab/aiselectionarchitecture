@@ -223,7 +223,7 @@ class InterfaceController extends Controller
         $query = Posts::where('status', 'active')
             ->whereNotNull('published_at')
             ->where('published_at', '<=', Carbon::now())
-            ->whereJsonContains('tags', $tag->id) 
+            ->whereJsonContains('tags', (string) $tag->id)
             ->latest('published_at');
 
         $searchQuery = request()->input('qr');
