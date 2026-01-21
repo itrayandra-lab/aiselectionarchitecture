@@ -46,13 +46,16 @@ class DataController extends Controller
     }
 
     /**
-     * 3. Berita Terkini (berdasarkan waktu pembuatan terbaru)
+     * 3. Berita Terkini (berdasarkan waktu pembuatan dalam 6 bulan terakhir)
      */
     public static function latestNews($limit)
     {
+        $sixMonthsAgo = Carbon::now()->subMonths(6);
+
         return Posts::where('status', 'active')
             ->whereNotNull('published_at')
             ->where('published_at', '<=', Carbon::now())
+            ->where('created_at', '>=', $sixMonthsAgo) 
             ->inRandomOrder()
             ->latest('created_at')
             ->limit($limit)
@@ -158,8 +161,9 @@ class DataController extends Controller
      */
 
      public static function tags($limit) {
-        return PostTags::latest()->inRandomOrder()
+        return PostTags::latest()
         ->limit($limit)
+        ->inRandomOrder()
         ->get();
      }
 

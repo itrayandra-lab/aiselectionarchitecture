@@ -3,16 +3,35 @@
     <style>
         .carousel-slide {
             transition: opacity 0.7s ease-in-out;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
 
         .carousel-slide.active {
             display: block;
             opacity: 1;
+            position: relative;
         }
 
-        .carousel-slide {
+        .carousel-slide.hidden {
             display: none;
             opacity: 0;
+        }
+
+        #controls-carousel {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-indicator {
+            transition: all 0.3s ease;
+        }
+
+        .slide-indicator:hover {
+            transform: scale(1.2);
         }
     </style>
 @endpush
@@ -79,8 +98,9 @@
         <div class="col-span-12 md:col-span-8">
             <div class="space-y-2">
                 <div id="controls-carousel" class="relative w-full" data-carousel="static">
+                    <!-- Slides -->
                     @foreach ($slide as $item)
-                        <section class="carousel-slide duration-700 ease-in-out {{ $loop->first ? '' : 'hidden' }}" data-carousel-news>
+                        <section class="carousel-slide duration-700 ease-in-out {{ $loop->first ? 'active' : 'hidden' }}" data-carousel-news>
                             <div class="relative h-64 overflow-hidden rounded-lg md:h-96">
                                 <img src="{{ getFile($item->image) }}" class="block w-full h-full object-cover"
                                     alt="slide-image">
@@ -109,6 +129,16 @@
                             </div>
                         </section>
                     @endforeach
+
+                    <!-- Navigation buttons -->
+                    @if($slide->count() > 1)
+                        <!-- Slide indicators only -->
+                        <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3">
+                            @foreach ($slide as $item)
+                                <button type="button" class="w-3 h-3 rounded-full {{ $loop->first ? 'bg-white' : 'bg-white/50' }} slide-indicator" aria-current="{{ $loop->first ? 'true' : 'false' }}" aria-label="Slide {{ $loop->iteration }}" data-carousel-slide-to="{{ $loop->index }}"></button>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -379,25 +409,66 @@
         $(document).ready(function() {
             let currentSlide = 0;
             const slides = $('.carousel-slide');
+            const indicators = $('.slide-indicator');
             const totalSlides = slides.length;
+            let autoSlideInterval;
 
+            // Function to show specific slide
             function showSlide(index) {
-                slides.removeClass('active').css('opacity', '0');
-                slides.eq(index).addClass('active').css('opacity', '1');
+                slides.removeClass('active').addClass('hidden').css('opacity', '0');
+                slides.eq(index).removeClass('hidden').addClass('active').css('opacity', '1');
+                
+                // Update indicators
+                indicators.removeClass('bg-white').addClass('bg-white/50');
+                indicators.eq(index).removeClass('bg-white/50').addClass('bg-white');
+                
+                currentSlide = index;
             }
 
-            $('[data-carousel-news-prev]').on('click', function() {
-                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-                showSlide(currentSlide);
-            });
-
-            $('[data-carousel-news-next]').on('click', function() {
+            // Function to go to next slide
+            function nextSlide() {
                 currentSlide = (currentSlide + 1) % totalSlides;
                 showSlide(currentSlide);
+            }
+
+            // Auto slide functionality
+            function startAutoSlide() {
+                if (totalSlides > 1) {
+                    autoSlideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+                }
+            }
+
+            function stopAutoSlide() {
+                if (autoSlideInterval) {
+                    clearInterval(autoSlideInterval);
+                }
+            }
+
+            // Event listeners for indicators (manual navigation)
+            $('[data-carousel-slide-to]').on('click', function() {
+                stopAutoSlide();
+                const slideIndex = parseInt($(this).data('carousel-slide-to'));
+                showSlide(slideIndex);
+                startAutoSlide(); // Restart auto slide after manual navigation
             });
 
-            showSlide(currentSlide);
+            // Pause auto slide on hover
+            $('#controls-carousel').hover(
+                function() {
+                    stopAutoSlide();
+                },
+                function() {
+                    startAutoSlide();
+                }
+            );
 
+            // Initialize
+            if (totalSlides > 0) {
+                showSlide(0);
+                startAutoSlide();
+            }
+
+            // Responsive icon adjustment
             function adjustIconSize() {
                 if ($(window).width() < 768) {
                     $('.w-10.h-10').removeClass('w-10 h-10').addClass('w-8 h-8');

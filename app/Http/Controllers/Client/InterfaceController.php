@@ -27,7 +27,7 @@ class InterfaceController extends Controller
     public function beranda()
     {
         $data = [
-            'slide'        => $this->datas->latestPublished(1),
+            'slide'        => $this->datas->latestPublished(3), 
             'latestNews'   => $this->datas->latestNews(4),
             'mostPopular'  => $this->datas->mostPopular(6),
             'banner_1'     => $this->datas->information('banner', 1),
@@ -36,7 +36,7 @@ class InterfaceController extends Controller
             'recommended'  => $this->datas->recommended(6),
             'videos'       => $this->datas->videos(10),
             'photos'       => $this->datas->photo(8),
-            'tags'         => $this->datas->tags(8),
+            'tags'         => $this->datas->tags(9),
             'categories'   => $this->datas->category(8),
             'ads'         => $this->datas->ads(1, ['image','gif']),
         ];
