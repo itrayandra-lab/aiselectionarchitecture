@@ -17,7 +17,7 @@ use Illuminate\Support\Carbon;
 class DataController extends Controller
 {
     /**
-     * 1. Berita Terbaru yang sudah dipublikasikan dan statusnya active
+     * 1. Berita Terbaru yang sudah dipublikasikan dan statusnya active (random output)
      */
     public static function latestPublished($limit)
     {
@@ -25,8 +25,10 @@ class DataController extends Controller
             ->whereNotNull('published_at')
             ->where('published_at', '<=', Carbon::now())
             ->latest('published_at')
-            ->limit($limit)
-            ->get();
+            ->limit($limit * 2) // Ambil lebih banyak data untuk dirandom
+            ->get()
+            ->shuffle() // Randomkan hasil
+            ->take($limit); // Ambil sesuai limit yang diminta
     }
 
     /**
