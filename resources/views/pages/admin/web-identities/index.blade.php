@@ -200,6 +200,23 @@
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
+                                <hr>
+                                <div class="form-group">
+                                    <label for="api_posts">API POSTS</label>
+                                    <input type="url" name="api_posts" class="form-control" value="{{ config('app.url') . '/api/posts' }}" readonly>
+                                    @error('api_posts')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label for="api_key_master">API KEY MASTER PORTAL</label>
+                                    <input type="text" name="api_key_master" class="form-control"
+                                        value="{{ old('api_key_master', $webIdentity->api_key_master ?? '') }}" >
+                                    <small style="color: rgb(0, 77, 93); font-style: italic;">*Api didapatkan dari portal main.</small>
+                                    @error('api_key_master')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
 
@@ -233,7 +250,6 @@
             });
         }
 
-        // Apply preview to each file input
         previewImage('favicon', 'favicon_preview');
         previewImage('logo', 'logo_preview');
         previewImage('og_image', 'og_image_preview');

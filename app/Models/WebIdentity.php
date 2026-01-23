@@ -24,6 +24,8 @@ class WebIdentity extends Model
         'favicon',
         'logo',
         'status',
+        'api_posts',
+        'api_key_master',
         'version',
     ];
 

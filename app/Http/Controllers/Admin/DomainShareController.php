@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\ShareDomain;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str; // Tambahkan ini
+use Illuminate\Support\Str; 
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
 

@@ -22,6 +22,8 @@ class Posts extends Model
         'created_by',
         'category_id',
         'tags',
+        'source',
+        'meta_data',
         'updated_by',
         'published_at',
     ];

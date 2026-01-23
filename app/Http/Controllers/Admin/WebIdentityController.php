@@ -9,14 +9,12 @@ use App\Http\Controllers\Controller;
 
 class WebIdentityController extends Controller
 {
-    # Menampilkan form untuk create atau update identitas web
     public function index()
     {
         $webIdentity = WebIdentity::first(); 
         return view('pages.admin.web-identities.index', compact('webIdentity'))->with('page', 'Identitas Web');
     }
 
-    # Menyimpan atau memperbarui identitas web
     public function storeOrUpdate(Request $request)
     {
         $request->validate([
@@ -37,6 +35,8 @@ class WebIdentityController extends Controller
             'logo' => 'nullable|image|max:2048',
             'status' => 'nullable|in:active,inactive',
             'version' => 'nullable|string|max:50',
+            'api_posts' => 'nullable|string',
+            'api_key_master' => 'nullable|string',
         ], [
             'domain.url' => 'Domain harus berupa URL yang valid.',
             'facebook_link.url' => 'Tautan Facebook harus berupa URL yang valid.',
@@ -53,17 +53,14 @@ class WebIdentityController extends Controller
 
         $data = $request->except(['favicon', 'logo', 'og_image']); 
 
-        // Handle favicon upload
         if ($request->hasFile('favicon') && $request->file('favicon')->isValid()) {
             $data['favicon'] = FileHelper::saveFile($request->file('favicon'), 'web-identities', 'favicon');
         }
         
-        // Handle logo upload
         if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
             $data['logo'] = FileHelper::saveFile($request->file('logo'), 'web-identities', 'logo');
         }
         
-        // Handle og_image upload
         if ($request->hasFile('og_image') && $request->file('og_image')->isValid()) {
             $data['og_image'] = FileHelper::saveFile($request->file('og_image'), 'web-identities', 'og_image');
         }        
