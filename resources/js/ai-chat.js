@@ -261,7 +261,10 @@ export class DraggableAIChat {
                             justify-content: center;
                             transition: background 0.2s;
                         ">
-                            <i class="fa fa-paper-plane" style="font-size: 11px;"></i>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m3 3 3 9-3 9 19-9Z"/>
+                                <path d="m6 12 13 0"/>
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -391,7 +394,10 @@ export class DraggableAIChat {
                     gap: 6px;
                     transition: background 0.2s;
                 " onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'">
-                    <i class="fa fa-copy"></i> Copy Text
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                    </svg> Copy Text
                 </div>
                 <div class="copy-editor-option" style="
                     padding: 8px 12px;
@@ -404,7 +410,10 @@ export class DraggableAIChat {
                     border-top: 1px solid #e5e7eb;
                     transition: background 0.2s;
                 " onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'">
-                    <i class="fa fa-edit"></i> Copy for Editor
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                        <path d="m15 5 4 4"/>
+                    </svg> Copy for Editor
                 </div>
             </div>
         `);
@@ -415,12 +424,12 @@ export class DraggableAIChat {
         copyMenu.find('.copy-plain-option').on('click', () => {
             const plainText = this.cleanTextForReply(text);
             navigator.clipboard.writeText(plainText).then(() => {
-                copyMenu.html('<div style="padding: 8px 12px; color: #10b981; font-size: 12px;"><i class="fa fa-check"></i> Copied!</div>');
+                copyMenu.html('<div style="padding: 8px 12px; color: #10b981; font-size: 12px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg> Copied!</div>');
                 setTimeout(() => {
                     copyMenu.remove();
                 }, 1000);
             }).catch(() => {
-                copyMenu.html('<div style="padding: 8px 12px; color: #ef4444; font-size: 12px;"><i class="fa fa-times"></i> Error!</div>');
+                copyMenu.html('<div style="padding: 8px 12px; color: #ef4444; font-size: 12px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="m21 21-6-6m0 0L9 9m6 6 6-6M15 15l-6-6"/></svg> Error!</div>');
                 setTimeout(() => {
                     copyMenu.remove();
                 }, 1000);
@@ -431,12 +440,12 @@ export class DraggableAIChat {
         copyMenu.find('.copy-editor-option').on('click', () => {
             const summernoteHTML = this.formatSelectedTextForSummernote(text);
             this.copyToClipboardWithHTML(summernoteHTML, text).then(() => {
-                copyMenu.html('<div style="padding: 8px 12px; color: #10b981; font-size: 12px;"><i class="fa fa-check"></i> Copied for Editor!</div>');
+                copyMenu.html('<div style="padding: 8px 12px; color: #10b981; font-size: 12px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg> Copied for Editor!</div>');
                 setTimeout(() => {
                     copyMenu.remove();
                 }, 1000);
             }).catch(() => {
-                copyMenu.html('<div style="padding: 8px 12px; color: #ef4444; font-size: 12px;"><i class="fa fa-times"></i> Error!</div>');
+                copyMenu.html('<div style="padding: 8px 12px; color: #ef4444; font-size: 12px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="m21 21-6-6m0 0L9 9m6 6 6-6M15 15l-6-6"/></svg> Error!</div>');
                 setTimeout(() => {
                     copyMenu.remove();
                 }, 1000);
@@ -613,7 +622,7 @@ export class DraggableAIChat {
         navigator.clipboard.writeText(plainText).then(() => {
             // Show success feedback
             const originalText = buttonElement.innerHTML;
-            buttonElement.innerHTML = '<i class="fa fa-check" style="margin-right: 4px;"></i>Copied!';
+            buttonElement.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>Copied!';
             buttonElement.style.background = '#d4edda';
             buttonElement.style.borderColor = '#c3e6cb';
             buttonElement.style.color = '#155724';
@@ -629,7 +638,7 @@ export class DraggableAIChat {
             console.error('Failed to copy text: ', err);
             // Show error feedback
             const originalText = buttonElement.innerHTML;
-            buttonElement.innerHTML = '<i class="fa fa-times" style="margin-right: 4px;"></i>Error';
+            buttonElement.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="m21 21-6-6m0 0L9 9m6 6 6-6M15 15l-6-6"/></svg>Error';
             buttonElement.style.background = '#f8d7da';
             buttonElement.style.borderColor = '#f5c6cb';
             buttonElement.style.color = '#721c24';
@@ -648,7 +657,7 @@ export class DraggableAIChat {
         
         this.copyToClipboardWithHTML(summernoteHTML, message).then(() => {
             const originalText = buttonElement.innerHTML;
-            buttonElement.innerHTML = '<i class="fa fa-check" style="margin-right: 4px;"></i>Copied!';
+            buttonElement.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>Copied!';
             buttonElement.style.background = '#d4edda';
             buttonElement.style.borderColor = '#c3e6cb';
             buttonElement.style.color = '#155724';
@@ -662,7 +671,7 @@ export class DraggableAIChat {
         }).catch(err => {
             console.error('Failed to copy text: ', err);
             const originalText = buttonElement.innerHTML;
-            buttonElement.innerHTML = '<i class="fa fa-times" style="margin-right: 4px;"></i>Error';
+            buttonElement.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="m21 21-6-6m0 0L9 9m6 6 6-6M15 15l-6-6"/></svg>Error';
             buttonElement.style.background = '#f8d7da';
             buttonElement.style.borderColor = '#f5c6cb';
             buttonElement.style.color = '#721c24';
@@ -1008,7 +1017,9 @@ GAYA KOMUNIKASI:
                                 cursor: pointer;
                                 transition: all 0.2s;
                             ">
-                                <i class="fa fa-reply" style="margin-right: 4px;"></i>Balas
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                                    <path d="M3 10h10a8 8 0 0 1 8 8v2M3 10l6 6M3 10l6-6"/>
+                                </svg>Balas
                             </button>
                             <button class="copy-plain-btn" data-message="${this.escapeHtml(message)}" style="
                                 background: #f8f9fa;
@@ -1020,7 +1031,10 @@ GAYA KOMUNIKASI:
                                 cursor: pointer;
                                 transition: all 0.2s;
                             ">
-                                <i class="fa fa-copy" style="margin-right: 4px;"></i>Copy
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                                </svg>Copy
                             </button>
                             <button class="copy-editor-btn" data-message="${this.escapeHtml(message)}" style="
                                 background: #f8f9fa;
@@ -1032,7 +1046,10 @@ GAYA KOMUNIKASI:
                                 cursor: pointer;
                                 transition: all 0.2s;
                             ">
-                                <i class="fa fa-edit" style="margin-right: 4px;"></i>Copy Editor
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                    <path d="m15 5 4 4"/>
+                                </svg>Copy Editor
                             </button>
                         </div>
                     </div>
@@ -1054,7 +1071,11 @@ GAYA KOMUNIKASI:
                         font-size: 14px;
                         border: 1px solid #fecaca;
                     ">
-                        <i class="fa fa-exclamation-triangle" style="margin-right: 6px;"></i>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                            <path d="M12 9v4"/>
+                            <path d="m12 17 .01 0"/>
+                        </svg>
                         ${this.escapeHtml(message)}
                     </div>
                 </div>
