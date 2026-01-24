@@ -928,18 +928,28 @@ GAYA KOMUNIKASI:
     cleanPollinationsAds(text) {
         // Remove various Pollinations.AI promotional messages
         let cleanedText = text
-            // Remove the specific ad message
+            // Remove the specific ad message with exact pattern
             .replace(/---Support Pollinations\.AI:---🌸 Ad 🌸Powered by Pollinations\.AI free text APIs\. Support our mission to keep AI accessible for everyone\./gi, '')
-            // Remove other variations
-            .replace(/---Support Pollinations\.AI:---.*?Pollinations\.AI.*?everyone\./gi, '')
-            .replace(/🌸 Ad 🌸.*?Pollinations\.AI.*?everyone\./gi, '')
-            .replace(/Powered by Pollinations\.AI.*?everyone\./gi, '')
-            .replace(/Support our mission to keep AI accessible for everyone\./gi, '')
-            // Remove promotional separators
-            .replace(/---Support Pollinations\.AI:---/gi, '')
-            .replace(/🌸 Ad 🌸/gi, '')
+            // Remove variations with different spacing
+            .replace(/---\s*Support\s+Pollinations\.AI\s*:?\s*---\s*🌸\s*Ad\s*🌸.*?Pollinations\.AI.*?everyone\.?/gi, '')
+            // Remove just the support message part
+            .replace(/---\s*Support\s+Pollinations\.AI\s*:?\s*---/gi, '')
+            // Remove flower ad emoji pattern
+            .replace(/🌸\s*Ad\s*🌸.*?Pollinations\.AI.*?everyone\.?/gi, '')
+            .replace(/🌸\s*Ad\s*🌸/gi, '')
+            // Remove powered by messages
+            .replace(/Powered\s+by\s+Pollinations\.AI.*?everyone\.?/gi, '')
+            .replace(/Powered\s+by\s+Pollinations\.AI.*?APIs\.?/gi, '')
+            // Remove support mission messages
+            .replace(/Support\s+our\s+mission\s+to\s+keep\s+AI\s+accessible\s+for\s+everyone\.?/gi, '')
+            // Remove any remaining Pollinations.AI promotional text
+            .replace(/Pollinations\.AI\s+free\s+text\s+APIs\.?/gi, '')
+            // Remove standalone promotional elements
+            .replace(/🌸/g, '')
+            .replace(/---+/g, '')
             // Clean up extra whitespace and newlines
             .replace(/\n{3,}/g, '\n\n')
+            .replace(/\s{3,}/g, ' ')
             .replace(/^\s+|\s+$/g, '')
             .trim();
         
