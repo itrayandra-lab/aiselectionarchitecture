@@ -37,14 +37,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label>API Key Saat Ini</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" value="{{ $shareDomain->api_key }}" readonly>
-                                <span class="input-group-addon">
-                                    <input type="checkbox" name="regenerate_key" id="regenerate_key" value="1"> <label for="regenerate_key" style="margin-bottom:0; font-weight:normal;">Regenerate Key</label>
-                                </span>
-                            </div>
-                            <small class="text-muted">Centang "Regenerate Key" jika ingin membuat kunci baru saat menyimpan.</small>
+                            <label for="api_key">API Key</label>
+                            <input type="text" name="api_key" id="api_key" class="form-control" value="{{ old('api_key', $shareDomain->api_key) }}" required>
+                            @error('api_key')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div class="form-group">

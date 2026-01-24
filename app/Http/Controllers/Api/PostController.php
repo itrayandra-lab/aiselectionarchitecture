@@ -8,6 +8,7 @@ use App\Models\Posts;
 use App\Models\PostCategory;
 use App\Models\PostTags;
 use App\Models\WebIdentity;
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
@@ -15,6 +16,21 @@ use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
 {
+    public function index(Request $request)
+    {
+        $posts = Posts::with(['category', 'createdBy'])
+            ->where('status', 'active')
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now())
+            ->orderBy('published_at', 'desc')
+            ->paginate(10);
+
+        return response()->json([
+            'success' => true,
+            'data' => $posts
+        ]);
+    }
+
     public function store(Request $request)
     {
         $web = WebIdentity::first();
@@ -89,6 +105,10 @@ class PostController extends Controller
             }
         }
 
+        $adminUser = User::role('admin')->first();
+        $createdBy = $adminUser ? $adminUser->id : 1; 
+
+
         $post = Posts::create([
             'title'        => $request->title,
             'slug'         => $slug,
@@ -96,11 +116,10 @@ class PostController extends Controller
             'image'        => $imagePath,
             'category_id'  => $categoryId,
             'tags'         => !empty($tagIds) ? json_encode($tagIds) : null,
-            'created_by'   => 1,
+            'created_by'   => $createdBy,
             'counter'      => 0,
-            'is_check'     => 0,
             'source'       => 'AI',
-            'status'       => 'inactive',
+            'status'       => 'active',
             'published_at' => $request->published_at ?? now(),
             'meta_data'    => $request->meta_data ? json_encode($request->meta_data) : null,
         ]);

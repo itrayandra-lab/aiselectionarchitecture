@@ -37,6 +37,7 @@ class WebIdentityController extends Controller
             'version' => 'nullable|string|max:50',
             'api_posts' => 'nullable|string',
             'api_key_master' => 'nullable|string',
+            'is_master' => 'nullable|boolean',
         ], [
             'domain.url' => 'Domain harus berupa URL yang valid.',
             'facebook_link.url' => 'Tautan Facebook harus berupa URL yang valid.',

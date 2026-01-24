@@ -118,13 +118,11 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Inisialisasi Select2 untuk tags
             $('#tags').select2({
                 placeholder: "Pilih tags",
                 allowClear: true
             });
 
-            // Preview gambar saat file dipilih
             $('#image').change(function(e) {
                 var file = e.target.files[0];
                 var preview = $('#imagePreview');

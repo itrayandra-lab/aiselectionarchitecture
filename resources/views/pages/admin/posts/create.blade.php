@@ -9,6 +9,12 @@
         .select2-container { width: 100% !important; }
         .editor-container { border: 1px solid #ddd; border-radius: 4px; padding: 0; }
         .main-editor-panel { box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        .sidebar-collapsed .container {
+            max-width: none !important;
+            width: 100% !important;
+        }
+        
         .featured-image-upload {
             border: 1px solid #ddd;
             border-bottom: none;
@@ -234,48 +240,54 @@
                     </div>
                 </div>
 
-                <div class="setting-item" id="setting-domains">
+                <div class="setting-item" id="setting-domains" @if(!$isMaster) style="display: none;" @endif>
                     <div class="title" data-target="#content-domains">
                         Artikel Share <i class="fa fa-angle-down"></i>
                     </div>
                     <div class="setting-content" id="content-domains">
-                        <div class="domain-card-list">
-                            @php $old_domains_checked = old('domains'); @endphp
-                            @forelse($domains as $index => $domain)
-                                @php
-                                    $domain_key = str_replace('.', '_', $domain->domain_name);
-                                    $is_checked = ($old_domains_checked === null) ? true : in_array($domain->domain_name, $old_domains_checked);
-                                @endphp
-                                
-                                <div class="domain-card {{ $is_checked ? 'checked' : '' }}" id="domain-card-{{ $domain_key }}">
-                                    <div class="domain-header">
-                                        <label for="domain-checkbox-{{ $domain_key }}">
-                                            <input type="checkbox" name="domains[]" id="domain-checkbox-{{ $domain_key }}" 
-                                                   value="{{ $domain->domain_name }}" data-domain-key="{{ $domain_key }}" 
-                                                   {{ $is_checked ? 'checked' : '' }}>
-                                            {{ $domain->domain_name }}
-                                        </label>
-                                    </div>
-                                    <div class="domain-details">
-                                        
-                                        <div class="form-group">
-                                            <label>Tanggal Publish (Domain Ini)</label>
-                                            <input type="datetime-local" name="domain_published_at[{{ $domain_key }}]" 
-                                                   class="form-control input-sm" 
-                                                   value="{{ old("domain_published_at.{$domain_key}", now()->format('Y-m-d\TH:i')) }}">
+                        @if($isMaster)
+                            <div class="domain-card-list">
+                                @php $old_domains_checked = old('domains'); @endphp
+                                @forelse($domains as $index => $domain)
+                                    @php
+                                        $domain_key = str_replace('.', '_', $domain->domain_name);
+                                        $is_checked = ($old_domains_checked === null) ? true : in_array($domain->domain_name, $old_domains_checked);
+                                    @endphp
+                                    
+                                    <div class="domain-card {{ $is_checked ? 'checked' : '' }}" id="domain-card-{{ $domain_key }}">
+                                        <div class="domain-header">
+                                            <label for="domain-checkbox-{{ $domain_key }}">
+                                                <input type="checkbox" name="domains[]" id="domain-checkbox-{{ $domain_key }}" 
+                                                       value="{{ $domain->domain_name }}" data-domain-key="{{ $domain_key }}" 
+                                                       {{ $is_checked ? 'checked' : '' }}>
+                                                {{ $domain->domain_name }}
+                                            </label>
                                         </div>
+                                        <div class="domain-details">
+                                            
+                                            <div class="form-group">
+                                                <label>Tanggal Publish (Domain Ini)</label>
+                                                <input type="datetime-local" name="domain_published_at[{{ $domain_key }}]" 
+                                                       class="form-control input-sm" 
+                                                       value="{{ old("domain_published_at.{$domain_key}", now()->format('Y-m-d\TH:i')) }}">
+                                            </div>
 
-                                        <div class="form-group" style="margin-bottom: 0;">
-                                            <label>Gambar Kustom (Opsional)</label>
-                                            <input type="file" name="image[{{ $domain_key }}]" class="form-control input-sm domain-image-input" data-preview="#preview-{{ $domain_key }}" accept="image/*">
-                                            <img id="preview-{{ $domain_key }}" src="#" alt="Preview" />
+                                            <div class="form-group" style="margin-bottom: 0;">
+                                                <label>Gambar Kustom (Opsional)</label>
+                                                <input type="file" name="image[{{ $domain_key }}]" class="form-control input-sm domain-image-input" data-preview="#preview-{{ $domain_key }}" accept="image/*">
+                                                <img id="preview-{{ $domain_key }}" src="#" alt="Preview" />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            @empty
-                                <p class="text-muted" style="padding: 10px; font-size: 12px;">Tidak ada domain yang dikonfigurasi.</p>
-                            @endforelse
-                        </div>
+                                @empty
+                                    <p class="text-muted" style="padding: 10px; font-size: 12px;">Tidak ada domain yang dikonfigurasi.</p>
+                                @endforelse
+                            </div>
+                        @else
+                            <div class="alert alert-info" style="margin: 10px; font-size: 12px;">
+                                <i class="fa fa-info-circle"></i> Portal ini bukan portal utama. Fitur share domain tidak tersedia.
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -352,8 +364,11 @@ $(document).ready(function() {
                 formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
                 Swal.fire({ title: 'Uploading...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
                 $.ajax({
-                    url: '{{ route('uploadImage') }}', 
-                    method: 'POST', data: formData, processData: false, contentType: false,
+                    url: '{{ route("uploadImage") }}', 
+                    method: 'POST', 
+                    data: formData, 
+                    processData: false, 
+                    contentType: false,
                     success: function(response) {
                         Swal.close();
                         if (response.url) {
@@ -361,17 +376,23 @@ $(document).ready(function() {
                             $('.summernote').summernote('insertNode', img[0]);
                         }
                     },
-                    error: function() { Swal.close(); Swal.fire('Error', 'Gagal mengunggah gambar.', 'error'); }
+                    error: function() { 
+                        Swal.close(); 
+                        Swal.fire('Error', 'Gagal mengunggah gambar.', 'error'); 
+                    }
                 });
             },
             onMediaDelete: function(target) {
                 var fullUrl = target[0].src;
                 var imagePath = fullUrl.replace(window.location.origin + '/', '');
-                $.post('{{ route('deleteImage') }}', { image_path: imagePath, _token: $('meta[name="csrf-token"]').attr('content') });
+                $.post('{{ route("deleteImage") }}', { 
+                    image_path: imagePath, 
+                    _token: $('meta[name="csrf-token"]').attr('content') 
+                });
             }
         }
     });
-
+    
     $('.setting-item .title').click(function() {
         var parent = $(this).closest('.setting-item');
         if(parent.hasClass('open')) {
@@ -391,22 +412,31 @@ $(document).ready(function() {
         const formData = new FormData(this);
         formData.set('content', $('.summernote').summernote('code'));
 
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+
         btn.prop('disabled', true).addClass('btn-loading');
         span.html('<i class="fa fa-spinner fa-spin"></i> Memproses...');
 
         $.ajax({
-            url: '{{ route('posts.store') }}', 
-            method: 'POST', data: formData, processData: false, contentType: false,
-            success: res => {
-                Swal.fire('Sukses!', res.message, 'success').then(() => {
-                    window.location = '{{ route('posts.index') }}';
+            url: '/portal/posts', 
+            method: 'POST', 
+            data: formData, 
+            processData: false, 
+            contentType: false,
+            success: function(res) {
+                console.log('Success response:', res);
+                Swal.fire('Sukses!', res.message, 'success').then(function() {
+                    window.location = '/portal/posts';
                 });
             },
-            error: xhr => {
-                const msg = xhr.responseJSON?.message || 'Terjadi kesalahan.';
+            error: function(xhr) {
+                console.log('Error response:', xhr.responseJSON);
+                var msg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Terjadi kesalahan.';
                 Swal.fire('Gagal', msg, 'error');
             },
-            complete: () => {
+            complete: function() {
                 btn.prop('disabled', false).removeClass('btn-loading');
                 span.html('Publikasikan');
             }

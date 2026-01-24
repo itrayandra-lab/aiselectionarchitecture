@@ -20,7 +20,6 @@ class UploadImageEditor extends Controller
             $randomName = 'image_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
             $path = public_path('assets/app/image-editor');
 
-            // Pastikan folder ada
             if (!File::exists($path)) {
                 File::makeDirectory($path, 0777, true);
             }

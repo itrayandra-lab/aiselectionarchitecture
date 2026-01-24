@@ -27,11 +27,13 @@ class WebIdentity extends Model
         'api_posts',
         'api_key_master',
         'version',
+        'is_master',
     ];
 
     public $timestamps = true;
 
     protected $casts = [
         'status' => 'string',
+        'is_master' => 'boolean',
     ];
 }

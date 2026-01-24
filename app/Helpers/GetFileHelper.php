@@ -3,6 +3,6 @@
 if (!function_exists('getFile')) {
     function getFile($path)
     {
-        return asset($path);;
+        return asset($path);
     }
 }

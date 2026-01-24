@@ -1,5 +1,26 @@
 @extends('layouts.admin.app')
 @section('title', $page)
+
+@push('styles')
+<style>
+.d-none {
+    display: none !important;
+}
+.btn-group .btn {
+    margin-right: 0;
+}
+.btn-group .btn.active.btn-success {
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+    color: white;
+    box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+}
+.btn-group .btn.active {
+    box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+}
+</style>
+@endpush
+
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -103,7 +124,7 @@
                                     @enderror
                                 </div>
 
-                                <div class="form-group">
+                                 <div class="form-group">
                                     <label for="status">Status</label>
                                     <select name="status" class="form-control">
                                         <option value="" selected disabled>-- pilih --</option>
@@ -116,6 +137,32 @@
                                     </select>
                                     @error('status')
                                         <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label>Konfigurasi Portal</label>
+                                    
+                                    <div class="form-check">
+                                        <input type="hidden" name="is_master" value="0">
+                                        
+                                        <input class="form-check-input" 
+                                            type="checkbox" 
+                                            name="is_master" 
+                                            value="1" 
+                                            id="isMasterPortal" 
+                                            {{ old('is_master', $webIdentity->is_master ?? false) ? 'checked' : '' }}>
+                                        
+                                        <label class="form-check-label" for="isMasterPortal">
+                                            Jadikan Portal Main
+                                        </label>
+                                    </div>
+
+                                    <small style="color: rgb(0, 77, 93); font-style: italic;">
+                                        *Centang jika ini adalah portal utama/master.
+                                    </small>
+
+                                    @error('is_master')
+                                        <br><span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
 
@@ -160,7 +207,8 @@
                                     <img id="og_image_preview"
                                         src="{{ $webIdentity && $webIdentity->og_image ? getFile($webIdentity->og_image) : '' }}"
                                         alt="OG Image Preview"
-                                        style="max-width: 200px; margin-top: 10px; {{ !$webIdentity || !$webIdentity->og_image ? 'display:none;' : '' }}">
+                                        class="@if(!$webIdentity || !$webIdentity->og_image) d-none @endif"
+                                        style="max-width: 200px; margin-top: 10px;">
                                     @error('og_image')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -173,7 +221,8 @@
                                     <img id="favicon_preview"
                                         src="{{ $webIdentity && $webIdentity->favicon ? getFile($webIdentity->favicon) : '' }}"
                                         alt="Favicon Preview"
-                                        style="max-width: 50px; margin-top: 10px; {{ !$webIdentity || !$webIdentity->favicon ? 'display:none;' : '' }}">
+                                        class="@if(!$webIdentity || !$webIdentity->favicon) d-none @endif"
+                                        style="max-width: 50px; margin-top: 10px;">
                                     @error('favicon')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -186,7 +235,8 @@
                                     <img id="logo_preview"
                                         src="{{ $webIdentity && $webIdentity->logo ? getFile($webIdentity->logo) : '' }}"
                                         alt="Logo Preview"
-                                        style="max-width: 100px; margin-top: 10px; {{ !$webIdentity || !$webIdentity->logo ? 'display:none;' : '' }}">
+                                        class="@if(!$webIdentity || !$webIdentity->logo) d-none @endif"
+                                        style="max-width: 100px; margin-top: 10px;">
                                     @error('logo')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -200,6 +250,8 @@
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
+
+                               
                                 <hr>
                                 <div class="form-group">
                                     <label for="api_posts">API POSTS</label>
@@ -210,13 +262,25 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="api_key_master">API KEY MASTER PORTAL</label>
-                                    <input type="text" name="api_key_master" class="form-control"
-                                        value="{{ old('api_key_master', $webIdentity->api_key_master ?? '') }}" >
-                                    <small style="color: rgb(0, 77, 93); font-style: italic;">*Api didapatkan dari portal main.</small>
+                                    <div class="input-group">
+                                        <input type="password" name="api_key_master" id="api_key_master" class="form-control"
+                                            value="{{ old('api_key_master', $webIdentity->api_key_master ?? '') }}">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" id="toggleApiKey" title="Show/Hide API Key">
+                                                <i class="fa fa-eye" id="eyeIcon"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-info" id="copyApiKey" title="Copy API Key">
+                                                <i class="fa fa-copy"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                    <small style="color: rgb(0, 77, 93); font-style: italic;">*Key ini berfungsi untuk identitas website</small>
                                     @error('api_key_master')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
+
+                                
                             </div>
                         </div>
 
@@ -253,5 +317,53 @@
         previewImage('favicon', 'favicon_preview');
         previewImage('logo', 'logo_preview');
         previewImage('og_image', 'og_image_preview');
+
+        document.getElementById('toggleApiKey').addEventListener('click', function() {
+            const apiKeyInput = document.getElementById('api_key_master');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (apiKeyInput.type === 'password') {
+                apiKeyInput.type = 'text';
+                eyeIcon.className = 'fa fa-eye-slash';
+            } else {
+                apiKeyInput.type = 'password';
+                eyeIcon.className = 'fa fa-eye';
+            }
+        });
+
+        document.getElementById('copyApiKey').addEventListener('click', function() {
+            const apiKeyInput = document.getElementById('api_key_master');
+            const copyButton = this;
+            const originalIcon = copyButton.innerHTML;
+            
+            if (apiKeyInput.value) {
+                const tempInput = document.createElement('input');
+                tempInput.value = apiKeyInput.value;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                
+                copyButton.innerHTML = '<i class="fa fa-check"></i>';
+                copyButton.className = 'btn btn-success';
+                
+                setTimeout(function() {
+                    copyButton.innerHTML = originalIcon;
+                    copyButton.className = 'btn btn-info';
+                }, 2000);
+                
+                if (typeof toastr !== 'undefined') {
+                    toastr.success('API Key berhasil disalin!');
+                } else {
+                    alert('API Key berhasil disalin!');
+                }
+            } else {
+                if (typeof toastr !== 'undefined') {
+                    toastr.warning('API Key kosong!');
+                } else {
+                    alert('API Key kosong!');
+                }
+            }
+        });
     </script>
 @endpush

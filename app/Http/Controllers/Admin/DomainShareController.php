@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\ShareDomain;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str; 
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -26,16 +25,12 @@ class DomainShareController extends Controller
                 })
                 ->editColumn('created_at', fn($domain) => $domain->created_at->translatedFormat('d M Y H:i'))
                 ->addColumn('action', function ($domain) {
-                    $edit = auth()->user()->can('edit domain-share')
-                        ? '<a href="'.route('domain-share.edit', $domain->id).'" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>'
-                        : '';
+                    $edit = '<a href="'.route('domain-share.edit', $domain->id).'" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>';
 
-                    $delete = auth()->user()->can('delete domain-share')
-                        ? '<form action="'.route('domain-share.destroy', $domain->id).'" method="POST" style="display:inline" onsubmit="return confirm(\'Yakin hapus?\')">
+                    $delete = '<form action="'.route('domain-share.destroy', $domain->id).'" method="POST" style="display:inline" onsubmit="return confirm(\'Yakin hapus?\')">
                                 '.csrf_field().method_field('DELETE').'
                                 <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
-                        </form>'
-                        : '';
+                        </form>';
 
                     return '<div class="text-center">'.$edit.' '.$delete.'</div>';
                 })
@@ -56,13 +51,14 @@ class DomainShareController extends Controller
         $request->validate([
             'domain_name' => 'required|string|max:255',
             'webhook_url' => 'required|url|max:255',
+            'api_key' => 'required|string|max:255|unique:share_domains,api_key',
             'status' => 'required|in:active,inactive',
         ]);
 
         ShareDomain::create([
             'domain_name' => $request->domain_name,
             'webhook_url' => $request->webhook_url,
-            'api_key'     => 'key-' . Str::random(32),
+            'api_key'     => $request->api_key,
             'status'      => $request->status,
         ]);
 
@@ -77,25 +73,21 @@ class DomainShareController extends Controller
 
     public function update(Request $request, $id)
     {
+        $shareDomain = ShareDomain::find($id);
+        
         $request->validate([
             'domain_name' => 'required|string|max:255',
             'webhook_url' => 'required|url|max:255',
+            'api_key' => 'required|string|max:255|unique:share_domains,api_key,' . $shareDomain->id,
             'status' => 'required|in:active,inactive',
         ]);
-
-        $shareDomain = ShareDomain::find($id);
         
-        $dataToUpdate = [
+        $shareDomain->update([
             'domain_name' => $request->domain_name,
             'webhook_url' => $request->webhook_url,
+            'api_key' => $request->api_key,
             'status' => $request->status,
-        ];
-
-        if ($request->has('regenerate_key')) {
-             $dataToUpdate['api_key'] = 'key-' . Str::random(32);
-        }
-
-        $shareDomain->update($dataToUpdate);
+        ]);
 
         return redirect()->route('domain-share.index')->with('success', 'Domain Share berhasil diperbarui');
     }

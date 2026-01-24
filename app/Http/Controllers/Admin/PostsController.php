@@ -12,8 +12,11 @@ use App\Jobs\DistributePostJob;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\ShareDomain;
+use App\Models\WebIdentity;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+
 use Yajra\DataTables\Facades\DataTables;
 
 class PostsController extends Controller
@@ -62,16 +65,12 @@ class PostsController extends Controller
                 ->editColumn('created_at', fn($post) => $post->created_at->translatedFormat('d M Y H:i'))
                 ->editColumn('updated_at', fn($post) => $post->updated_at->translatedFormat('d M Y H:i'))
                 ->addColumn('action', function ($post) {
-                    $edit = auth()->user()->can('edit posts')
-                        ? '<a href="'.route('posts.edit', $post->id).'" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>'
-                        : '';
+                    $edit = '<a href="'.route('posts.edit', $post->id).'" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a>';
 
-                    $delete = auth()->user()->can('delete posts')
-                        ? '<form action="'.route('posts.destroy', $post->id).'" method="POST" style="display:inline" onsubmit="return confirm(\'Yakin hapus?\')">
+                    $delete = '<form action="'.route('posts.destroy', $post->id).'" method="POST" style="display:inline" onsubmit="return confirm(\'Yakin hapus?\')">
                                 '.csrf_field().method_field('DELETE').'
                                 <button type="submit" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></button>
-                        </form>'
-                        : '';
+                        </form>';
 
                     return '<div class="text-center">'.$edit.' '.$delete.'</div>';
                 })
@@ -84,17 +83,33 @@ class PostsController extends Controller
 
     public function create()
     {
-        $domain = ShareDomain::where('status', 'active')->get();
+        $webIdentity = WebIdentity::first();
+        $isMaster = $webIdentity ? $webIdentity->is_master : false;
+        
+        $domain = $isMaster ? ShareDomain::where('status', 'active')->get() : collect();
+        
         $data = [
             'domains' => $domain,
             'categories' => PostCategory::orderBy('id', 'desc')->get(),
             'tags' => PostTags::orderBy('id', 'desc')->get(),
+            'isMaster' => $isMaster,
         ];
         return view('pages.admin.posts.create', $data)->with('page', 'Postingan');
     }
 
     public function store(Request $request)
     {
+        // Debug logging
+        Log::info('Store request received', [
+            'has_featured_image' => $request->hasFile('featured_image'),
+            'featured_image_info' => $request->hasFile('featured_image') ? [
+                'name' => $request->file('featured_image')->getClientOriginalName(),
+                'size' => $request->file('featured_image')->getSize(),
+                'mime' => $request->file('featured_image')->getMimeType()
+            ] : null,
+            'title' => $request->title
+        ]);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'nullable|string',
@@ -111,7 +126,19 @@ class PostsController extends Controller
 
         $mainImagePath = null;
         if ($request->hasFile('featured_image')) {
-            $mainImagePath = FileHelper::saveFile($request->file('featured_image'), 'posts', Str::slug($request->title) . '-' . time());
+            Log::info('Processing featured image upload');
+            try {
+                $mainImagePath = FileHelper::saveFile($request->file('featured_image'), 'posts', Str::slug($request->title) . '-' . time());
+                Log::info('Featured image saved successfully', ['path' => $mainImagePath]);
+            } catch (\Exception $e) {
+                Log::error('Failed to save featured image', ['error' => $e->getMessage()]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menyimpan gambar utama: ' . $e->getMessage(),
+                ], 422);
+            }
+        } else {
+            Log::info('No featured image uploaded');
         }
 
         $post = Posts::create([
@@ -123,8 +150,13 @@ class PostsController extends Controller
             'tags' => $request->tags ? json_encode($request->tags) : null,
             'status' => $request->status,
             'published_at' => $request->published_at,
-            'created_by' => auth()->id(),
+            'created_by' => Auth::check() ? Auth::user()->id : 1,
             'counter' => 0,
+        ]);
+
+        Log::info('Post created successfully', [
+            'post_id' => $post->id,
+            'image_path' => $post->image
         ]);
 
         $domainConfig = ShareDomain::where('status', 'active')
@@ -176,10 +208,14 @@ class PostsController extends Controller
 
     public function edit($id)
     {
+        $webIdentity = WebIdentity::first();
+        $isMaster = $webIdentity ? $webIdentity->is_master : false;
+        
         $data = [
             'categories' => PostCategory::orderBy('id', 'desc')->get(),
             'tags' => PostTags::orderBy('id', 'desc')->get(),
             'post' => Posts::findOrFail($id),
+            'isMaster' => $isMaster,
         ];
         return view('pages.admin.posts.edit', $data)->with('page', 'Postingan');
     }
@@ -211,7 +247,7 @@ class PostsController extends Controller
                 $validatedData['tags'] = json_encode([]);
             }
 
-            $validatedData['updated_by'] = auth()->id();
+            $validatedData['updated_by'] = Auth::check() ? Auth::user()->id : 1;
 
             $post->update($validatedData);
 

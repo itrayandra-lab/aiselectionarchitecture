@@ -36,8 +36,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label>API Key</label>
-                            <input type="text" class="form-control" value="Akan digenerate otomatis oleh sistem" disabled>
+                            <label for="api_key">API Key</label>
+                            <input type="text" name="api_key" id="api_key" class="form-control" value="{{ old('api_key') }}" placeholder="Masukkan API Key" required>
+                            @error('api_key')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div class="form-group">
