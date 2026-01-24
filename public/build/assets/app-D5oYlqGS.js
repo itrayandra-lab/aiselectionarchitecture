@@ -55,7 +55,7 @@ function Ce(t,e){return function(){return t.apply(e,arguments)}}const{toString:G
                 ">
                     <div style="display: flex; align-items: center;">
                         <img src="/assets/img/ai-icon.png" alt="AI" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;">
-                        <span style="font-weight: 600; font-size: 16px;">Airay</span>
+                        <span style="font-weight: 600; font-size: 16px;">Raymaizing</span>
                     </div>
                     <div style="display: flex; gap: 8px;">
                         <button id="minimizeBtn" style="
@@ -106,7 +106,7 @@ function Ce(t,e){return function(){return t.apply(e,arguments)}}const{toString:G
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1E90FF" stroke-width="2">
                                     <path d="M3 10h10a8 8 0 0 1 8 8v2M3 10l6 6M3 10l6-6"/>
                                 </svg>
-                                Membalas Airay
+                                Membalas Raymaizing
                             </div>
                             <div id="replyContent" style="
                                 font-size: 13px;
@@ -156,9 +156,9 @@ function Ce(t,e){return function(){return t.apply(e,arguments)}}const{toString:G
                         ">
                             <div style="display: flex; align-items: center; margin-bottom: 8px;">
                                 <img src="/assets/img/ai-icon.png" alt="AI" style="width: 16px; height: 16px; border-radius: 50%; margin-right: 6px;">
-                                <span style="font-weight: 600; color: #1E90FF;">Airay</span>
+                                <span style="font-weight: 600; color: #1E90FF;">Raymaizing</span>
                             </div>
-                            Halo! Saya Ray AI, asisten virtual yang siap membantu Anda. Silakan ajukan pertanyaan atau pilih teks untuk mendapatkan bantuan.
+                            Halo! Saya Raymaizing, asisten virtual yang siap membantu Anda. Silakan ajukan pertanyaan atau pilih teks untuk mendapatkan bantuan.
                             <div style="margin-top: 8px;">
                                 <small style="
                                     color: #64748b;
@@ -273,10 +273,10 @@ ${s}
 
 `}if(n){const s=this.cleanTextForReply(n);r+=`MEMBALAS PESAN: "${s}"
 
-`}return r+=`PERTANYAAN SAAT INI: ${e}`,r}async callAI(e){const r=`${this.apiEndpoint}${encodeURIComponent(e)}?model=openai&temperature=0.7&system=${encodeURIComponent(`Anda adalah Ray AI, asisten author yang membantu menjawab pertanyaan dalam Bahasa Indonesia. 
+`}return r+=`PERTANYAAN SAAT INI: ${e}`,r}async callAI(e){const r=`${this.apiEndpoint}${encodeURIComponent(e)}?model=openai&temperature=0.7&system=${encodeURIComponent(`Anda adalah Raymaizing, asisten author yang membantu menjawab pertanyaan dalam Bahasa Indonesia. 
 
 ATURAN IDENTITAS:
-- Jika ditanya siapa Anda, jawab: "Saya Ray AI, asisten author yang siap membantu Anda"
+- Jika ditanya siapa Anda, jawab: "Saya Raymaizing, asisten author yang siap membantu Anda"
 - Jangan pernah menyebut diri sebagai AI Assistant atau nama lain
 
 ATURAN KONTEKS PERCAKAPAN:
@@ -316,7 +316,7 @@ GAYA KOMUNIKASI:
                             color: rgba(15, 23, 42, 0.7);
                             font-weight: 500;
                             margin-bottom: 3px;
-                        ">Airay</div>
+                        ">Raymaizing</div>
                         <div style="
                             font-size: 12px;
                             color: rgba(15, 23, 42, 0.8);
@@ -357,7 +357,7 @@ GAYA KOMUNIKASI:
                     ">
                         <div style="display: flex; align-items: center; margin-bottom: 8px;">
                             <img src="/assets/img/ai-icon.png" alt="AI" style="width: 16px; height: 16px; border-radius: 50%; margin-right: 6px;">
-                            <span style="font-weight: 600; color: #1E90FF; font-size: 12px;">Airay</span>
+                            <span style="font-weight: 600; color: #1E90FF; font-size: 12px;">Raymaizing</span>
                         </div>
                         ${this.formatResponse(n)}
                         <div style="margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap;">
@@ -442,7 +442,7 @@ GAYA KOMUNIKASI:
                 ">
                     <div style="display: flex; align-items: center; margin-bottom: 8px;">
                         <img src="/assets/img/ai-icon.png" alt="AI" style="width: 16px; height: 16px; border-radius: 50%; margin-right: 6px;">
-                        <span style="font-weight: 600; color: #1E90FF; font-size: 12px;">Airay</span>
+                        <span style="font-weight: 600; color: #1E90FF; font-size: 12px;">Raymaizing</span>
                     </div>
                     <div style="display: flex; align-items: center; justify-content: space-between;">
                         <div style="display: flex; align-items: center; gap: 8px;">
