@@ -18,6 +18,11 @@ export class DraggableAIChat {
     }
 
     init() {
+        // Only initialize if URL starts with /portal
+        if (!this.shouldShowChat()) {
+            return;
+        }
+        
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.initializeChat());
         } else {
@@ -25,11 +30,21 @@ export class DraggableAIChat {
         }
     }
 
+    shouldShowChat() {
+        const currentPath = window.location.pathname;
+        return currentPath.startsWith('/portal');
+    }
+
     initializeChat() {
         if (typeof $ === 'undefined') {
             console.error('jQuery is required for AI Chat');
             return;
         }
+        
+        // Remove any existing AI chat elements to prevent duplicates
+        $('#aiFloatingBtn').remove();
+        $('#aiChatWidget').remove();
+        $('.copy-button').remove();
         
         this.createFloatingButton();
         this.createChatWidget();
@@ -51,7 +66,7 @@ export class DraggableAIChat {
                 justify-content: center;
                 cursor: pointer;
                 box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-                z-index: 1000;
+                z-index: 9999;
                 transition: all 0.3s ease;
                 border: 2px solid #f0f0f0;
             ">
@@ -82,7 +97,7 @@ export class DraggableAIChat {
                 background: white;
                 border-radius: 16px;
                 box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-                z-index: 999;
+                z-index: 9998;
                 display: none;
                 flex-direction: column;
                 overflow: hidden;
@@ -380,7 +395,7 @@ export class DraggableAIChat {
                 border: 1px solid #e2e8f0;
                 border-radius: 8px;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                z-index: 10000;
+                z-index: 99999;
                 overflow: hidden;
                 min-width: 140px;
             ">
@@ -1169,6 +1184,17 @@ GAYA KOMUNIKASI:
 // Initialize AI Chat when module is loaded
 const initAIChat = () => {
     if (typeof window !== 'undefined') {
+        // Prevent multiple instances
+        if (window.aiChat) {
+            // Clean up existing instance
+            if (window.aiChat.isOpen) {
+                window.aiChat.closeChat();
+            }
+            $('#aiFloatingBtn').remove();
+            $('#aiChatWidget').remove();
+            $('.copy-button').remove();
+        }
+        
         window.aiChat = new DraggableAIChat();
         window.aiChat.init();
     }
@@ -1184,6 +1210,26 @@ const addStyles = () => {
     const styles = document.createElement('style');
     styles.id = 'ai-chat-styles';
     styles.textContent = `
+/* AI Chat Base Styles */
+#aiFloatingBtn, #aiChatWidget, .copy-button {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    box-sizing: border-box;
+}
+
+/* Prevent conflicts with other elements */
+#aiFloatingBtn {
+    pointer-events: auto !important;
+    user-select: none !important;
+}
+
+#aiChatWidget {
+    pointer-events: auto !important;
+}
+
+.copy-button {
+    pointer-events: auto !important;
+}
+
 .typing-dots {
     display: flex;
     align-items: center;
