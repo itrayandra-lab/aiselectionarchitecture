@@ -11,7 +11,6 @@ use App\Models\WebIdentity;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
@@ -154,13 +153,83 @@ class PostController extends Controller
     private function saveImageFromUrl($url, $slug)
     {
         try {
-            $content = Http::timeout(30)->get($url)->body();
-            $ext = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
+            // Initialize cURL
+            $ch = curl_init();
+            
+            // Set cURL options with extended timeout for large files
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_MAXREDIRS => 5,
+                CURLOPT_TIMEOUT => 120, // 2 minutes timeout for large files
+                CURLOPT_CONNECTTIMEOUT => 30, // 30 seconds connection timeout
+                CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_HTTPHEADER => [
+                    'Accept: image/*,*/*;q=0.8',
+                    'Accept-Language: en-US,en;q=0.5',
+                    'Cache-Control: no-cache',
+                ],
+            ]);
+            
+            // Execute cURL request
+            $content = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $error = curl_error($ch);
+            $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+            
+            curl_close($ch);
+            
+            // Check for cURL errors or timeout
+            if ($content === false || !empty($error)) {
+                Log::warning("Failed to download image from URL: {$url}. Error: {$error}");
+                return null; // Return null so imagePath will be empty
+            }
+            
+            // Check HTTP status code
+            if ($httpCode !== 200) {
+                Log::warning("Failed to download image from URL: {$url}. HTTP Code: {$httpCode}");
+                return null;
+            }
+            
+            // Validate content type is an image
+            if (!str_contains($contentType, 'image/')) {
+                Log::warning("URL does not contain valid image: {$url}. Content-Type: {$contentType}");
+                return null;
+            }
+            
+            // Determine file extension from content type or URL
+            $ext = 'jpg'; // default
+            if (str_contains($contentType, 'image/png')) {
+                $ext = 'png';
+            } elseif (str_contains($contentType, 'image/gif')) {
+                $ext = 'gif';
+            } elseif (str_contains($contentType, 'image/webp')) {
+                $ext = 'webp';
+            } elseif (str_contains($contentType, 'image/jpeg') || str_contains($contentType, 'image/jpg')) {
+                $ext = 'jpg';
+            } else {
+                // Fallback to URL extension
+                $urlExt = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION);
+                if (in_array(strtolower($urlExt), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                    $ext = strtolower($urlExt);
+                }
+            }
+            
+            // Generate unique filename
             $name = 'posts/' . $slug . '-' . time() . '.' . $ext;
+            
+            // Save the image
             Storage::disk('public')->put($name, $content);
+            
+            Log::info("Successfully downloaded and saved image: {$name} from URL: {$url}");
             return $name;
+            
         } catch (\Exception $e) {
-            return null;
+            Log::error("Exception occurred while downloading image from URL: {$url}. Error: " . $e->getMessage());
+            return null; // Return null so imagePath will be empty
         }
     }
 }
