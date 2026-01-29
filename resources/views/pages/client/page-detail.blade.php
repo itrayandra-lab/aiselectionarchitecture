@@ -1,53 +1,107 @@
 @extends('layouts.client.app')
 
 @section('content')
-    <div class="relative isolate -mt-8 overflow-hidden bg-white px-2 py-10 lg:py-20 lg:overflow-visible lg:px-0">
-        <div class="absolute inset-0 -z-10 overflow-hidden">
-            <svg class="absolute top-0 left-[max(50%,25rem)] h-[64rem] w-[128rem] -translate-x-1/2 stroke-gray-200 [mask-image:radial-gradient(64rem_64rem_at_top,white,transparent)]"
-                aria-hidden="true">
-                <defs>
-                    <pattern id="e813992c-7d03-4cc4-a2bd-151760b470a0" width="200" height="200" x="50%" y="-1"
-                        patternUnits="userSpaceOnUse">
-                        <path d="M100 200V.5M.5 .5H200" fill="none" />
-                    </pattern>
-                </defs>
-                <svg x="50%" y="-1" class="overflow-visible fill-gray-50">
-                    <path
-                        d="M-100.5 0h201v201h-201Z M699.5 0h201v201h-201Z M499.5 400h201v201h-201Z M-300.5 600h201v201h-201Z"
-                        stroke-width="0" />
-                </svg>
-                <rect width="100%" height="100%" stroke-width="0" fill="url(#e813992c-7d03-4cc4-a2bd-151760b470a0)" />
-            </svg>
-        </div>
-
-        <div class="mx-auto grid grid-cols-1 gap-x-8 gap-y-16 lg:mx-0 lg:grid-cols-1 lg:items-start lg:gap-y-10">
-            <!-- Header Section -->
-            <div class="mb-3 lg:mx-auto lg:w-full lg:px-8">
-                <div class="lg:pr-4">
-                    <div class="border-b-2 border-dashed border-gray-200 pb-3">
-                        <a class="text-base/7 font-semibold text-blue-600">
-                            {{ $page->counter }} viewers
-                        </a>
-                        <h1 class="mt-2 text-xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl">
-                            {{ $page->title }}
-                        </h1>
-                        
-                    </div>
-                </div>
-            </div>
-
-            <!-- Content Section -->
-            <div class="-mt-10 lg:mx-auto lg:w-full lg:px-8 post-content">
-                <div class="lg:pr-4">
-                    <div class="text-base/7 text-gray-700">
-                        {!! $content !!}
-                    </div>
-                </div>
+    <!-- Page Title -->
+    <div class="page-title-area">
+        <div class="container">
+            <div class="page-title-content">
+                <h2>{{ $page->title }}</h2>
+                <ul>
+                    <li><a href="{{ route('beranda') }}">Beranda</a></li>
+                    <li>{{ $page->title }}</li>
+                </ul>
             </div>
         </div>
     </div>
 
+    <!-- Blog Details Area -->
+    <div class="blog-details-area ptb-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-12">
+                    <div class="blog-details-desc">
+                        <div class="article-content">
+                            <div class="entry-meta">
+                                <ul>
+                                    <li><span>Dilihat:</span> {{ $page->counter ?? 0 }} kali</li>
+                                    <li><span>Terakhir diperbarui:</span> {{ \Carbon\Carbon::parse($page->updated_at)->locale('id')->translatedFormat('d M Y') }}</li>
+                                </ul>
+                            </div>
+
+                            <h3>{{ $page->title }}</h3>
+                            
+                            <div class="content">
+                                {!! $content !!}
+                            </div>
+                        </div>
+
+                        <div class="article-footer">
+                            <div class="article-tags">
+                                <span><i class="bx bx-share-alt"></i></span>
+                                <a href="#">Halaman</a>
+                                <a href="#">Informasi</a>
+                            </div>
+
+                            <div class="article-share">
+                                <ul class="social">
+                                    <li><a href="#" class="facebook"><i class="bx bxl-facebook"></i></a></li>
+                                    <li><a href="#" class="twitter"><i class="bx bxl-twitter"></i></a></li>
+                                    <li><a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a></li>
+                                    <li><a href="#" class="instagram"><i class="bx bxl-instagram"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-12">
+                    <aside class="widget-area">
+                        <section class="widget widget_search">
+                            <form class="search-form">
+                                <label>
+                                    <input type="search" class="search-field" placeholder="Cari halaman...">
+                                </label>
+                                <button type="submit">Cari</button>
+                            </form>
+                        </section>
+
+                        @if(isset($galleryPhotos) && $galleryPhotos->count() > 0)
+                        <section class="widget widget_gallery">
+                            <h3 class="widget-title">Galeri Kami</h3>
+                            <ul class="gallery-list">
+                                @foreach($galleryPhotos->take(6) as $photo)
+                                <li>
+                                    <a href="{{ getFile($photo->image) }}" data-lightbox="gallery">
+                                        <img src="{{ getFile($photo->image) }}" alt="Galeri">
+                                    </a>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </section>
+                        @endif
+
+                        <section class="widget widget_categories">
+                            <h3 class="widget-title">Menu Navigasi</h3>
+                            <ul>
+                                <li><a href="{{ route('beranda') }}">Beranda</a></li>
+                                <li><a href="{{ route('posts') }}">Blog</a></li>
+                                <li><a href="#">Layanan</a></li>
+                                <li><a href="#">Tentang Kami</a></li>
+                                <li><a href="#">Kontak</a></li>
+                            </ul>
+                        </section>
+
+                        <section class="widget widget_text">
+                            <h3 class="widget-title">Tentang Kami</h3>
+                            <div class="textwidget">
+                                <p>Laboratorium kosmetik terpercaya yang menyediakan layanan testing, analisis, dan konsultasi untuk produk kecantikan berkualitas tinggi.</p>
+                            </div>
+                        </section>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
-@push('styles')
-@endpush
+

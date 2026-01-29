@@ -1,98 +1,143 @@
 @extends('layouts.client.app')
 
+@section('header')
+    @include('widget.client.header-section', [
+        'segment' => 'Detail Informasi',
+        'data' => $info->title,
+    ])
+@endsection
+
 @section('content')
-    <div class="relative isolate -mt-8 overflow-hidden bg-white px-2 py-10 lg:py-20 lg:overflow-visible lg:px-0">
-        <div class="absolute inset-0 -z-10 overflow-hidden">
-            <svg class="absolute top-0 left-[max(50%,25rem)] h-[64rem] w-[128rem] -translate-x-1/2 stroke-gray-200 [mask-image:radial-gradient(64rem_64rem_at_top,white,transparent)]"
-                aria-hidden="true">
-                <defs>
-                    <pattern id="e813992c-7d03-4cc4-a2bd-151760b470a0" width="200" height="200" x="50%" y="-1"
-                        patternUnits="userSpaceOnUse">
-                        <path d="M100 200V.5M.5 .5H200" fill="none" />
-                    </pattern>
-                </defs>
-                <svg x="50%" y="-1" class="overflow-visible fill-gray-50">
-                    <path
-                        d="M-100.5 0h201v201h-201Z M699.5 0h201v201h-201Z M499.5 400h201v201h-201Z M-300.5 600h201v201h-201Z"
-                        stroke-width="0" />
-                </svg>
-                <rect width="100%" height="100%" stroke-width="0" fill="url(#e813992c-7d03-4cc4-a2bd-151760b470a0)" />
-            </svg>
-        </div>
-
-        <div class="mx-auto grid grid-cols-1 gap-x-8 gap-y-16 lg:mx-0 lg:grid-cols-1 lg:items-start lg:gap-y-10">
-            <!-- Header Section -->
-            <div class="mb-3 lg:mx-auto lg:w-full lg:px-8">
-                <div class="lg:pr-4">
-                    <div class="border-b-2 border-dashed border-gray-200 pb-3">
-                        <a class="text-base/7 font-semibold text-blue-600">
-                            Informasi Tertulis
-                        </a>
-                        <h1 class="mt-2 text-xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl">
-                            {{ $info->title }}
-                        </h1>
-                        <div class="flex items-center justify-between mt-2 text-gray-600 text-sm">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ $info->createdBy->image ? getFile($info->createdBy->image) : asset('dist/images/users/avatar-1.jpg') }}"
-                                    alt="" class="w-8 h-8 rounded-full">
-                                <a class="hover:text-blue-600">{{ $info->createdBy->name }}</a>
+    <!-- contact area -->
+    <section>
+        <div class="content-block">
+            <div class="md:py-20 py-7.5 relative">
+                <div class="container">
+                    <div class="grid grid-cols-12 gap-x-7.5">
+                        <div class="lg:col-span-3 md:col-span-4 col-span-12">
+                            <div class="sticky-top sticky top-29">
+                                <ul class="service-list mb-7.5">    
+                                    @foreach($information->take(6) as $item)
+                                    <li class="mb-[3px] {{ $item->id == $info->id ? 'active' : '' }}">
+                                        <a href="{{ route('info_detail', $item->slug) }}" class="py-3.75 px-5 bg-[#fef5fe] block w-full text-[#4f0035] {{ $item->id == $info->id ? 'border-l-[3px] border-primary' : '' }}">
+                                            {{ Str::limit($item->title, 30) }}
+                                        </a>
+                                    </li>
+                                    @endforeach
+                                </ul>
+                                <div class="p-7.5 bg-[#fef5fe] mb-7.5">
+                                    <h4 class="text-[28px]/[35px] mb-3.75 font-bold text-black font-nunito">Informasi</h4>
+                                    <div class="mb-4">
+                                        <p class="text-sm text-[#707070] mb-1"><strong>Dibuat:</strong></p>
+                                        <p class="text-sm">{{ \Carbon\Carbon::parse($info->created_at)->locale('id')->translatedFormat('d M Y') }}</p>
+                                    </div>
+                                  
+                                    <a href="{{ route('info') }}" class="site-button">Lihat Semua Informasi</a>
+                                </div>
                             </div>
-                            <p>
-                                {{ \Carbon\Carbon::parse($info->created_at)->locale('id')->translatedFormat('l, d M Y') }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Content Section -->
-            <div class="-mt-10 lg:mx-auto lg:w-full lg:px-8 post-content">
-                <div class="lg:pr-4">
-                    <div class="text-base/7 text-gray-700">
-                        {!! $info->description !!}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Additional Information Section -->
-    <div class="col-span-12 lg:p-3">
-        @include('widget.client.header-title', ['title' => 'Informasi Lainnya'])
-        <div class="space-y-2">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 ">
-                @forelse ($information as $item)
-                    <div class="border-b border-dashed border-gray-300 p-2">
-                        <div class="flex space-x-4 lg:text-2xl">
-                            <div class="rounded overflow-hidden">
-                                <img src="{{ asset('assets/img/informasi.png') }}" alt="" class="lg:w-10 w-7"
-                                    srcset="">
+                        </div>		
+                        <div class="lg:col-span-9 md:col-span-8 col-span-12">
+                            <h2 class="mb-2.5 text-4.5xl/[48px] text-black font-nunito font-semibold max-md:mt-5">{{ $info->title }}</h2>
+                            <div class="mb-6">
+                                <div class="flex items-center text-sm text-[#707070] space-x-4">
+                                    <span>{{ \Carbon\Carbon::parse($info->created_at)->locale('id')->translatedFormat('d M Y') }}</span>
+                                </div>
                             </div>
-                            <div class="flex-1 flex flex-col justify-between ">
-                                <div class="rounded">
-                                    <a class="text-gray-700  font-semibold hover:text-gray-600 transition-colors duration-200"
-                                        href="/info/{{ $item->slug }}">
-                                        {{ $item->title }}
+                            
+                            @if($info->image)
+                            <div class="mb-7.5">
+                                <img class="w-full h-auto rounded-[4px]" src="{{ getFile($info->image) }}" alt="{{ $info->title }}">
+                            </div>
+                            @endif
+                            
+                            <div class="content leading-6 mb-6">
+                                {!! $info->description !!}
+                            </div>
+
+                            <!-- Tags/Share Section -->
+                            <div class="flex flex-wrap justify-between items-center mb-7.5 p-5 bg-[#f7f9fb] rounded-lg">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm font-semibold text-[#707070]">Bagikan:</span>
+                                    <a href="#" class="w-8 h-8 bg-[#3B5998] text-white rounded-full flex items-center justify-center hover:bg-opacity-80 duration-300">
+                                        <i class="fab fa-facebook-f text-xs"></i>
+                                    </a>
+                                    <a href="#" class="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center hover:bg-opacity-80 duration-300">
+                                        <i class="fab fa-x-twitter text-xs"></i>
+                                    </a>
+                                    <a href="#" class="w-8 h-8 bg-[#007BB6] text-white rounded-full flex items-center justify-center hover:bg-opacity-80 duration-300">
+                                        <i class="fab fa-linkedin-in text-xs"></i>
+                                    </a>
+                                    <a href="#" class="w-8 h-8 bg-[#25D366] text-white rounded-full flex items-center justify-center hover:bg-opacity-80 duration-300">
+                                        <i class="fab fa-whatsapp text-xs"></i>
                                     </a>
                                 </div>
-                                <div class="flex items-center justify-between gap-x-4 text-xs mt-2">
-                                    <time datetime="{{ \Carbon\Carbon::parse($item->published_at)->toDateTimeString() }}"
-                                        class="text-gray-500">
-                                        {{ \Carbon\Carbon::parse($item->published_at)->locale('id')->translatedFormat('l, d M Y') }}
-                                    </time>
-                                </div>
                             </div>
-                        </div>
+
+                            <!-- Related Services Grid -->
+                            <div class="grid grid-cols-12 mt-10">
+                                <div class="lg:col-span-4 md:col-span-6 col-span-12 max-lg:px-3.75 max-lg:mb-7.5">
+                                    <div class="bg-[#f7f9fb] relative text-center p-7.5 max-lg:shadow-[0_0_10px_0_rgba(0,0,0,.1)]">
+                                        <div class="w-20 mb-5 inline-block align-center">
+                                            <a href="{{ route('info') }}" class="icon-cell text-primary">
+                                                <i class="fas fa-info-circle text-6xl align-middle"></i>
+                                            </a>
+                                        </div>
+                                        <div class="overflow-hidden">
+                                            <h5 class="text-lg text-black mb-2.5 font-bold font-nunito">
+                                                <a href="{{ route('info') }}">Informasi Lainnya</a>
+                                            </h5>
+                                            <p class="mb-6">Lihat koleksi informasi dan pengumuman penting lainnya dari laboratorium kami.</p>
+                                        </div>
+                                    </div>	
+                                </div>
+                                <div class="lg:col-span-4 md:col-span-6 col-span-12 max-lg:px-3.75 max-lg:mb-7.5">
+                                    <div class="relative text-center p-7.5 max-lg:shadow-[0_0_10px_0_rgba(0,0,0,.1)]">
+                                        <div class="w-20 mb-5 inline-block align-center">
+                                            <a href="{{ route('posts') }}" class="icon-cell text-primary">
+                                                <i class="fas fa-newspaper text-6xl align-middle"></i>
+                                            </a>
+                                        </div>
+                                        <div class="overflow-hidden">
+                                            <h5 class="text-lg text-black mb-2.5 font-bold font-nunito">
+                                                <a href="{{ route('posts') }}">Artikel Blog</a>
+                                            </h5>
+                                            <p class="mb-6">Baca artikel terbaru tentang penelitian dan inovasi kosmetik.</p>
+                                        </div>
+                                    </div>	
+                                </div>	
+                                <div class="lg:col-span-4 md:col-span-6 col-span-12 max-lg:px-3.75 max-lg:mb-7.5">
+                                    <div class="bg-[#f7f9fb] relative text-center p-7.5 max-lg:shadow-[0_0_10px_0_rgba(0,0,0,.1)]">
+                                        <div class="w-20 mb-5 inline-block align-center">
+                                            <a href="{{ route('banners') }}" class="icon-cell text-primary">
+                                                <i class="fas fa-bullhorn text-6xl align-middle"></i>
+                                            </a>
+                                        </div>
+                                        <div class="overflow-hidden">
+                                            <h5 class="text-lg text-black mb-2.5 font-bold font-nunito">
+                                                <a href="{{ route('banners') }}">Banner Promosi</a>
+                                            </h5>
+                                            <p class="mb-6">Lihat banner promosi dan penawaran khusus dari layanan kami.</p>
+                                        </div>
+                                    </div>	
+                                </div>		
+                            </div>	
+                        </div>		
                     </div>
-                @empty
-                    <div class="col-span-2">
-                        @include('widget.client.no-data-search')
-                    </div>
-                @endforelse
+                </div>
             </div>
         </div>
-    </div>
+    </section>
+    <!-- contact area END -->
+    
 @endsection
 
 @push('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
 @endpush
+
+@push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+@endpush
+
+

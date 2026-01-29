@@ -1,0 +1,15 @@
+
+.accordionicon:after {
+	@apply content-['\e61a'] text-base font-['themify'] text-[#3d474a] float-right absolute right-5 top-0 tracking-[2px] translate-y-2/4;
+}
+@media (max-width: 575px) {
+	.accordionicon:after {
+		@apply !right-[-11px];
+	}
+}
+.accordionicon.active:after {
+	@apply content-['\e622'] text-base font-['themify'] text-[#3d474a] float-right absolute right-5 top-0 tracking-[2px] translate-y-2/4 text-primary;
+}
+.dropdown-item.active:after {
+	@apply content-['\e622'] text-primary;
+}

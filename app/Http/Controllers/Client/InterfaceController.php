@@ -8,11 +8,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Controller;
 use App\Models\Album;
+use App\Models\AlbumPhoto;
 use App\Models\Information;
 use App\Models\Page;
 use App\Models\PostTags;
 use App\Models\User;
 use App\Models\Video;
+use Illuminate\Support\Facades\DB;
 
 class InterfaceController extends Controller
 {
@@ -27,18 +29,8 @@ class InterfaceController extends Controller
     public function beranda()
     {
         $data = [
-            'slide'        => $this->datas->latestPublished(3), 
-            'latestNews'   => $this->datas->latestNews(4),
-            'mostPopular'  => $this->datas->mostPopular(6),
-            'banner_1'     => $this->datas->information('banner', 1),
-            'banner_2'     => $this->datas->information('banner', 1, true),
-            'information'  => $this->datas->information('text', 6),
-            'recommended'  => $this->datas->recommended(6),
-            'videos'       => $this->datas->videos(10),
-            'photos'       => $this->datas->photo(8),
-            'tags'         => $this->datas->tags(9),
-            'categories'   => $this->datas->category(8),
-            'ads'         => $this->datas->ads(1, ['image','gif']),
+            'heros'     => $this->datas->information('banner', 3, true),
+            'latestPost'  => $this->datas->latestPublished(6),
         ];
 
         return view('pages.client.beranda', $data);
@@ -60,11 +52,35 @@ class InterfaceController extends Controller
             });
         }
     
-        $posts = $posts->paginate(20);
+        $posts = $posts->paginate(10);
+
+        $recentPosts = Posts::where('status', 'active')
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', Carbon::now())
+            ->with(['category'])
+            ->latest('published_at')
+            ->take(3)
+            ->get();
+
+        $categories = PostCategory::whereHas('posts', function($query) {
+                $query->where('status', 'active')
+                      ->whereNotNull('published_at')
+                      ->where('published_at', '<=', Carbon::now());
+            })
+            ->withCount(['posts' => function($query) {
+                $query->where('status', 'active')
+                      ->whereNotNull('published_at')
+                      ->where('published_at', '<=', Carbon::now());
+            }])
+            ->orderBy('posts_count', 'desc')
+            ->take(5)
+            ->get();
     
         $data = [
             'posts' => $posts,
             'searchQuery' => $searchQuery,
+            'recentPosts' => $recentPosts,
+            'categories' => $categories,
             'mostPopular' => $this->datas->mostPopular(6),
         ];
     
@@ -144,7 +160,7 @@ class InterfaceController extends Controller
     #posts
     public function posts(Request $request) {
         $type = $request->query('type', 'terbaru');
-        $searchQuery = $request->input('qr'); 
+        $searchQuery = $request->input('search') ?? $request->input('qr'); 
         $posts = Posts::where('status', 'active')
                 ->whereNotNull('published_at')
                 ->where('published_at', '<=', Carbon::now())
@@ -169,11 +185,41 @@ class InterfaceController extends Controller
         }
     
         $posts = $posts->paginate(10);
+
+        $recentPosts = Posts::where('status', 'active')
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', Carbon::now())
+            ->with(['category'])
+            ->latest('published_at')
+            ->take(3)
+            ->get();
+
+        $categories = PostCategory::whereHas('posts', function($query) {
+                $query->where('status', 'active')
+                      ->whereNotNull('published_at')
+                      ->where('published_at', '<=', Carbon::now());
+            })
+            ->withCount(['posts' => function($query) {
+                $query->where('status', 'active')
+                      ->whereNotNull('published_at')
+                      ->where('published_at', '<=', Carbon::now());
+            }])
+            ->orderBy('posts_count', 'desc')
+            ->take(5)
+            ->get();
+
+        $galleryPhotos = DB::table('albums_photo')
+            ->latest('created_at')
+            ->take(6)
+            ->get();
     
         $data = [
             'type' => $type,
             'posts' => $posts,
             'searchQuery' => $searchQuery,
+            'recentPosts' => $recentPosts,
+            'categories' => $categories,
+            'galleryPhotos' => $galleryPhotos,
             'mostPopular' => $this->datas->mostPopular(6),
             'banner_1' => $this->datas->information('banner', 1, true),
         ];
@@ -198,13 +244,11 @@ class InterfaceController extends Controller
         ]);
 
         $modifiedContent = $this->applyTailwindClasses($post->content);
-        
+
         $data = [
             'mostPopular'  => $this->datas->mostPopular(6),
             'recommended'  => $this->datas->recommended(6),
-            'banner_1'     => $this->datas->information('banner', 1),
             'relate'      => $this->datas->relate(6, $post),
-            'ads'         => $this->datas->ads(1, ['image','youtube']),
             'post'         => $post,
             'content'         => $modifiedContent,
         ];
@@ -223,7 +267,7 @@ class InterfaceController extends Controller
         $query = Posts::where('status', 'active')
             ->whereNotNull('published_at')
             ->where('published_at', '<=', Carbon::now())
-            ->whereJsonContains('tags', (string) $tag->id)
+            ->whereJsonContains('tags', $tag->id)
             ->latest('published_at');
 
         $searchQuery = request()->input('qr');
@@ -247,7 +291,7 @@ class InterfaceController extends Controller
     }
 
     #videos
-    public function videos(Request $request) {
+    public function videos() {
 
         $videos = Video::latest('created_at');
 
@@ -260,10 +304,20 @@ class InterfaceController extends Controller
 
         $videos = $videos->paginate(10);
 
+        $recentVideos = Video::latest('created_at')
+            ->take(3)
+            ->get();
+
+        $popularVideos = Video::orderBy('id', 'desc')
+            ->take(5)
+            ->get();
+
         $data = [
-            'banner_1'     => $this->datas->information('banner', 1, true),
-            'videos'    => $videos,
-            'searchQuery'    => $searchQuery,
+            'banner_1' => $this->datas->information('banner', 1, true),
+            'videos' => $videos,
+            'searchQuery' => $searchQuery,
+            'recentVideos' => $recentVideos,
+            'popularVideos' => $popularVideos,
         ];
         return view('pages.client.videos', $data); 
     }
@@ -278,7 +332,8 @@ class InterfaceController extends Controller
         $data = [
             'video'     => $video,
             'content'     => $modifiedContent,
-            'videos'    => $this->datas->videos(5)
+            'videos'    => $this->datas->videos(5),
+            'galleryPhotos' => AlbumPhoto::latest()->take(6)->get(),
         ];
         return view('pages.client.video-detail', $data); 
     }
@@ -295,9 +350,21 @@ class InterfaceController extends Controller
 
         $banners = $banners->paginate(10);
 
+        $recentBanners = Information::where('type', 'banner')
+            ->latest('created_at')
+            ->take(3)
+            ->get();
+
+        $popularBanners = Information::where('type', 'banner')
+            ->orderBy('id', 'desc')
+            ->take(5)
+            ->get();
+
         $data = [
-            'banners'    => $banners,
-            'searchQuery'    => $searchQuery,
+            'banners' => $banners,
+            'searchQuery' => $searchQuery,
+            'recentBanners' => $recentBanners,
+            'popularBanners' => $popularBanners,
         ];
         return view('pages.client.banners', $data); 
     }
@@ -313,6 +380,7 @@ class InterfaceController extends Controller
             'banner'    => $banner,
             'content'    => $modifiedContent,
             'banners'    => $this->datas->information('banner', 6),
+            'galleryPhotos' => AlbumPhoto::latest()->take(6)->get(),
         ];
         return view('pages.client.banner-detail', $data); 
     }
@@ -327,11 +395,24 @@ class InterfaceController extends Controller
             });
         }
 
-        $albums = $albums->paginate(5);
+        $albums = $albums->paginate(10);
+
+        $recentAlbums = Album::with('photos')
+            ->latest('created_at')
+            ->take(3)
+            ->get();
+
+        $popularAlbums = Album::with('photos')
+            ->withCount('photos')
+            ->orderBy('photos_count', 'desc')
+            ->take(5)
+            ->get();
 
         $data = [
-            'albums'    => $albums,
-            'searchQuery'    => $searchQuery,
+            'albums' => $albums,
+            'searchQuery' => $searchQuery,
+            'recentAlbums' => $recentAlbums,
+            'popularAlbums' => $popularAlbums,
         ];
         return view('pages.client.albums', $data); 
     }
@@ -364,8 +445,25 @@ class InterfaceController extends Controller
         $data = [
             'info'    => $info,
             'information'    => $this->datas->information('text', 6),
+            'galleryPhotos' => AlbumPhoto::latest()->take(6)->get(),
         ];
         return view('pages.client.info-detail', $data); 
+    }
+
+    #about us
+    public function about() {
+        $data = [
+            'galleryPhotos' => AlbumPhoto::latest()->take(6)->get(),
+        ];
+        return view('pages.client.about-us', $data);
+    }
+
+    #contact
+    public function contact() {
+        $data = [
+            'galleryPhotos' => AlbumPhoto::latest()->take(6)->get(),
+        ];
+        return view('pages.client.contact', $data);
     }
 
     #page detail
@@ -380,7 +478,8 @@ class InterfaceController extends Controller
         $modifiedContent = $this->applyTailwindClasses($page->content);
         $data = [
             'page' => $page,
-            'content' => $modifiedContent, 
+            'content' => $modifiedContent,
+            'galleryPhotos' => AlbumPhoto::latest()->take(6)->get(),
         ];
         return view('pages.client.page-detail', $data);
     }

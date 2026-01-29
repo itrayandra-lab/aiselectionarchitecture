@@ -1,486 +1,310 @@
 @extends('layouts.client.app')
 @push('styles')
-    <style>
-        .carousel-slide {
-            transition: opacity 0.7s ease-in-out;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
 
-        .carousel-slide.active {
-            display: block;
-            opacity: 1;
-            position: relative;
-        }
-
-        .carousel-slide.hidden {
-            display: none;
-            opacity: 0;
-        }
-
-        #controls-carousel {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .slide-indicator {
-            transition: all 0.3s ease;
-        }
-
-        .slide-indicator:hover {
-            transform: scale(1.2);
-        }
-    </style>
 @endpush
 
 @section('content')
-
-    <div class="hidden lg:grid lg:grid-cols-2 gap-4">
-        @foreach ($slide as $item)
-            <div class="relative rounded-2xl overflow-hidden shadow-lg bg-gray-900 text-white min-h-[500px] h-full group">
-                <img src="{{ getFile($item->image) }}" alt="{{ $item->title }}"
-                    class="absolute inset-0 w-full h-full object-cover opacity-50 transition-transform duration-300 group-hover:scale-105">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-                <div class="absolute bottom-0 left-0 p-6">
-                    <div class="flex items-center text-sm mb-3">
-                        <a href="{{ $item?->category?->slug }}"
-                            class="text-blue-400 font-semibold mr-2 hover:underline">{{ $item->category->name }}</a>
-                        <span
-                            class="text-gray-400">{{ \Carbon\Carbon::parse($item->published_at)->locale('id')->translatedFormat('l, d M Y') }}</span>
-                    </div>
-                    <a href="/{{ $item->category->slug }}/{{ $item->slug }}">
-                        <h2 class="text-2xl lg:text-4xl font-bold mb-4 leading-tight hover:text-blue-400 transition-colors">
-                            {{ $item->title }}</h2>
-                    </a>
-                    <div class="flex items-center">
-                        <a href="/author/{{ $item->createdBy->slug }}"
-                            class="w-10 h-10 rounded-full bg-gray-600 mr-3 overflow-hidden">
-                            <img src="{{ $item->createdBy->image ? getFile($item->createdBy->image) : asset('dist/images/users/avatar-1.jpg') }}"
-                                alt="Author" class="w-full h-full object-cover">
-                        </a>
-                        <span class="text-lg font-semibold">{{ $item->createdBy->name }}</span>
-                    </div>
-                </div>
-            </div>
-        @endforeach
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 content-between h-full">
-            @forelse ($latestNews as $item)
-                <div class="relative rounded-2xl overflow-hidden shadow-lg bg-gray-900 text-white h-64 group">
-                    <img src="{{ getFile($item->image) }}" alt="{{ $item->title }}"
-                        class="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-300 group-hover:scale-105">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 p-4">
-                        <div class="flex items-center text-xs mb-2">
-                            <a href="{{ $item?->category?->slug }}"
-                                class="text-blue-400 font-semibold mr-2 hover:underline">{{ $item->category->name }}</a>
-                            <span
-                                class="text-gray-400">{{ \Carbon\Carbon::parse($item->published_at)->locale('id')->translatedFormat('l, d M Y') }}</span>
-                        </div>
-                        <a href="/{{ $item->category->slug }}/{{ $item->slug }}">
-                            <h3 class="text-lg font-bold leading-snug hover:text-blue-400 transition-colors line-clamp-2">
-                                {{ $item->title }}</h3>
-                        </a>
-                    </div>
-                </div>
-            @empty
-                @for ($i = 0; $i < 4; $i++)
-                    @include('widget.client.load-data-1')
-                @endfor
-            @endforelse
-        </div>
-    </div>
-
-    <div class="grid grid-cols-12 gap-2 lg:hidden">
-        <div class="col-span-12 md:col-span-8">
-            <div class="space-y-2">
-                <div id="controls-carousel" class="relative w-full" data-carousel="static">
-                    <!-- Slides -->
-                    @foreach ($slide as $item)
-                        <section class="carousel-slide duration-700 ease-in-out {{ $loop->first ? 'active' : 'hidden' }}" data-carousel-news>
-                            <div class="relative h-64 overflow-hidden rounded-lg md:h-96">
-                                <img src="{{ getFile($item->image) }}" class="block w-full h-full object-cover"
-                                    alt="slide-image">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                                <div class="absolute bottom-0 left-0 right-0 p-4">
-                                    <div class="flex flex-col items-start justify-between">
-                                        <div class="flex items-center gap-x-4 text-xs mb-2">
-                                            <time
-                                                datetime="{{ \Carbon\Carbon::parse($item->published_at)->toDateTimeString() }}"
-                                                class="text-gray-300">
-                                                {{ \Carbon\Carbon::parse($item->published_at)->locale('id')->translatedFormat('l, d M Y') }}
-                                            </time>
-                                            <a href="{{ $item->category->slug }}"
-                                                class="relative z-10 inline-flex items-center px-2 py-0.5 text-xs font-medium text-gray-700 bg-white/90 backdrop-blur rounded-full">
-                                                <span class="mr-1 text-blue-600">#</span>
-                                                {{ $item->category->name }}
-                                            </a>
-                                        </div>
-                                        <h3 class="text-lg font-bold text-white leading-tight line-clamp-2">
-                                            <a href="/{{ $item->category->slug }}/{{ $item->slug }}">
-                                                {{ $item->title }}
-                                            </a>
-                                        </h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                    @endforeach
-
-                    <!-- Navigation buttons -->
-                    @if($slide->count() > 1)
-                        <!-- Slide indicators only -->
-                        <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3">
-                            @foreach ($slide as $item)
-                                <button type="button" class="w-3 h-3 rounded-full {{ $loop->first ? 'bg-white' : 'bg-white/50' }} slide-indicator" aria-current="{{ $loop->first ? 'true' : 'false' }}" aria-label="Slide {{ $loop->iteration }}" data-carousel-slide-to="{{ $loop->index }}"></button>
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        <div class="col-span-12 md:col-span-4 mt-2">
-            <div class="space-y-2 overflow-y-auto custom-scrollbar-y max-h-[600px]">
-                @forelse ($latestNews as $item)
-                    <div class="mx-auto w-full bg-white border border-gray-100 rounded-lg p-2 shadow-sm">
-                        <div class="flex space-x-3">
-                            <div class="w-24 h-24 flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
-                                <img src="{{ getFile($item->image) }}" alt="{{ $item->title }}"
-                                    class="w-full h-full object-cover">
-                            </div>
-                            <div class="flex-1 flex flex-col justify-between py-1">
-                                <a class="text-sm font-semibold text-gray-900 hover:text-blue-600 transition-colors line-clamp-2 leading-snug"
-                                    href="/{{ $item->category->slug }}/{{ $item->slug }}">
-                                    {{ $item->title }}
-                                </a>
-                                <div class="flex items-center justify-between text-[10px] text-gray-500 mt-2">
-                                    <time datetime="{{ \Carbon\Carbon::parse($item->published_at)->toDateTimeString() }}">
-                                        {{ \Carbon\Carbon::parse($item->published_at)->locale('id')->translatedFormat('d M Y') }}
-                                    </time>
-                                    <a href="{{ $item->category->slug }}"
-                                        class="text-blue-500 font-medium hover:underline">
-                                        {{ $item->category->name }}
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    @for ($i = 0; $i < 5; $i++)
-                        @include('widget.client.load-data-1')
-                    @endfor
-                @endforelse
-            </div>
-        </div>
-    </div>
-
-
-    <div class="grid grid-cols-12 gap-2 mt-4">
-
-        <!-- Terpopuler -->
-        @include('widget.client.most-popular', ['data' => $mostPopular])
-
-        <!-- Banner -->
-        @include('widget.client.banner', ['data' => $banner_1])
-
-        <!-- Rekomendasi untuk Anda -->
-        <div class="col-span-12 lg:p-3">
-            @include('widget.client.header-title', ['title' => 'Rekomendasi untuk Anda', 'link' => ''])
-            <div class="space-y-2">
-                <div class="grid grid-cols-12 lg:gap-2">
-                    @foreach ($recommended as $item)
-                        <div class="col-span-12 md:col-span-6">
-                            <div class="mx-auto w-full rounded-lg shadow-sm lg:p-4 p-2 mb-2">
-                                <div class="flex space-x-4">
-                                    <div class="size-30 rounded-lg overflow-hidden">
-                                        <img src="{{ getFile($item->image) }}" alt="{{ $item->title }}"
-                                            class="w-full h-full object-cover">
-                                    </div>
-                                    <div class="flex-1 space-y-6">
-                                        <span class="text-blue-600 font-semibold lg:hidden">
-                                            <a href="{{ $item->category->slug }}"
-                                                class="relative z-10 inline-flex items-center p-1 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors duration-200 group">
-                                                <span
-                                                    class="flex items-center justify-center w-3 h-3 mr-2 text-white bg-blue-600 rounded-full">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                        class="lucide lucide-hash">
-                                                        <line x1="4" x2="20" y1="9"
-                                                            y2="9" />
-                                                        <line x1="4" x2="20" y1="15"
-                                                            y2="15" />
-                                                        <line x1="10" x2="8" y1="3"
-                                                            y2="21" />
-                                                        <line x1="16" x2="14" y1="3"
-                                                            y2="21" />
-                                                    </svg>
-                                                </span>
-                                                <span class="mr-2">{{ $item->category->name }}</span>
-                                                <svg class="w-3 h-3 ml-auto text-gray-400 group-hover:text-gray-600"
-                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M9 5l7 7-7 7" />
-                                                </svg>
-                                            </a>
-                                        </span>
-                                        <br class="lg:hidden">
-                                        <a class="text-gray-700 font-semibold lg:text-lg text-xs hover:text-gray-600 transition-colors duration-200"
-                                            href="/{{ $item->category->slug }}/{{ $item->slug }}">
-                                            {{ $item->title }}
-                                        </a>
-                                        <div class="lg:space-y-5">
-                                            <div class="grid grid-cols-3 gap-4">
-                                                <div class="col-span-2 h-2"></div>
-                                                <div class="col-span-1 h-2"></div>
-                                            </div>
-                                            <div class="flex items-center justify-between">
-                                                <div class="flex items-center space-x-2">
-                                                    <img src="{{ $item->createdBy->image ? getFile($item->createdBy->image) : asset('dist/images/users/avatar-1.jpg') }}"
-                                                        alt="Author" class="w-5 h-5 lg:w-10 lg:h-10 rounded-full">
-                                                    <div>
-                                                        <a href="/author/{{ $item->createdBy->slug }}"
-                                                            class="text-gray-700 hover:text-blue-600 text-xs font-semibold">
-                                                            {{ $item->createdBy->name }}
-                                                        </a>
-                                                        <p class="text-gray-500 text-xs lg:text-sm">
-                                                            <time
-                                                                datetime="{{ \Carbon\Carbon::parse($item->published_at)->toDateTimeString() }}"
-                                                                class="text-gray-500">
-                                                                {{ \Carbon\Carbon::parse($item->published_at)->locale('id')->translatedFormat('l, d M Y') }}
-                                                            </time>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <span class="text-blue-600 font-semibold hidden lg:block">
-                                                    <a href="{{ $item->category->slug }}"
-                                                        class="relative z-10 inline-flex items-center p-1 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors duration-200 group">
-                                                        <span
-                                                            class="flex items-center justify-center w-3 h-3 mr-2 text-white bg-blue-600 rounded-full">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="10"
-                                                                height="10" viewBox="0 0 24 24" fill="none"
-                                                                stroke="currentColor" stroke-width="2"
-                                                                stroke-linecap="round" stroke-linejoin="round"
-                                                                class="lucide lucide-hash">
-                                                                <line x1="4" x2="20" y1="9"
-                                                                    y2="9" />
-                                                                <line x1="4" x2="20" y1="15"
-                                                                    y2="15" />
-                                                                <line x1="10" x2="8" y1="3"
-                                                                    y2="21" />
-                                                                <line x1="16" x2="14" y1="3"
-                                                                    y2="21" />
-                                                            </svg>
-                                                        </span>
-                                                        <span class="mr-2">{{ $item->category->name }}</span>
-                                                        <svg class="w-3 h-3 ml-auto text-gray-400 group-hover:text-gray-600"
-                                                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                            xmlns="http://www.w3.org/2000/svg">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2" d="M9 5l7 7-7 7" />
-                                                        </svg>
-                                                    </a>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-
-        <!-- Video reels -->
-        @include('widget.client.video', ['data' => $videos])
-
-        <!-- Photos Column -->
-        @include('widget.client.photos', ['data' => $photos])
-
-        @if ($information->count() > 0)
-            <div class="col-span-12 md:col-span-4 p-4 bg-slate-100 rounded">
-                @include('widget.client.header-title', ['title' => 'Informasi Penting Anda', 'link' => 'info'])
-                <div class="space-y-2 overflow-y-auto custom-scrollbar-y max-h-[800px]">
-                    @foreach ($information as $item)
-                        <div class="mx-auto w-full border-b border-dashed border-gray-300 p-2 mb-2">
-                            <div class="flex space-x-4">
-                                <div class="rounded overflow-hidden">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-info text-blue-400">
-                                        <circle cx="12" cy="12" r="10" />
-                                        <path d="M12 16v-4" />
-                                        <path d="M12 8h.01" />
-                                    </svg>
-                                </div>
-                                <div class="flex-1 flex flex-col justify-between">
-                                    <div class="rounded">
-                                        <a class="text-gray-700 font-semibold hover:text-gray-600 transition-colors duration-200"
-                                            href="/info/{{ $item->slug }}">
-                                            {{ $item->title }}
-                                        </a>
-                                    </div>
-                                    <div class="flex items-center justify-between gap-x-4 text-xs mt-2">
-                                        <time datetime="{{ \Carbon\Carbon::parse($item->published_at)->toDateTimeString() }}"
-                                            class="text-gray-500">
-                                            {{ \Carbon\Carbon::parse($item->published_at)->locale('id')->translatedFormat('l, d M Y') }}
-                                        </time>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @else
-            <div class="col-span-12 md:col-span-4 p-4 bg-slate-100 rounded">
-                <div
-                    class="w-full h-full min-h-[300px] flex flex-col items-center justify-center bg-gray-50 border border-gray-200 rounded overflow-hidden">
-
-                    @php
-                        $ad = $ads->first();
-                    @endphp
-
-                    @if($ad)
-                        <a href="{{ $ad->redirect_url ?? '#' }}" target="_blank" class="block w-full h-full">
-                            @if(in_array($ad->type, ['image', 'gif']))
-                                <img src="{{ asset($ad->file_path) }}"
-                                    class="w-full h-full object-cover rounded cursor-pointer" 
-                                    alt="{{ $ad->title }}">
+<section>
+    <div class="page-content bg-white">
+        <div class="main-banner relative">
+            <div class="swiper home-slider1 benner-swiper-button !h-[50vh] lg:!h-[86vh]">
+                <div class="swiper-wrapper">
+                    @foreach($heros as $item)
+                    <div class="swiper-slide bg-no-repeat bg-cover bg-[50%] relative" 
+                         style="background-image: url('{{ getFile($item->image) }}');">
+                        
+                        <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0) 100%); pointer-events: none;"></div>
+                        
+                        <div class="px-3.75 relative lg:w-[1200px] md:w-[720px] sm:w-[540px] w-full !h-60vh mx-auto max-md:text-center top-1/2 -translate-y-1/2" style="z-index: 10;">
                             
-                            @elseif($ad->type == 'video')
-                                <video class="w-full h-full object-cover rounded" autoplay muted loop playsinline> 
-                                    <source src="{{ asset($ad->file_path) }}" type="video/mp4">
-                                </video>
+                            <div style="max-width: 850px; text-align: left;">
+                                
+                                <h1 class="md:text-[65px] sm:text-[50px] text-3xl leading-10 md:leading-[80px] sm:leading-[60px] font-extrabold font-nunito capitalize" 
+                                    style="color: white !important; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); margin-bottom: 10px;">
+                                    {!! $item->title !!}
+                                </h1>
+                                
+                                <div class="sm:text-lg max-sm:px-4.75 text-sm md:leading-[28px] leading-[20px] font-medium font-nunito py-5" 
+                                     style="color: rgba(255, 255, 255, 0.95) !important; text-shadow: 1px 1px 5px rgba(0,0,0,0.5);">
+                                    {!! $item->description !!}
+                                </div>
 
-                            @elseif($ad->type == 'youtube')
-                                <div id="yt-player" data-url="{{ $ad->youtube_url }}" class="w-full h-full"></div>
-                            @endif
-                        </a>
-                        <script>
-                            document.addEventListener("DOMContentLoaded", function () {
-                                const container = document.getElementById("yt-player");
-                                if (!container) return;
+                                <div class="buttons">
+                                    <a class="site-button sm:px-7.5 px-5 py-2.5 sm:py-3.75 mr-[18px] inline-block rotate-[3deg] leading-[22px]" href="https://api.whatsapp.com/send/?phone=6285220710909&text=Halo%21">Hubungi Kami</a>
+                                    <a class="site-button-secondry sm:px-7.5 px-5 py-2.5 sm:py-3.75 inline-block rotate-[3deg] leading-[22px]" href="/about-us">About us</a>
+                                </div>
+                            </div>
 
-                                const url = container.dataset.url;
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                <div class="swiper-button-next !text-white"></div>
+                <div class="swiper-button-prev !text-white"></div>
+            </div>
+        </div>
+    </div>
+</section>
 
-                                function extractYoutubeId(link) {
-                                    const regex = /(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]+)/;
-                                    const match = link.match(regex);
-                                    return match ? match[1] : link;
-                                }
+<!-- Our Services start -->
+<section>
+    <div class="md:py-20 py-7.5 relative">
+        <div class="container relative z-[1]">
+            <div class="text-center mb-14">
+                <h2 class="lg:text-4.5xl text-3xl font-extrabold mb-2.5 text-primary font-nunito">layanan labcos</h2>
+                <div class="overflow-hidden">
+                    <div class="relative inline-block before:content-[''] before:bg-[url('../images/line.png')] before:absolute before:top-1/2 before:w-20 before:h-3.75 before:-translate-y-1/2 before:bg-[length:auto_100%] before:bg-no-repeat before:bg-center before:left-auto before:right-13.5
+                        after:content-[''] after:bg-[url('../images/line1.png')] after:absolute after:top-1/2 after:w-20 after:h-3.75 after:-translate-y-1/2 after:bg-[length:auto_100%] after:bg-no-repeat after:bg-center after:right-auto after:left-13.5 after:right-13.5">
+                        <i class="flaticon-spa text-primary text-4.5xl"></i>
+                    </div>
+                </div>
+                <p class="mx-auto max-w-[700px] pt-2.5 text-[#494949] mb-5">Solusi lengkap untuk pengembangan dan pengujian produk kosmetik dengan standar internasional dan teknologi terdepan.</p>
+            </div>
+            <div class="grid grid-cols-12">
+                <!-- Cosmetics Testing & Analysis Services -->
+                <div class="lg:col-span-6 md:col-span-6 col-span-12 max-lg:px-3.75 max-lg:mb-7.5">
+                    <div class="md:border-r md:border-b border-[#80808036] relative hover:z-10 text-center p-7.5 hover:bg-white hover:shadow-[0_0_10px_0_rgba(0,0,0,.1)] hover:scale-105 duration-500 hover:border-white max-lg:border-none max-lg:shadow-[0_0_10px_0_rgba(0,0,0,.1)]">
+                        <div class="w-20 mb-5 inline-block align-center">
+                            <a href="{{ url('/') }}" class="icon-cell text-primary"><i class="flaticon-makeup text-6xl align-middle"></i></a>
+                        </div>
+                        <div class="overflow-hidden">
+                            <h3 class="text-2xl text-black mb-2.5 font-bold font-nunito"><a href="{{ url('/') }}">Cosmetics Testing & Analysis Services</a></h3>
+                            <p class="mb-6">Pengujian komprehensif untuk memastikan keamanan, kualitas, dan kepatuhan produk kosmetik sesuai standar nasional dan internasional.</p>
+                        </div>
+                    </div>	
+                </div>
+                
+                <!-- Research & Development Services -->
+                <div class="lg:col-span-6 md:col-span-6 col-span-12 max-lg:px-3.75 max-lg:mb-7.5">
+                    <div class="md:border-b border-[#80808036] relative hover:z-10 text-center p-7.5 hover:bg-white hover:shadow-[0_0_10px_0_rgba(0,0,0,.1)] hover:scale-105 duration-500 hover:border-white max-lg:border-none max-lg:shadow-[0_0_10px_0_rgba(0,0,0,.1)]">
+                        <div class="w-20 mb-5 inline-block align-center">
+                            <a href="{{ url('/') }}" class="icon-cell text-primary"><i class="flaticon-woman-1 text-6xl align-middle"></i></a>
+                        </div>
+                        <div class="overflow-hidden">
+                            <h3 class="text-2xl text-black mb-2.5 font-bold font-nunito"><a href="{{ url('/') }}">Research & Development Services</a></h3>
+                            <p class="mb-6">Inovasi produk berbasis riset untuk menciptakan formula kosmetik yang efektif, aman, dan sesuai kebutuhan pasar.</p>
+                        </div>
+                    </div>	
+                </div>	
+                
+                <!-- Consultation Services -->
+                <div class="lg:col-span-6 md:col-span-6 col-span-12 max-lg:px-3.75 max-lg:mb-7.5">
+                    <div class="md:border-r border-[#80808036] relative hover:z-10 text-center p-7.5 hover:bg-white hover:shadow-[0_0_10px_0_rgba(0,0,0,.1)] hover:scale-105 duration-500 hover:border-white max-lg:border-none max-lg:shadow-[0_0_10px_0_rgba(0,0,0,.1)]">
+                        <div class="w-20 mb-5 inline-block align-center">
+                            <a href="{{ url('/') }}" class="icon-cell text-primary"><i class="flaticon-barbershop text-6xl align-middle"></i></a>
+                        </div>
+                        <div class="overflow-hidden">
+                            <h3 class="text-2xl text-black mb-2.5 font-bold font-nunito"><a href="{{ url('/') }}">Consultation</a></h3>
+                            <p class="mb-6">Konsultasi profesional untuk mendukung pengembangan produk dan strategi pasar yang tepat dengan panduan ahli berpengalaman.</p>
+                        </div>
+                    </div>	
+                </div>	
+                
+                <!-- Regulatory Compliance Services -->
+                <div class="lg:col-span-6 md:col-span-6 col-span-12 max-lg:px-3.75 max-lg:mb-7.5">
+                    <div class="relative hover:z-10 text-center p-7.5 hover:bg-white hover:shadow-[0_0_10px_0_rgba(0,0,0,.1)] hover:scale-105 duration-500 hover:border-white max-lg:border-none max-lg:shadow-[0_0_10px_0_rgba(0,0,0,.1)]">
+                        <div class="w-20 mb-5 inline-block align-center">
+                            <a href="{{ url('/') }}" class="icon-cell text-primary"><i class="flaticon-candle-1 text-6xl align-middle"></i></a>
+                        </div>
+                        <div class="overflow-hidden">
+                            <h3 class="text-2xl text-black mb-2.5 font-bold font-nunito"><a href="{{ url('/') }}">Regulatory Compliance Services</a></h3>
+                            <p class="mb-6">Layanan pendampingan untuk memastikan produk kosmetik memenuhi regulasi BPOM dan standar keamanan yang berlaku di Indonesia.</p>
+                        </div>
+                    </div>	
+                </div>		
+            </div>	
+        </div>
+    </div>
+</section>
+<!-- Our Services end -->
 
-                                const videoId = extractYoutubeId(url);
-
-                                container.innerHTML = `
-                                    <iframe class="w-full h-full rounded"
-                                        src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&modestbranding=1"
-                                        frameborder="0"
-                                        allow="autoplay; encrypted-media; fullscreen"
-                                        allowfullscreen>
-                                    </iframe>
-                                `;
-                            });
-                        </script>
-                    @endif
+<!-- Why Our Clients start -->
+<section>		
+    <div class="md:py-20 py-7.5 relative bg-white bg-cover" style="background-image: url('{{ asset('assets/img/imgi_57_bg-footer.png') }}');">
+        <div class="container">
+            <div class="grid grid-cols-12 gap-x-7.5">
+                <div class="lg:col-span-5 col-span-12 mb-7.5 self-center">
+                    <div class="table-cell align-middle mb-7.5">							
+                        <h2 class="md:text-4.5xl text-[30px] font-extrabold leading-[48px] text-[#232323] font-nunito mt-0 mb-2.5">Pengalaman Expert dengan Hasil Terbaik</h2>
+                        <p class="font-bold text-lg mb-3.75 text-[#232323] font-nunito">Labcos menggabungkan pengalaman luas dan keahlian teknis untuk membantu brand kosmetik mencapai standar kualitas tertinggi dengan hasil yang nyata.</p>
+                        <ul class="text-3.75 font-Montserrat mb-5">
+                            <li class="relative p-1.25 pl-7.5 before:content-['\e628'] before:absolute  before:font-['themify'] before:left-0 before:top-1.25 before:block before:text-3.75 before:text-[#777] text-[#6f6f6f]">Tim Ahli yang Berpengalaman</li>
+                            <li class="relative p-1.25 pl-7.5 before:content-['\e628'] before:absolute before:font-['themify'] before:left-0 before:top-1.25 before:block before:text-3.75 before:text-[#777] text-[#6f6f6f]">Layanan Pengujian Komprehensif</li>
+                            <li class="relative p-1.25 pl-7.5 before:content-['\e628'] before:absolute before:font-['themify'] before:left-0 before:top-1.25 before:block before:text-3.75 before:text-[#777] text-[#6f6f6f]">Konsultasi Profesional</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="lg:col-span-7 col-span-12 lg:ml-15.5">
+                    <div class="relative flex-wrap flex items-center">
+                        <div class="w-12 inline-block px-2.5">
+                            <img class="" 
+                            src="{{ asset('assets/img/About-expert.webp') }}" alt="/">
+                        </div>
+                        
+                    </div>
                 </div>
             </div>
-        @endif
-
-        <!-- Banner -->
-        @include('widget.client.banner', ['data' => $banner_2])
-
-        <div class="col-span-12 rounded p-4 bg-slate-100">
-            @include('widget.client.tags', ['data' => $tags])
         </div>
-
     </div>
+</section>
+<section>		
+    <div class="md:py-20 py-7.5 relative bg-white bg-cover" style="background-image: url('{{ asset('assets/img/imgi_55_bg-expert.png') }}');">
+        <div class="container">
+            <div class="grid grid-cols-12 gap-x-7.5">
+                <div class="lg:col-span-7 col-span-12 lg:ml-15.5">
+                    <div class="relative flex-wrap flex items-center">
+                        <div class="w-12 inline-block px-2.5">
+                            <img class="border-8 border-white shadow-frame" style="border-radius: 20px;" 
+                            src="{{ asset('assets/img/why-chooce-min-1.webp') }}" alt="/">
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 col-span-12 mb-7.5 self-center">
+                    <div class="table-cell align-middle mb-7.5">							
+                        <h2 class="md:text-4.5xl text-[30px] font-extrabold leading-[48px] text-[#232323] font-nunito mt-0 mb-2.5">Kenapa memilih kami ?</h2>
+                        <p class="font-bold text-lg mb-3.75 text-[#232323] font-nunito">Kami Berkomitmen Menjadi Mitra Strategis dalam Memastikan Produk Anda Mencapai Standar Kualitas Terbaik</p>
+                        <ul class="text-3.75 font-Montserrat mb-5">
+                            <li class="relative p-1.25 pl-7.5 before:content-['\e628'] before:absolute  before:font-['themify'] before:left-0 before:top-1.25 before:block before:text-3.75 before:text-[#777] text-[#6f6f6f]">Pengujian komprehensif untuk keamanan, efektivitas, dan kepatuhan standar.</li>
+                            <li class="relative p-1.25 pl-7.5 before:content-['\e628'] before:absolute before:font-['themify'] before:left-0 before:top-1.25 before:block before:text-3.75 before:text-[#777] text-[#6f6f6f]">Membantu brand menciptakan formula kosmetik inovatif dan unggul.</li>
+                            <li class="relative p-1.25 pl-7.5 before:content-['\e628'] before:absolute before:font-['themify'] before:left-0 before:top-1.25 before:block before:text-3.75 before:text-[#777] text-[#6f6f6f]">Memastikan produk Anda sesuai dengan semua regulasi dan standar.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Why Our Clients start -->
+    
+<section>
+    <div class="lg:py-20 py-8 relative bg-[url('../images/background/bg1.png'),url('../images/background/bg2.png')] bg-[position:bottom,_top] bg-no-repeat after:content-[''] after:absolute after:bg-white after:opacity-70 after:top-0 after:left-0 after:size-full after:z-[0] bg-[length:100%]">
+        <div class="container relative z-[1]">
+            <div class="text-center md:mb-14">
+                <h2 class="lg:text-4.5xl text-3xl font-extrabold mb-2.5 text-primary font-nunito">Fokus pada Inovasi Bersama Ekspert Terbaik</h2>
+                <div class="overflow-hidden">
+                    <div class="relative inline-block before:content-[''] before:bg-[url('../images/line.png')] before:absolute before:top-1/2 before:w-20 before:h-3.75 before:-translate-y-1/2 before:bg-[length:auto_100%] before:bg-no-repeat before:bg-center before:left-auto before:right-13.5
+                    after:content-[''] after:bg-[url('../images/line1.png')] after:absolute after:top-1/2 after:w-20 after:h-3.75 after:-translate-y-1/2 after:bg-[length:auto_100%] after:bg-no-repeat after:bg-center after:right-auto after:left-13.5 after:right-13.5">
+                        <i class="flaticon-spa text-primary text-4.5xl"></i>
+                    </div>
+                </div>
+                <p class="mx-auto max-w-[700px] pt-2.5 text-[#494949] mb-5">Labcos didukung oleh tim ahli berpengalaman yang memiliki latar belakang akademik dan profesional di bidang kosmetik, penelitian, dan pengembangan.</p>
+            </div>
+            <div class="relative">
+                <div class="team-carousel owl-carousel owl-btn-center-lr owl-btn-3 owl-theme owl-dots-primary-full owl-loaded owl-drag">
+                    
+                    <div class="item">
+                        <div class="team-box relative scale-50 translate-x-[-50%] overflow-hidden will-change-transform transition-transform duration-[700ms] ease-[ease] top-0 left-2/4 w-[290px] origin-center text-center grayscale-[2]">
+                            <div class="overflow-hidden relative">
+                                <img class="size-[300px]" src="{{ asset('assets/img/et-cahya.webp') }}" alt="apt. Cahya Kusumawulan">
+                            </div>
+                            <div class="p-2.5 text-center">
+                                <h5 class="text-black text-2xl font-bold font-nunito">apt. Cahya Kusumawulan, S.Si., M.Farm</h5>
+                                <span class="font-medium">Biotics Skincare Expert</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <div class="team-box relative scale-50 translate-x-[-50%] overflow-hidden will-change-transform transition-transform duration-[700ms] ease-[ease] top-0 left-2/4 w-[290px] origin-center text-center grayscale-[2]">
+                            <div class="overflow-hidden relative">
+                                <img class="size-[300px]" src="{{ asset('assets/img/et-anis-1.webp') }}" alt="Prof. Dr. rer. nat. apt. Anis Yohana Chaerunisaa">
+                            </div>
+                            <div class="p-2.5 text-center">
+                                <h5 class="text-black text-2xl font-bold font-nunito">Prof. Dr. rer. nat. apt. Anis Yohana Chaerunisaa</h5>
+                                <span class="font-medium">Biopharmaceutical Technology Expert</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item">
+                        <div class="team-box relative scale-50 translate-x-[-50%] overflow-hidden will-change-transform transition-transform duration-[700ms] ease-[ease] top-0 left-2/4 w-[290px] origin-center text-center grayscale-[2]">
+                            <div class="overflow-hidden relative">
+                                <img class="size-[300px]" src="{{ asset('assets/img/et-sriwidodo-1.webp') }}" alt="Prof. Dr. apt. Sriwidodo, M.Si">
+                            </div>
+                            <div class="p-2.5 text-center">
+                                <h5 class="text-black text-2xl font-bold font-nunito">Prof. Dr. apt. Sriwidodo, M.Si</h5>
+                                <span class="font-medium">Biopharmaceutical Formulation Expert</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- section Our Professional Team end -->	
+
+<!-- Call to Action -->
+<section>
+    <div class="lg:py-20 py-8 bg-[#fef7fe]">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="lg:text-4.5xl text-3xl font-extrabold mb-2.5 text-primary font-nunito">Siap Mengembangkan Produk Kosmetik Anda?</h2>
+                <p class="mx-auto max-w-[700px] pt-2.5 text-[#494949] mb-8">Hubungi tim ahli kami untuk konsultasi gratis dan dapatkan solusi terbaik untuk kebutuhan pengujian dan pengembangan produk kosmetik Anda.</p>
+                <div class="space-x-4">
+                    <a href="https://api.whatsapp.com/send/?phone=6285220710909&text=Halo%21+%EF%BF%BD+Terima+kasih+sudah+menghubungi+Labcos.+Ada+yang+bisa+kami+bantu%3F&type=phone_number&app_absent=0" class="site-button-secondry">Hubungi Kami</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- section Our Professional Team start -->
+	
+<section>
+    <div class="lg:pt-20 lg:pb-13.5 py-8 relative bg-[position:bottom,_top] bg-no-repeat bg-[length:100%] after:content-[''] after:absolute after:bg-white after:opacity-70 after:top-0 after:left-0 after:size-full after:z-0"
+     style="background-image: url('{{ asset('assets/img/imgi_55_bg-expert.png') }}'), url('{{ asset('assets/img/imgi_55_bg-expert.png') }}');">
+        <div class="container relative z-[1]">
+            <div class="text-center mb-14">
+                <h2 class="lg:text-4.5xl text-3xl font-bold text-primary font-nunito mb-2.5">Wawasan & Berita Terbaru</h2>
+                <div class="overflow-hidden">
+                    <div class="relative inline-block before:content-[''] before:bg-[url('../images/line.png')] before:absolute before:top-1/2 before:w-20 before:h-3.75 before:-translate-y-1/2 before:bg-[length:auto_100%] before:bg-no-repeat before:bg-center before:left-auto before:right-13.5
+                        after:content-[''] after:bg-[url('../images/line1.png')] after:absolute after:top-1/2 after:w-20 after:h-3.75 after:-translate-y-1/2 after:bg-[length:auto_100%] after:bg-no-repeat after:bg-center after:right-auto after:left-13.5 after:right-13.5">
+                        <i class="flaticon-spa text-primary text-4.5xl"></i>
+                    </div>
+                </div>
+                <p class="mx-auto max-w-[700px] pt-2.5 text-[#494949] mb-5 font-lato">Temukan informasi terkini seputar inovasi produk, tren pasar kecantikan, dan panduan regulasi langsung dari tim ahli Labcos untuk mendukung kesuksesan brand Anda.</p>
+            </div>
+            <div class="blog-carousel owl-carousel owl-btn-center-lr owl-btn-3 owl-theme owl-btn-center-lr owl-btn-1">
+                @foreach ($latestPost as $item)
+                    <div class="item md:mb-4.75">
+                        <div>
+                            <img class="rounded-[4px]" src="{{ getFile($item->image) }}" alt="{{ $item->title }}">
+                        </div>
+                        <div class="mb-1.25 px-1.25 pt-4">
+                            <ul class="flex items-center -mx-1 capitalize font-montserrat">
+                                <li class="inline-block text-[#707070] font-medium text-[13px] after:content-['|'] after:inline-block after:font-medium after:mx-1 after:opacity-50">
+                                    {{ \Carbon\Carbon::parse($item->published_at)->translatedFormat('d F Y') }}
+                                </li>
+                                <li class="inline-block text-[#707070] font-medium text-[13px]"><a>{{ $item->counter}} Dilihat</a> </li>
+                            </ul>
+                        </div>
+                        <div class="mb-1.25">
+                            <h3 class="text-xl text-[#232323] leading-8 font-bold hover:text-primary duration-500 font-nunito">
+                                <a href="/{{ $item->category->slug }}/{{ $item->slug }}">{{ $item->title }}</a>
+                            </h3>
+                        </div>
+                        <div class="relative"> 
+                            <a href="/{{ $item->category->slug }}/{{ $item->slug }}" title="Lihat Selengkapnya" rel="bookmark" class="text-[#171717] border-b-[2px] text-sm hover:text-primary hover:duration-500 duration-500 inline-block font-normal">Baca Selengkapnya</a>
+                        </div>
+                    </div>
+                @endforeach
+               
+            </div>
+        </div>
+        <div class="text-center">
+            <div class="space-x-4">
+                <a href="/posts" class="site-button-secondry">Lihat Artikel Lainnya</a>
+            </div>
+        </div>
+    </div>
+</section>
+
 @endsection
+
 @push('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script>
-        $(document).ready(function() {
-            let currentSlide = 0;
-            const slides = $('.carousel-slide');
-            const indicators = $('.slide-indicator');
-            const totalSlides = slides.length;
-            let autoSlideInterval;
-
-            // Function to show specific slide
-            function showSlide(index) {
-                slides.removeClass('active').addClass('hidden').css('opacity', '0');
-                slides.eq(index).removeClass('hidden').addClass('active').css('opacity', '1');
-                
-                // Update indicators
-                indicators.removeClass('bg-white').addClass('bg-white/50');
-                indicators.eq(index).removeClass('bg-white/50').addClass('bg-white');
-                
-                currentSlide = index;
-            }
-
-            // Function to go to next slide
-            function nextSlide() {
-                currentSlide = (currentSlide + 1) % totalSlides;
-                showSlide(currentSlide);
-            }
-
-            // Auto slide functionality
-            function startAutoSlide() {
-                if (totalSlides > 1) {
-                    autoSlideInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
-                }
-            }
-
-            function stopAutoSlide() {
-                if (autoSlideInterval) {
-                    clearInterval(autoSlideInterval);
-                }
-            }
-
-            // Event listeners for indicators (manual navigation)
-            $('[data-carousel-slide-to]').on('click', function() {
-                stopAutoSlide();
-                const slideIndex = parseInt($(this).data('carousel-slide-to'));
-                showSlide(slideIndex);
-                startAutoSlide(); // Restart auto slide after manual navigation
-            });
-
-            // Pause auto slide on hover
-            $('#controls-carousel').hover(
-                function() {
-                    stopAutoSlide();
-                },
-                function() {
-                    startAutoSlide();
-                }
-            );
-
-            // Initialize
-            if (totalSlides > 0) {
-                showSlide(0);
-                startAutoSlide();
-            }
-
-            // Responsive icon adjustment
-            function adjustIconSize() {
-                if ($(window).width() < 768) {
-                    $('.w-10.h-10').removeClass('w-10 h-10').addClass('w-8 h-8');
-                    $('.w-4.h-4').removeClass('w-4 h-4').addClass('w-3 h-3');
-                } else {
-                    $('.w-8.h-8').removeClass('w-8 h-8').addClass('w-10 h-10');
-                    $('.w-3.h-3').removeClass('w-3 h-3').addClass('w-4 h-4');
-                }
-            }
-
-            adjustIconSize();
-            $(window).on('resize', adjustIconSize);
-        });
-    </script>
+  
 @endpush

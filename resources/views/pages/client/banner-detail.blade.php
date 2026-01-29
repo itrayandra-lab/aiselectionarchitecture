@@ -1,124 +1,112 @@
 @extends('layouts.client.app')
 
 @section('content')
-    <div class="relative isolate -mt-8 overflow-hidden bg-white px-2 py-10 lg:py-20 lg:overflow-visible lg:px-0">
-        <div class="absolute inset-0 -z-10 overflow-hidden">
-            <svg class="absolute top-0 left-[max(50%,25rem)] h-[64rem] w-[128rem] -translate-x-1/2 stroke-gray-200 [mask-image:radial-gradient(64rem_64rem_at_top,white,transparent)]"
-                aria-hidden="true">
-                <defs>
-                    <pattern id="e813992c-7d03-4cc4-a2bd-151760b470a0" width="200" height="200" x="50%" y="-1"
-                        patternUnits="userSpaceOnUse">
-                        <path d="M100 200V.5M.5 .5H200" fill="none" />
-                    </pattern>
-                </defs>
-                <svg x="50%" y="-1" class="overflow-visible fill-gray-50">
-                    <path
-                        d="M-100.5 0h201v201h-201Z M699.5 0h201v201h-201Z M499.5 400h201v201h-201Z M-300.5 600h201v201h-201Z"
-                        stroke-width="0" />
-                </svg>
-                <rect width="100%" height="100%" stroke-width="0" fill="url(#e813992c-7d03-4cc4-a2bd-151760b470a0)" />
-            </svg>
-        </div>
-        <div
-            class="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-y-10">
-            <div
-                class="lg:col-span-2 mb-3 lg:col-start-1 lg:row-start-1 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
-                <div class="lg:pr-4">
-                    <div class="lg:max-w-lg border-b-2 border-dashed border-gray-200 pb-3">
-                        <a class="text-base/7 font-semibold text-blue-600">
-                            Banner Informasi
-                        </a>
-                        <h1 class="mt-2 text-xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-3xl">
-                            {{ $banner->title }}
-                        </h1>
-                        <div class="flex items-center justify-between mt-2 text-gray-600 text-sm">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ $banner->createdBy->image ? getFile($banner->createdBy->image) : asset('dist/images/users/avatar-1.jpg') }}"
-                                    alt="" class="w-8 h-8 rounded-full">
-                                <a class="hover:text-blue-600">{{ $banner->createdBy->name }}</a>
-                            </div>
-                            <p>
-                                {{ \Carbon\Carbon::parse($banner->created_at)->locale('id')->translatedFormat('l, d M Y') }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div
-                class="lg:-mt-1 -mt-15 lg:-ml-12 lg:p-3 lg:top-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-hidden image-container">
-                <img class="w-full rounded-sm bg-gray-900 ring-1 shadow-lg ring-gray-400/10 sm:w-[57rem] post-image"
-                    src="{{ getFile($banner->image) }}" alt="">
-            </div>
-
-            <div
-                class="lg:col-span-2 -mt-10 lg:col-start-1 lg:row-start-2 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8 post-content">
-                <div class="lg:pr-4">
-                    <div class="max-w-xl text-base/7 text-gray-700 lg:max-w-lg">
-                        {!! $content !!}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-span-12 lg:p-3">
-        @include('widget.client.header-title', ['title' => 'Informasi Lainnya'])
-        <div class="space-y-2">
-            <div class="grid grid-cols-12 lg:gap-4 py-2">
-                @forelse ($banners as $item)
-                    <div class="col-span-12 lg:col-span-6">
-                        <div class="mx-auto w-full rounded mb-2 relative group">
-                            <div class="flex space-x-4">
-                                <div class="w-full h-30 lg:h-50 rounded bg-gray-200 relative overflow-hidden">
-                                    <img src="{{ getFile($item->image) }}" alt="{{ $item->title }}"
-                                        class="w-full h-full object-cover rounded transition-opacity duration-300 group-hover:opacity-80">
-                                    <div
-                                        class="absolute inset-0 flex items-center justify-center bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300">
-                                        <a href="/banner/{{ $item->slug }}" title="detail banner"
-                                            class="text-white bg-gray-700 p-1 rounded-full mr-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                            </svg>
+    <!-- contact area -->
+    <section>
+        <div class="content-block">
+            <div class="md:py-20 py-7.5 relative">
+                <div class="container">
+                    <div class="grid grid-cols-12 gap-x-7.5">
+                        <div class="lg:col-span-3 md:col-span-4 col-span-12">
+                            <div class="sticky-top sticky top-29">
+                                <ul class="service-list mb-7.5">    
+                                    @foreach($banners->take(6) as $item)
+                                    <li class="mb-[3px] {{ $item->id == $banner->id ? 'active' : '' }}">
+                                        <a href="{{ route('banner_detail', $item->slug) }}" class="py-3.75 px-5 bg-[#fef5fe] block w-full text-[#4f0035] {{ $item->id == $banner->id ? 'border-l-[3px] border-primary' : '' }}">
+                                            {{ Str::limit($item->title, 30) }}
                                         </a>
-
-                                    </div>
+                                    </li>
+                                    @endforeach
+                                </ul>
+                                <div class="p-7.5 bg-[#fef5fe] mb-7.5">
+                                    <h4 class="text-[28px]/[35px] mb-3.75 font-bold text-black font-nunito">Informasi</h4>
+                                    <p class="leading-6 mb-6">Dapatkan informasi terbaru tentang layanan laboratorium kosmetik kami.</p>
+                                    <a href="{{ route('banners') }}" class="site-button">Lihat Semua Banner</a>
                                 </div>
                             </div>
-                        </div>
+                        </div>		
+                        <div class="lg:col-span-9 md:col-span-8 col-span-12">
+                            <h2 class="mb-2.5 text-4.5xl/[48px] text-black font-nunito font-semibold max-md:mt-5">{{ $banner->title }}</h2>
+                            <div class="mb-6">
+                                <div class="flex items-center text-sm text-[#707070] space-x-4">
+                                    <span>{{ \Carbon\Carbon::parse($banner->created_at)->locale('id')->translatedFormat('d M Y') }}</span>
+                                </div>
+                            </div>
+                            
+                            @if($banner->image)
+                            <div class="mb-7.5">
+                                <img class="w-full h-auto rounded-[4px]" src="{{ getFile($banner->image) }}" alt="{{ $banner->title }}">
+                            </div>
+                            @endif
+                            
+                            <div class="content leading-6 mb-6">
+                                {!! $content !!}
+                            </div>
+
+
+                            <div class="grid grid-cols-12 mt-10">
+                                <div class="lg:col-span-4 md:col-span-6 col-span-12 max-lg:px-3.75 max-lg:mb-7.5">
+                                    <div class="bg-[#f7f9fb] relative text-center p-7.5 max-lg:shadow-[0_0_10px_0_rgba(0,0,0,.1)]">
+                                        <div class="w-20 mb-5 inline-block align-center">
+                                            <a href="{{ route('banners') }}" class="icon-cell text-primary">
+                                                <i class="fas fa-bullhorn text-6xl align-middle"></i>
+                                            </a>
+                                        </div>
+                                        <div class="overflow-hidden">
+                                            <h5 class="text-lg text-black mb-2.5 font-bold font-nunito">
+                                                <a href="{{ route('banners') }}">Banner Lainnya</a>
+                                            </h5>
+                                            <p class="mb-6">Lihat koleksi banner informasi dan promosi lainnya dari laboratorium kami.</p>
+                                        </div>
+                                    </div>	
+                                </div>
+                                <div class="lg:col-span-4 md:col-span-6 col-span-12 max-lg:px-3.75 max-lg:mb-7.5">
+                                    <div class="relative text-center p-7.5 max-lg:shadow-[0_0_10px_0_rgba(0,0,0,.1)]">
+                                        <div class="w-20 mb-5 inline-block align-center">
+                                            <a href="{{ route('posts') }}" class="icon-cell text-primary">
+                                                <i class="fas fa-newspaper text-6xl align-middle"></i>
+                                            </a>
+                                        </div>
+                                        <div class="overflow-hidden">
+                                            <h5 class="text-lg text-black mb-2.5 font-bold font-nunito">
+                                                <a href="{{ route('posts') }}">Artikel Blog</a>
+                                            </h5>
+                                            <p class="mb-6">Baca artikel terbaru tentang penelitian dan inovasi kosmetik.</p>
+                                        </div>
+                                    </div>	
+                                </div>	
+                                <div class="lg:col-span-4 md:col-span-6 col-span-12 max-lg:px-3.75 max-lg:mb-7.5">
+                                    <div class="bg-[#f7f9fb] relative text-center p-7.5 max-lg:shadow-[0_0_10px_0_rgba(0,0,0,.1)]">
+                                        <div class="w-20 mb-5 inline-block align-center">
+                                            <a href="{{ route('info') }}" class="icon-cell text-primary">
+                                                <i class="fas fa-info-circle text-6xl align-middle"></i>
+                                            </a>
+                                        </div>
+                                        <div class="overflow-hidden">
+                                            <h5 class="text-lg text-black mb-2.5 font-bold font-nunito">
+                                                <a href="{{ route('info') }}">Informasi</a>
+                                            </h5>
+                                            <p class="mb-6">Dapatkan informasi penting dan pengumuman terbaru.</p>
+                                        </div>
+                                    </div>	
+                                </div>		
+                            </div>	
+                        </div>		
                     </div>
-                @empty
-                    <div class="col-span-12">
-                        @include('widget.client.no-data-search')
-                    </div>
-                @endforelse
+                </div>
             </div>
         </div>
-    </div>
+    </section>
+    <!-- contact area END -->
 @endsection
 
 @push('styles')
-    <style>
-        @media (min-width: 1024px) {
-            .image-container {
-                position: sticky;
-                top: 1rem;
-                transition: all 0.3s ease;
-            }
-
-            .post-image {
-                max-height: calc(100vh - 2rem);
-                object-fit: cover;
-            }
-
-            body:has(.most-popular:target) .image-container {
-                position: relative;
-                top: 0;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
 @endpush
+
+@push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+@endpush
+
+

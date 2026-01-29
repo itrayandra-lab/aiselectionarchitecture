@@ -1,0 +1,28 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* ABSTRACT CSS */
+@import "./abstract/variable.css";
+
+/* SKIN CSS */
+@import "./skin/skin.css";
+
+/* BASE CSS */
+@import "./base/global.css";
+@import "./base/font.css";
+@import "./base/grid.css";
+
+/* COMPONENTS CSS */
+@import "./components/carousel.css";
+@import "./components/lightgallery.css";
+@import "./components/btn.css";
+@import "./components/rangeslider.css";
+@import "./components/form.css";
+@import "./components/accordion.css";
+
+/* LAYOUT CSS */
+@import "./layout/header.css";
+
+/* PAGES CSS */
+@import "./pages/index.css";

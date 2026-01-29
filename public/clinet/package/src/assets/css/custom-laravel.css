@@ -1,0 +1,451 @@
+/* Custom CSS untuk integrasi Laravel dengan template BeautyZone */
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Primary color */
+:root {
+    --primary-color: #228FE7;
+    --secondary-color: #00becf;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.border-primary {
+    border-color: var(--primary-color) !important;
+}
+
+/* Site buttons */
+.site-button {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid var(--primary-color);
+}
+
+.site-button:hover {
+    background-color: transparent;
+    color: var(--primary-color);
+}
+
+.site-button-secondry {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: transparent;
+    color: var(--primary-color);
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid var(--primary-color);
+}
+
+.site-button-secondry:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Sticky header */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Main bar */
+.main-bar {
+    padding: 0;
+}
+
+/* Clearfix */
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Navigation */
+.Navigationbar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.Navigationbar a {
+    text-decoration: none;
+}
+
+/* Dropdown */
+.dropdown-item {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Mobile navigation toggle */
+.navbar-toggler span {
+    display: block;
+    background-color: #666;
+    height: 2px;
+    width: 100%;
+    margin-bottom: 4px;
+    transition: all 0.3s;
+    border-radius: 1px;
+}
+
+/* Responsive utilities */
+@media (max-width: 1024px) {
+    .max-lg\:left-\[-300px\] {
+        left: -300px;
+    }
+    
+    .max-lg\:left-0 {
+        left: 0;
+    }
+}
+
+/* Font families */
+.font-nunito {
+    font-family: 'Nunito', sans-serif;
+}
+
+.font-lato {
+    font-family: 'Lato', sans-serif;
+}
+
+.font-montserrat {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Scroll to top button */
+.scroltop {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    z-index: 999;
+    transition: all 0.3s ease;
+}
+
+.scroltop:hover {
+    background: var(--secondary-color);
+}
+
+/* Loading area */
+#loading-area {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#loading-area::after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Hide loading after page load */
+body.loaded #loading-area {
+    display: none;
+}
+
+/* Blog Grid Styles */
+.blog-grid-card {
+    transition: all 0.3s ease;
+}
+
+.blog-grid-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* Pagination styles */
+.pagination-beautyzone ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.pagination-beautyzone li {
+    list-style: none;
+}
+
+.pagination-beautyzone a,
+.pagination-beautyzone span {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid #efefef;
+    color: #767676;
+    text-decoration: none;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.pagination-beautyzone a:hover {
+    background-color: #ed3d8b;
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.pagination-beautyzone .active span {
+    background-color: #ed3d8b;
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* Sidebar styles */
+.sidebar-widget {
+    margin-bottom: 30px;
+}
+
+.sidebar-widget h6 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 18px;
+    line-height: 12px;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+/* Search widget */
+.search-bx input {
+    border: 1px solid #efefef;
+    height: 45px;
+    padding: 5px 20px;
+    font-size: 15px;
+    outline: none;
+    width: 100%;
+}
+
+.search-bx button {
+    background: transparent;
+    border: none;
+    color: var(--primary-color);
+    font-size: 15px;
+    height: 45px;
+    width: 19px;
+    cursor: pointer;
+}
+
+/* Recent posts widget */
+.recent-post-item {
+    display: table;
+    width: 100%;
+    margin-bottom: 10px;
+    overflow: hidden;
+    clear: both;
+}
+
+.recent-post-thumb {
+    display: table-cell;
+    vertical-align: middle;
+    padding-right: 15px;
+    width: 110px;
+    position: relative;
+}
+
+.recent-post-content {
+    display: table-cell;
+    vertical-align: middle;
+    overflow: hidden;
+    margin-left: 110px;
+}
+
+.recent-post-content h6 {
+    line-height: 16px;
+    margin-bottom: 8px;
+    text-transform: capitalize;
+    font-size: 15px;
+    color: #000;
+    font-weight: bold;
+}
+
+.recent-post-content h6 a {
+    color: #000;
+    text-decoration: none;
+}
+
+.recent-post-content h6 a:hover {
+    color: var(--primary-color);
+}
+
+/* Gallery widget */
+.gallery-grid {
+    display: table;
+    margin-bottom: 24px;
+}
+
+.gallery-grid li {
+    width: 33.333%;
+    float: left;
+    padding: 2px;
+    list-style: none;
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.gallery-item::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    transition: all 0.5s ease;
+    background: linear-gradient(45deg, #ff5ea5 5%, #00becf 100%);
+}
+
+.gallery-item:hover::before {
+    opacity: 0.8;
+}
+
+/* Categories widget */
+.categories-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.categories-list li {
+    text-transform: capitalize;
+    border-bottom: 1px solid rgba(102, 102, 102, 0.11);
+    position: relative;
+    padding: 10px 15px 10px 15px;
+    line-height: 20px;
+    transition: all 0.3s ease;
+}
+
+.categories-list li::after {
+    content: '\f105';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    display: block;
+    font-family: 'FontAwesome';
+    font-size: 12px;
+}
+
+.categories-list li:hover {
+    color: var(--primary-color);
+}
+
+.categories-list li a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Newsletter widget */
+.newsletter-widget {
+    background-color: #F5F6F7;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.newsletter-widget::after {
+    content: '\e75a';
+    font-size: 50px;
+    font-weight: bold;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: -1;
+    opacity: 0.05;
+    display: block;
+    font-family: 'themify';
+}
+
+.newsletter-widget p {
+    font-size: 15px;
+    margin-bottom: 24px;
+    line-height: 24px;
+    font-style: italic;
+}
+
+.newsletter-form input {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    display: table-cell;
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    height: 54px;
+    line-height: 20px;
+    font-size: 16px;
+    color: #495057;
+    background-color: white;
+    border: 2px solid #e1e6eb;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.newsletter-form input:hover {
+    border-color: silver;
+}
+
+.newsletter-form button {
+    border-radius: 0;
+    background-color: var(--primary-color);
+    width: 100%;
+    padding: 15px;
+    height: 54px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.newsletter-form button:hover {
+    background-color: var(--secondary-color);
+}

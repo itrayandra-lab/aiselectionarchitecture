@@ -1,0 +1,81 @@
+@layer components{
+	.btn {
+		@apply py-2.5 px-5 inline-block text-center font-semibold text-white rounded-md border;
+	}
+	
+	.buy-btn{
+		@apply h-[55px] flex items-center justify-center rounded-bl rounded-br overflow-hidden;
+ 	}
+		
+	.site-button{
+		@apply  py-2.5 px-5 inline-block bg-primary leading-[1.42857] rounded text-white text-base align-middle text-center font-semibold whitespace-pre relative z-[1] overflow-hidden duration-500;
+	}
+	
+	.site-button::before,
+	.site-button::after{
+		@apply content-[''] bg-black size-full opacity-[0.1] absolute top-0 left-[-120%] skew-x-[25deg] z-[-1] duration-[0.5s];
+	} 
+	.site-button:hover:before{
+		@apply  left-[-10%] duration-[0.3s];
+	}
+	.site-button:hover:after{
+		@apply left-[-20%];
+	}
+	.site-button:hover{
+		@apply bg-[#ed3d8b];
+	}
+	.site-button-secondry {
+	 @apply  py-2.5 px-5 inline-block leading-[1.42857] rounded text-white text-base align-middle text-center 	font-semibold whitespace-pre relative z-[1] overflow-hidden duration-500 bg-secondary;
+    }
+	
+	.site-button-secondry::before,
+	.site-button-secondry::after{
+		@apply content-[''] bg-black size-full opacity-[0.1] absolute top-0 left-[-120%] skew-x-[25deg] z-[-1] duration-[0.5s];
+	} 
+	.site-button-secondry:hover:before{
+		@apply  left-[-10%] duration-[0.3s];
+	}
+	.site-button-secondry:hover:after{
+		@apply left-[-20%];
+	}
+	.site-button-secondry:hover{
+		@apply bg-[#00a9b8];
+	}
+	
+	.scroltop{
+		@apply text-primary border-primary/10 border bg-white rounded-full bottom-3.75 right-3.75 shadow-[2px_2px_12px_-5px_#000] size-4.75 fixed text-center  z-10;
+	}
+	
+	.btn-primary{
+		@apply size-4.75 text-white rounded-lg flex justify-center bg-white/20 items-center hover:bg-primary duration-500;
+	}
+	
+	.btnBooking{
+		@apply inline-block text-base py-2 px-4  !text-black !text-center align-middle whitespace-pre mb-2.5 !h-4.75 bg-[#f5f5f5];
+	}
+	
+	.sw-theme-default .site-button{
+		@apply float-right;
+	}
+	
+	.benner-swiper-button .swiper-button-prev{
+		@apply bg-primary !text-[15px] !leading-[40px] !text-center !size-4.75;
+	}
+	
+	.benner-swiper-button .swiper-button-next{
+		@apply bg-primary !text-[15px] !leading-[40px] !text-center !size-4.75;
+	}
+	
+	.swiper-button-next:after, .swiper-button-prev:after {
+		@apply !text-[15px];
+	}
+	
+	.swiper-button-next.swiper-button-disabled, .swiper-button-prev.swiper-button-disabled {
+		@apply !opacity-100; 
+	}
+	
+	.bridal-head .owl-dot.active span{
+		@apply !size-[14px] !opacity-100 !mx-[4px] !mb-[2px] !bg-primary;
+	}
+	
+}

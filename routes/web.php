@@ -195,10 +195,12 @@ Route::group(['prefix' => '/', 'controller' => InterfaceController::class, 'midd
     Route::get('/', 'beranda')->name('beranda');
     Route::get('/search', 'search')->name('search');
     Route::get('/videos', 'videos')->name('videos');
-    Route::get('/posts', 'posts')->name('posts');
     Route::get('/banners', 'banners')->name('banners');
     Route::get('/albums', 'albums')->name('albums');
+    Route::get('/posts', 'posts')->name('posts');
     Route::get('/info', 'info')->name('info');
+    Route::get('/about-us', 'about')->name('about');
+    Route::get('/contact', 'contact')->name('contact');
 
     #statis
     Route::get('/author/{slug}', 'author')->name('author');

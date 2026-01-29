@@ -116,7 +116,7 @@ class DataController extends Controller
             $query->latest('created_at');
         }
 
-        return $query->paginate($paginate);
+        return $query->take($paginate)->get();
     }
 
      /**

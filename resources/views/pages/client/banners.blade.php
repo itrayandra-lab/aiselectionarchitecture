@@ -2,46 +2,164 @@
 
 @section('header')
     @include('widget.client.header-section', [
-        'segment' => 'Halaman',
-        'data' => 'Banner',
+        'segment' => 'Banner',
+        'data' => 'Koleksi Banner',
     ])
 @endsection
 
 @section('content')
-    <div class="space-y-2">
-        <div class="grid grid-cols-12 lg:gap-4 py-2">
-            @forelse ($banners as $item)
-                <div class="col-span-12 lg:col-span-6">
-                    <div class="mx-auto w-full rounded mb-2 relative group">
-                        <div class="flex space-x-4">
-                            <div class="w-full h-30 lg:h-50 rounded bg-gray-200 relative overflow-hidden">
-                                <img src="{{ getFile($item->image) }}" alt="{{ $item->title }}"
-                                    class="w-full h-full object-cover rounded transition-opacity duration-300 group-hover:opacity-80">
-                                <div
-                                    class="absolute inset-0 flex items-center justify-center bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300">
-                                    <a href="/banner/{{ $item->slug }}" title="detail banner"
-                                        class="text-white bg-gray-700 p-1 rounded-full mr-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg>
-                                    </a>
-                                  
+    <!-- section Blog large start -->
+    <section>	
+        <div class="md:pt-14.5 md:mb-13.5 pt-7.5 mb-7.5">
+            <div class="container">
+                <div class="grid grid-cols-12 gap-x-7.5">
+                    <!-- Blog large img -->
+                    <div class="lg:col-span-8 md:col-span-7 col-span-12">
+                        <div class="grid grid-cols-12 gap-x-7.5">
+                            @forelse ($banners as $item)
+                                <div class="md:col-span-6 col-span-12">
+                                    <div class="relative mb-4.75">
+                                        <div class="rounded-[4px] overflow-hidden align-middle">
+                                            <a href="{{ route('banner_detail', $item->slug) }}">
+                                                <img class="w-full h-auto block" src="{{ getFile($item->image) }}" alt="{{ $item->title }}">
+                                            </a>
+                                        </div>
+                                        <div class="relative">
+                                            <div class="mb-1.25 px-1.25 pt-4">
+                                                <ul class="flex items-center -mx-1 capitalize font-montserrat">
+                                                    <li class="inline-block text-[#707070] font-medium text-[13px] after:content-['|'] after:inline-block after:font-normal after:mx-1 after:opacity-50">
+                                                        {{ \Carbon\Carbon::parse($item->created_at)->locale('id')->translatedFormat('d M Y') }}
+                                                    </li>
+                                                    <li class="inline-block text-[#707070] font-medium text-[13px]">
+                                                        <a href="{{ route('banner_detail', $item->slug) }}">{{ $item->counter ?? '0' }}</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>	
+                                        <div class="mb-1.25">
+                                            <h4 class="mb-1.25 text-xl text-[#232323] leading-8 font-bold hover:text-primary duration-500 font-nunito">
+                                                <a href="{{ route('banner_detail', $item->slug) }}">{{ $item->title }}</a>
+                                            </h4>
+                                        </div>
+                                        <div class="relative"> 
+                                            <a href="{{ route('banner_detail', $item->slug) }}" title="LIHAT DETAIL" rel="bookmark" class="text-[#171717] border-b-[2px] hover:text-primary hover:duration-500 duration-500 inline-block">LIHAT DETAIL</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="col-span-12">
+                                    @include('widget.client.no-data-search')
+                                </div>
+                            @endforelse
+                        </div>	
+                        <!-- Blog large img END -->
+                        
+                        <!-- Pagination start -->
+                        <div class="clearfix text-center mb-7.5">
+                            @if($banners->hasPages())
+                                <ul class="w-full py-2.5 flex rounded-x-[4px] justify-center">
+                                    {{-- Previous Page Link --}}
+                                    @if ($banners->onFirstPage())
+                                        <li class="previous">
+                                            <span class="py-2 px-4 text-sm font-medium border border-[#efefef] text-[#767676] font-montserrat">
+                                                <i class="text-xs ti-arrow-left"></i> Sebelumnya
+                                            </span>
+                                        </li>
+                                    @else
+                                        <li class="previous">
+                                            <a href="{{ $banners->previousPageUrl() }}" class="py-2 px-4 text-sm font-medium border border-[#efefef] text-[#767676] font-montserrat hover:bg-[#ed3d8b] hover:border-primary duration-500 hover:text-white">
+                                                <i class="text-xs ti-arrow-left"></i> Sebelumnya
+                                            </a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Pagination Elements --}}
+                                    @foreach ($banners->getUrlRange(1, $banners->lastPage()) as $page => $url)
+                                        @if ($page == $banners->currentPage())
+                                            <li class="active">
+                                                <span class="bg-[#ed3d8b] text-white border border-primary py-2 px-4 text-sm font-montserrat">{{ $page }}</span>
+                                            </li>
+                                        @else
+                                            <li>
+                                                <a href="{{ $url }}" class="hover:text-white text-black border border-[#efefef] py-2 px-4 text-sm font-montserrat hover:bg-[#ed3d8b] duration-500 hover:border-primary">{{ $page }}</a>
+                                            </li>
+                                        @endif
+                                    @endforeach
+
+                                    {{-- Next Page Link --}}
+                                    @if ($banners->hasMorePages())
+                                        <li class="next">
+                                            <a href="{{ $banners->nextPageUrl() }}" class="py-2 px-4 text-sm font-medium border border-[#efefef] text-[#767676] font-montserrat hover:bg-[#ed3d8b] hover:border-primary duration-500 hover:text-white">
+                                                Selanjutnya <i class="text-xs ti-arrow-right"></i>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li class="next">
+                                            <span class="py-2 px-4 text-sm font-medium border border-[#efefef] text-[#767676] font-montserrat">
+                                                Selanjutnya <i class="text-xs ti-arrow-right"></i>
+                                            </span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            @endif
+                        </div>
+                        <!-- Pagination END -->
+                    </div>
+                    
+                    <!-- Side bar start -->
+                    <div class="lg:col-span-4 md:col-span-5 col-span-12">
+                        <aside class="sticky !top-[100px] block">
+                            <!-- Search Widget -->
+                            <div class="mb-7.5 max-md:mt-7.5">
+                                <h6 class="mb-5 text-black font-extrabold leading-[12px] uppercase relative align-middle text-lg font-nunito">Pencarian</h6>
+                                <div class="search-bx style-1">
+                                    <form role="search" method="get" action="{{ route('banners') }}">
+                                        <div class="border border-[#efefef] w-full relative flex flex-wrap items-stretch">
+                                            <input name="qr" value="{{ request('qr') }}" class="text-[15px] h-[45px] py-1.25 px-5 table-cell relative flex-auto w-[1%] leading-5 outline-none" placeholder="Cari banner..." type="text">
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
-                        </div>
+
+                            <!-- Recent Banners Widget -->
+                            @if(isset($recentBanners) && $recentBanners->count() > 0)
+                            <div class="mb-7.5">
+                                <h6 class="mb-5 text-black font-extrabold leading-[12px] uppercase relative align-middle text-lg font-nunito">Banner Terbaru</h6>
+                                <div>
+                                    @foreach($recentBanners->take(3) as $recentBanner)
+                                    <div class="overflow-hidden mb-2.5 clearfix">
+                                        <div class="table-cell align-middle pr-3.75 w-[110px] relative"> 
+                                            <img class="w-full h-auto rounded-[4px]" src="{{ getFile($recentBanner->image) }}" width="200" height="143" alt="{{ $recentBanner->title }}"> 
+                                        </div>
+                                        <div class="overflow-hidden table-cell align-middle ml-[110px]">
+                                            <div class="dlab-post-header">
+                                                <h6 class="leading-4 mb-2 capitalize text-[15px] text-black font-bold">
+                                                    <a href="{{ route('banner_detail', $recentBanner->slug) }}">{{ Str::limit($recentBanner->title, 50) }}</a>
+                                                </h6>
+                                            </div>
+                                            <div class="dlab-post-meta">
+                                                <ul class="flex items-center">
+                                                    <li class="text-[#707070] inline-block text-[13px] after:content-['|'] after:inline-block after:mx-1.25 after:opacity-50">
+                                                        {{ \Carbon\Carbon::parse($recentBanner->created_at)->locale('id')->translatedFormat('d M Y') }}
+                                                    </li>
+                                                    <li class="text-[#707070] inline-block text-[13px]">
+                                                        <a href="{{ route('banner_detail', $recentBanner->slug) }}">{{ $recentBanner->counter ?? '0' }}</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+
+                        </aside>
                     </div>
+                    <!-- Side bar END -->	
                 </div>
-            @empty
-                <div class="col-span-12">
-                    @include('widget.client.no-data-search')
-                </div>
-            @endforelse
+            </div>	
         </div>
-    </div>
-    <hr class="w-48 h-1 mx-auto my-4 bg-gray-100 border-0 rounded-sm md:my-10 ">
-    @include('widget.client.paginate', ['data' => $banners])
+    </section>
+    <!-- section Blog large end -->
 @endsection

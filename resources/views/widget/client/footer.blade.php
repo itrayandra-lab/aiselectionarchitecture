@@ -1,126 +1,111 @@
+<!-- Footer start -->
+<footer>
+    <!-- footer top start -->
+    <div class="lg:pt-[80px] lg:pb-5 pt-8 bg-white bg-cover bg-top bg-no-repeat text-black" 
+     style="background-image: url('{{ asset('assets/img/imgi_55_bg-expert.png') }}');">
+        <div class="container wow fadeIn" data-wow-delay="0.5s">
+            <div class="grid grid-cols-12 md:gap-7.5 gap-5">
+                <div class="lg:col-span-2 sm:col-span-3 col-span-5">
+                    <div class="mb-4.75xl">
+                        <h3 class="mb-5 md:text-lg text-base font-bold font-nunito uppercase">Menu</h3>
+                        <ul class="mt-1.25">
+                            @if($menu->count() > 0)
+                                @php
+                                    $parents = $menu->where('type_1', 'parent')->take(5);
+                                @endphp
+                                @foreach($parents as $parent)
+                                    <li class="relative py-2.5 pr-2.5 pl-3.75 leading-5 flex gap-2 before:content-['\f105'] before:absolute before:left-0 before:top-2.5 before:text-xxs before:font-['FontAwesome']">
+                                        <a class="text-sm" href="{{ $parent->type_2 == 'page' ? url('page/' . $parent->slug) : url($parent->slug) }}">{{ $parent->name }}</a>
+                                    </li>
+                                @endforeach
+                            @endif
+                        </ul>                                                  
+                    </div>
+                </div>
+                <div class="lg:col-span-2 sm:col-span-3 col-span-7">
+                    <div class="mb-4.75xl">
+                        <h3 class="mb-5 md:text-lg text-base font-bold font-nunito uppercase">Kategori</h3>
+                        <ul class="mt-1.25">
+                           @if($menu->count() > 5)
+                                @php
+                                    $categories = \App\Models\PostCategory::inRandomOrder()->take(5)->get();
+                                @endphp
 
-<div class="text-center bg-white shadow-inner py-3">
-    <a href="#" class="flex items-center justify-center mb-5 text-2xl font-semibold text-gray-900">
-        <img src="{{ $meta->logo }}" class="h-12 mr-3 sm:h-9" alt="Logo">
-    </a>
-
-    <span class="block text-sm text-center text-gray-500">
-        © {{ now()->format('Y') }} <a href="{{ $meta->domain }}" class="hover:underline">{{ $meta->web_name }}™</a>. All
-        Rights Reserved. v{{ $meta->version }}
-    </span>
-
-    <ul class="flex justify-center my-5 space-x-5">
-        @if (!empty($meta->email) && $meta->email !== '#')
-            <li>
-                <a href="mailto:{{ $meta->email }}" aria-label="Send an email to {{ $meta->email }}"
-                    class="text-gray-500 hover:text-gray-900">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-mails">
-                        <rect width="16" height="13" x="6" y="4" rx="2" />
-                        <path d="m22 7-7.1 3.78c-.57.3-1.23.3-1.8 0L6 7" />
-                        <path d="M2 8v11c0 1.1.9 2 2 2h14" />
-                    </svg>
-                </a>
-            </li>
-        @endif
-
-        <!-- Phone Number -->
-        @if (!empty($meta->phone_number) && $meta->phone_number !== '#')
-            <li>
-                <a href="tel:{{ $meta->phone_number }}" aria-label="Call us at {{ $meta->phone_number }}"
-                    class="text-gray-500 hover:text-gray-900">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-phone">
-                        <path
-                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                    </svg>
-                </a>
-            </li>
-        @endif
-
-
-        @if (!empty($meta->google_maps) && $meta->google_maps !== '#')
-            <li>
-                <a href="{{ $meta->google_maps }}" class="text-gray-500 hover:text-gray-900">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-map-pinned">
-                        <path
-                            d="M18 8c0 3.613-3.869 7.429-5.393 8.795a1 1 0 0 1-1.214 0C9.87 15.429 6 11.613 6 8a6 6 0 0 1 12 0" />
-                        <circle cx="12" cy="8" r="2" />
-                        <path
-                            d="M8.714 14h-3.71a1 1 0 0 0-.948.683l-2.004 6A1 1 0 0 0 3 22h18a1 1 0 0 0 .948-1.316l-2-6a1 1 0 0 0-.949-.684h-3.712" />
-                    </svg>
-                </a>
-            </li>
-        @endif
-
-
-        <!-- Facebook -->
-        @if (!empty($meta->facebook_link) && $meta->facebook_link !== '#')
-            <li>
-                <a href="{{ $meta->facebook_link }}" rel="noopener noreferrer" target="_blank"
-                    aria-label="Visit our Facebook page" class="text-gray-500 hover:text-gray-900">
-                    <!-- Lucide Facebook SVG -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="w-5 h-5">
-                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                    </svg>
-                </a>
-            </li>
-        @endif
-
-        <!-- Instagram -->
-        @if (!empty($meta->instagram_link) && $meta->instagram_link !== '#')
-            <li>
-                <a href="{{ $meta->instagram_link }}" rel="noopener noreferrer" target="_blank"
-                    aria-label="Visit our Instagram page" class="text-gray-500 hover:text-gray-900">
-                    <!-- Lucide Instagram SVG -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="w-5 h-5">
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                    </svg>
-                </a>
-            </li>
-        @endif
-
-        <!-- Twitter -->
-        @if (!empty($meta->twitter_link) && $meta->twitter_link !== '#')
-            <li>
-                <a href="{{ $meta->twitter_link }}" rel="noopener noreferrer" target="_blank"
-                    aria-label="Visit our Twitter page" class="text-gray-500 hover:text-gray-900">
-                    <!-- Lucide Twitter SVG -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="w-5 h-5">
-                        <path
-                            d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
-                    </svg>
-                </a>
-            </li>
-        @endif
-
-        <!-- YouTube -->
-        @if (!empty($meta->youtube_link) && $meta->youtube_link !== '#')
-            <li>
-                <a href="{{ $meta->youtube_link }}" rel="noopener noreferrer" target="_blank"
-                    aria-label="Visit our YouTube channel" class="text-gray-500 hover:text-gray-900">
-                    <!-- Lucide YouTube SVG -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-youtube">
-                        <path
-                            d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
-                        <path d="m10 15 5-3-5-3z" />
-                    </svg>
-                </a>
-            </li>
-        @endif
-    </ul>
-</div>
+                                @foreach($categories as $parent)
+                                    <li class="relative py-2.5 pr-2.5 pl-3.75 leading-5 flex gap-2 before:content-['\f105'] before:absolute before:left-0 before:top-2.5 before:text-xxs before:font-['FontAwesome']">
+                                        <a class="text-sm" href="{{ $parent->slug }}">
+                                            {{ $parent->name }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            @endif
+                        </ul>
+                    </div>
+                </div>
+                <div class="lg:col-span-4 sm:col-span-6 col-span-12">
+                    <div class="widget widget_getintuch">
+                        <h3 class="md:mb-7.5 mb-2.5 md:text-lg text-base font-bold font-nunito uppercase">Contact us</h3>
+                        <ul class="mt-1.25">
+                            @if($meta->address ?? false)
+                            <li class="mb-5 relative pl-4.75 text-black text-sm/[22px] font-lato">
+                                <i class="bg-transparent text-xl absolute left-0 top-1.25 text-center text-[22px] size-7.5 !leading-[30px] ti-location-pin"></i>
+                                <strong class="font-bold text-sm">ADDRESS</strong><br>
+                                {{ $meta->address }}
+                            </li>
+                            @endif
+                            @if($meta->phone ?? false)
+                            <li class="mb-5 relative pl-4.75 text-black text-sm/[22px] font-lato">
+                                <i class="bg-transparent text-xl absolute left-0 top-1.25 text-center text-[22px] size-7.5 !leading-[30px] ti-mobile"></i>
+                                <strong class="font-bold text-sm">PHONE</strong><br>
+                                {{ $meta->phone }}
+                            </li>
+                            @endif
+                            @if($meta->email ?? false)
+                            <li class="mb-5 relative pl-4.75 text-black text-sm/[22px] font-lato">
+                                <i class="bg-transparent text-xl absolute left-0 top-1.25 text-center text-[22px] size-7.5 !leading-[30px] ti-email"></i>
+                                <strong class="font-bold text-sm">EMAIL</strong><br>
+                                {{ strtoupper($meta->email) }}
+                            </li>
+                            @endif
+                        </ul>
+                    </div>
+                </div>
+                <div class="lg:col-span-4 col-span-12">
+                    <div class="mb-4.75">
+                        <!-- Logo Section -->
+                        <div class="mb-6">
+                            <a href="{{ url('/') }}" class="inline-block">
+                                <img src="{{ getFile($meta->logo) ?? asset('clinet/package/src/assets/images/logo-black.png') }}" 
+                                     alt="{{ $meta->web_name ?? 'Logo' }}" 
+                                     class="h-12 w-auto object-contain">
+                            </a>
+                        </div>
+                        
+                        <!-- Web Description -->
+                        @if($meta->web_description ?? false)
+                        <p class="mb-5 text-sm leading-6 text-gray-600">{{ $meta->web_description }}</p>
+                        @else
+                        <p class="mb-5 text-sm leading-6 text-gray-600">{{ $meta->web_name ?? 'Laboratorium Kosmetik' }} - Solusi terpercaya untuk pengujian dan pengembangan produk kosmetik dengan standar internasional.</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--footer top end -->
+    
+    <!--footer bottom start -->
+    <div class="py-6.25 text-center" style="background-color: #228fe7; color: white;">
+        <div class="container">
+            <div class="grid grid-cols-12">
+                <div class="sm:col-span-6 col-span-12 text-center md:text-left">
+                    <span class=" text-sm capitalize">Copyright ©</span>
+                    <span class="current-year text-sm">{{ now()->format('Y') }}</span>
+                    <a href="{{ $meta->domain ?? '#' }}" class="text-sm   font-semibold hover:text-primary hover:duration-500 duration-500" target="_blank">{{ $meta->web_name ?? 'BeautyZone' }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- footer bottom end -->
+</footer>
+<!-- Footer end -->

@@ -1,0 +1,48 @@
+.skin-1{
+	--primary: theme('colors.colorTheme1.primary.default');
+    --primary-hover: theme('colors.colorTheme1.primary.hover');
+    --rgb-primary: theme('colors.colorTheme1.primary.rgba');
+    --rgba-primary-05: rgb(theme('colors.colorTheme1.primary.rgba')/ 0.05);
+    --rgba-primary-1: rgb(theme('colors.colorTheme1.primary.rgba')/ 0.1);
+    --rgba-primary-2: rgb(theme('colors.colorTheme1.primary.rgba')/ 0.2);
+    --rgba-primary-3: rgb(theme('colors.colorTheme1.primary.rgba')/ 0.3);
+    --rgba-primary-4: rgb(theme('colors.colorTheme1.primary.rgba')/ 0.4);
+    --rgba-primary-5: rgb(theme('colors.colorTheme1.primary.rgba')/ 0.5);
+    --rgba-primary-6: rgb(theme('colors.colorTheme1.primary.rgba')/ 0.6);
+    --rgba-primary-7: rgb(theme('colors.colorTheme1.primary.rgba')/ 0.7);
+    --rgba-primary-8: rgb(theme('colors.colorTheme1.primary.rgba')/ 0.8);
+    --rgba-primary-9: rgb(theme('colors.colorTheme1.primary.rgba')/ 0.9);
+}
+.skin-2{
+	--primary: theme('colors.colorTheme2.primary.default');
+    --primary-hover: theme('colors.colorTheme2.primary.hover');
+    --rgb-primary: theme('colors.colorTheme2.primary.rgba');
+    --title: theme('colors.colorTheme2.title.default');
+    --rgba-primary-05: rgb(theme('colors.colorTheme2.primary.rgba')/ 0.05);
+    --rgba-primary-1: rgb(theme('colors.colorTheme2.primary.rgba')/ 0.1);
+    --rgba-primary-2: rgb(theme('colors.colorTheme2.primary.rgba')/ 0.2);
+    --rgba-primary-3: rgb(theme('colors.colorTheme2.primary.rgba')/ 0.3);
+    --rgba-primary-4: rgb(theme('colors.colorTheme2.primary.rgba')/ 0.4);
+    --rgba-primary-5: rgb(theme('colors.colorTheme2.primary.rgba')/ 0.5);
+    --rgba-primary-6: rgb(theme('colors.colorTheme2.primary.rgba')/ 0.6);
+    --rgba-primary-7: rgb(theme('colors.colorTheme2.primary.rgba')/ 0.7);
+    --rgba-primary-8: rgb(theme('colors.colorTheme2.primary.rgba')/ 0.8);
+    --rgba-primary-9: rgb(theme('colors.colorTheme2.primary.rgba')/ 0.9);
+}
+
+.skin-3{
+	--primary: theme('colors.colorTheme3.primary.default');
+    --primary-hover: theme('colors.colorTheme3.primary.hover');
+    --rgb-primary: theme('colors.colorTheme3.primary.rgba');
+    --title: theme('colors.colorTheme3.title.default');
+    --rgba-primary-05: rgb(theme('colors.colorTheme3.primary.rgba')/ 0.05);
+    --rgba-primary-1: rgb(theme('colors.colorTheme3.primary.rgba')/ 0.1);
+    --rgba-primary-2: rgb(theme('colors.colorTheme3.primary.rgba')/ 0.2);
+    --rgba-primary-3: rgb(theme('colors.colorTheme3.primary.rgba')/ 0.3);
+    --rgba-primary-4: rgb(theme('colors.colorTheme3.primary.rgba')/ 0.4);
+    --rgba-primary-5: rgb(theme('colors.colorTheme3.primary.rgba')/ 0.5);
+    --rgba-primary-6: rgb(theme('colors.colorTheme3.primary.rgba')/ 0.6);
+    --rgba-primary-7: rgb(theme('colors.colorTheme3.primary.rgba')/ 0.7);
+    --rgba-primary-8: rgb(theme('colors.colorTheme3.primary.rgba')/ 0.8);
+    --rgba-primary-9: rgb(theme('colors.colorTheme3.primary.rgba')/ 0.9);
+}

@@ -1,0 +1,9 @@
+@layer components{
+.price .ui-slider-range {
+	@apply bg-primary;
+}
+
+.price .ui-state-default {
+	@apply border-primary;
+}
+}

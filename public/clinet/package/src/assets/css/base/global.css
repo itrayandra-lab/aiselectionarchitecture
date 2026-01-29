@@ -1,0 +1,61 @@
+.nunito-<uniquifier> {
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+}
+
+body {
+    background-color: #fff;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #6f6f6f;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+#loading-area {
+    width: 100%;
+    height: 100%;
+    background-color: #ffeff6;
+    position: fixed;
+    left: 0;
+    top: 0;
+    opacity: 1;
+    z-index: 999999999;
+    background-image: url(../images/loading.svg),  url(../images/about/loading.png);
+    background-repeat: no-repeat;
+    background-size: 120px ,  200px;
+    background-position: center;
+}
+
+.dzSubscribeMsg .alert,.dzFormMsg .alert{
+	@apply font-montserrat rounded py-3.75 px-5 relative border-2 mb-4;
+}
+
+.alert-warning {
+	@apply bg-[#fff3cd] border-[#ffeeba] text-[#856404];
+}
+
+.alert-success {
+	@apply bg-[#d4edda] border-[#c3e6cb] text-[#155724];
+}
+
+.alert-info {
+	@apply bg-[#cce5ff] border-[#b8daff] text-[#004085];
+}
+
+.alert-danger {
+	@apply bg-[#f8d7da] border-[#f5c6cb] text-[#721c24];
+}

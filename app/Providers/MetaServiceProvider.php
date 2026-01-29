@@ -31,11 +31,14 @@ class MetaServiceProvider extends ServiceProvider
                 'domain' => url('/'),
                 'email' => 'info@example.com',
                 'phone_number' => '#',
+                'whatsapp_number' => '6281234567890', // Format: 62 untuk Indonesia + nomor tanpa 0 di depan
                 'facebook_link' => '#',
                 'instagram_link' => '#',
                 'youtube_link' => '#',
                 'twitter_link' => '#',
-                'google_maps' => 'https://maps.google.com/',
+                'latitude' => '-6.897938965332561',
+                'longitude' => '107.77209700000002',
+                'google_maps' => 'https://maps.google.com/maps?q=-6.897938965332561,107.77209700000002&hl=id&z=15&output=embed',
                 'meta_title' => 'Portal Informasi kuli it tecno',
                 'meta_description' => 'Description Portal Informasi kuli it tecno',
                 'meta_keywords' => 'portal, informasi',
@@ -55,11 +58,20 @@ class MetaServiceProvider extends ServiceProvider
                         $defaultMeta['domain'] = $webIdentity->domain ?? $defaultMeta['domain'];
                         $defaultMeta['email'] = $webIdentity->email ?? $defaultMeta['email'];
                         $defaultMeta['phone_number'] = $webIdentity->phone_number ?? $defaultMeta['phone_number'];
+                        $defaultMeta['whatsapp_number'] = $webIdentity->whatsapp_number ?? $defaultMeta['whatsapp_number'];
                         $defaultMeta['facebook_link'] = $webIdentity->facebook_link ?? $defaultMeta['facebook_link'];
                         $defaultMeta['instagram_link'] = $webIdentity->instagram_link ?? $defaultMeta['instagram_link'];
                         $defaultMeta['youtube_link'] = $webIdentity->youtube_link ?? $defaultMeta['youtube_link'];
                         $defaultMeta['twitter_link'] = $webIdentity->twitter_link ?? $defaultMeta['twitter_link'];
-                        $defaultMeta['google_maps'] = $webIdentity->google_maps ?? $defaultMeta['google_maps'];
+                        $defaultMeta['latitude'] = $webIdentity->latitude ?? $defaultMeta['latitude'];
+                        $defaultMeta['longitude'] = $webIdentity->longitude ?? $defaultMeta['longitude'];
+                        
+                        // Generate Google Maps URL from latitude and longitude
+                        if (isset($webIdentity->latitude) && isset($webIdentity->longitude)) {
+                            $defaultMeta['google_maps'] = "https://maps.google.com/maps?q={$webIdentity->latitude},{$webIdentity->longitude}&hl=id&z=15&output=embed";
+                        } else {
+                            $defaultMeta['google_maps'] = "https://maps.google.com/maps?q={$defaultMeta['latitude']},{$defaultMeta['longitude']}&hl=id&z=15&output=embed";
+                        }
                         $defaultMeta['meta_title'] = $webIdentity->meta_title ?? $defaultMeta['meta_title'];
                         $defaultMeta['meta_description'] = $webIdentity->meta_description ?? $defaultMeta['meta_description'];
                         $defaultMeta['meta_keywords'] = $webIdentity->meta_keywords ?? $defaultMeta['meta_keywords'];
@@ -70,7 +82,7 @@ class MetaServiceProvider extends ServiceProvider
                         $defaultMeta['version'] = $webIdentity->version ?? $defaultMeta['version'];
                     }
                 }
-            } catch (\Exception $e) {
+            } catch (\Exception) {
             }
 
             $data = $view->getData();

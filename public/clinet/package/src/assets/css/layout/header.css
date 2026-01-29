@@ -1,0 +1,50 @@
+
+.Navigationbar.active {
+	@apply left-0 duration-500;
+}
+
+.collapse-btn1.open .dropdown-item {
+	@apply block;
+}
+
+@media (max-width:992px) {
+	.collapse-btn1.open i {
+		@apply -rotate-90;
+	}
+}
+
+.sticky-header.is-fixed .main-bar {
+	@apply top-0 left-0 bg-white w-full relative duration-500 !fixed shadow-[0_0_10px_0_rgba(0,0,0,.2)];
+}
+
+.sticky-header.is-fixed .main-bar2 {
+	@apply top-0 left-0 bg-black w-full relative duration-500 !fixed shadow-[0_0_10px_0_rgba(0,0,0,.2)];
+}
+
+.clearfix {
+	@apply before:content-[''] before:table after:content-[''] after:table after:clear-both;
+}
+
+.navbar-toggler:after {
+	@apply content-[''] opacity-0 invisible fixed left-0 -right-5 top-[-36px] scale-[100] size-full z-[-1] duration-[0.5s] m-0 origin-top-right ml-5 bg-black shadow-[0_0_0_1000px_rgba(0,0,0)];
+}
+
+.navbar-toggler.active:after {
+	@apply opacity-50 visible;
+}
+
+.navbar-toggler.active span {
+	@apply bg-white;
+}
+
+.navbar-toggler.active span:first-child {
+	@apply top-[7px] rotate-[135deg];
+}
+
+.navbar-toggler.active span:nth-child(2) {
+	@apply opacity-0 left-[-60px] top-[7px];
+}
+
+.navbar-toggler.active span:nth-child(3) {
+	@apply top-[7px] rotate-[-135deg];
+}

@@ -1,0 +1,33 @@
+@layer components{
+.footer-top {
+    @apply bg-white bg-[url(../images/background/bg10.jpg)] bg-[length:100%] bg-[top] bg-no-repeat;
+}
+
+.dlab-divide {
+    @apply absolute size-7.5 text-center block rounded-full leading-8 -translate-y-1/2;
+}
+
+.form-group .nice-select .list {
+    @apply !bottom-[60px] !top-auto;
+}
+
+ol.comment-list li .comment-body:before,
+ol.comment-list li .comment-body:after {
+    content: '';
+    @apply absolute top-[20px] w-0 h-0 border-solid;
+}
+
+ol.comment-list li .comment-body:before {
+    @apply border-r-white border-transparent left-[-12px] top-[22px] z-[1];
+    border-width: 10px 12px 10px 0;
+}
+
+ol.comment-list li .comment-body:after {
+    @apply border-r-[#e9e9e9] border-transparent left-[-14px];
+    border-width: 12px 14px 12px 0;
+}
+
+.rev-slider .tparrows {
+    @apply bg-primary;
+}
+}

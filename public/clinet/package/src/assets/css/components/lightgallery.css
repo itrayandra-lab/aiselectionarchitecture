@@ -1,0 +1,68 @@
+
+.lg-actions .lg-next,
+.lg-actions .lg-prev,
+.lg-sub-html,
+.lg-toolbar {
+	@apply bg-primary;
+}
+
+.lg-outer .lg-toogle-thumb,
+.lg-outer .lg-toogle-thumb:hover,
+.icon-bx-xs.check-km {
+	@apply text-white;
+}
+
+.lg-outer .lg-thumb-item.active,
+.lg-outer .lg-thumb-item:hover {
+	@apply border-[#fff];
+}
+
+.mfp-bg,
+.mfp-wrap {
+	@apply z-10;
+}
+
+.lg-outer .lg-toogle-thumb,
+.lg-outer .lg-thumb-outer,
+.lg-outer .lg-img-wrap,
+.lg-outer .lg-item {
+	@apply bg-white;
+}
+
+.lg-counter,
+.lg-toolbar .lg-icon {
+	@apply !text-white;
+}
+
+
+.lg-content .lg-prev,
+.lg-actions .lg-prev,
+.lg-sub-html,
+.lg-toolbar {
+	@apply bg-primary text-white;
+}
+
+.lg-content .lg-next,
+.lg-actions .lg-prev,
+.lg-sub-html,
+.lg-toolbar {
+	@apply bg-primary text-white;
+}
+
+
+.lg-outer.lg-visible {
+	@apply bg-white;
+}
+
+.lg-outer .lg-thumb-outer {
+	@apply !bg-white;
+}
+
+.lg-outer .lg-thumb-item {
+	@apply !float-left overflow-hidden h-full border border-white rounded-[4px] mb-[5px];
+}
+
+.style1 .filters2 .btn.active a,
+.style1 .filters .btn.active a {
+	@apply text-primary;
+}

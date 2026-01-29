@@ -1,206 +1,159 @@
-@if ($menu->count() > 0) 
-<header class="w-full bg-white sticky top-0 z-[9999] shadow-sm font-sans"> 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> 
-        <div class="flex justify-between items-center h-16">
-
-            <div class="flex-shrink-0 flex items-center">
-                <a href="{{ url('/') }}" class="text-3xl font-black italic tracking-tighter text-gray-900 font-serif">
-                    <img src="{{ $meta->logo }}" alt="" width="35">
-                </a>
+@if ($menu->count() > 0)
+<!-- header start -->
+<header class="relative z-10 block">
+    <div class="bg-primary border-b text-white md:block hidden py-[11px]">
+        <div class="container">
+            <div class="flex flex-wrap justify-between">
+                <div class="float-left">
+                    <ul class="flex gap-1.5">
+                        <li class="mr-3.75 inline-block"><i class="fa-solid fa-phone mr-1.25"></i> <a href="tel:{{ $meta->phone_number ?? '001 1234 6789' }}">{{ $meta->phone_number ?? '001 1234 6789' }}</a></li>
+                        <li class="mr-3.75 inline-block"><i class="fa-solid fa-at mr-1.25"></i> {{ $meta->email ?? '6701 Democracy Blvd, Suite 300, USA' }}</li>
+                    </ul>
+                </div>
+                <div class="topbar-social float-right">
+                    <ul class="flex">
+                        @if($meta->facebook ?? false)
+                        <li class="inline-block">
+                            <a target="_blank" href="{{ $meta->facebook }}" class="hover:text-[#3b5998] duration-500 px-1.5 inline-block">
+                                <i class="fa-brands fa-facebook-f ml-2.5"></i>
+                            </a>
+                        </li>
+                        @endif
+                        @if($meta->instagram ?? false)
+                        <li class="inline-block">
+                            <a target="_blank" href="{{ $meta->instagram }}" class="hover:text-[#de4e43] duration-500 px-1.5 inline-block">
+                                <i class="fa-brands fa-instagram ml-2.5"></i>
+                            </a>
+                        </li>
+                        @endif
+                        @if($meta->twitter ?? false)
+                        <li class="inline-block">
+                            <a target="_blank" href="{{ $meta->twitter }}" class="hover:text-black duration-500 px-1.5 inline-block">
+                                <i class="fa-brands fa-x-twitter ml-2.5"></i>
+                            </a>
+                        </li>
+                        @endif
+                        @if($meta->youtube ?? false)
+                        <li class="inline-block">
+                            <a target="_blank" href="{{ $meta->youtube }}" class="hover:text-[#de4e43] duration-500 px-1.5 inline-block">
+                                <i class="fa-brands fa-youtube ml-2.5"></i>
+                            </a>
+                        </li>
+                        @endif
+                    </ul>
+                </div>
             </div>
-
-            <nav class="hidden md:flex space-x-8 items-center">
-                @php
-                    $parents = $menu->where('type_1', 'parent');
-                    $menuItems = $menu->groupBy('parent_id');
-                @endphp
-
-                @foreach ($parents as $parent)
+        </div>
+    </div>
+    <!-- main header -->
+    <div class="sticky-header">
+        <div class="main-bar clearfix">
+            <div class="container clearfix">
+                <!-- website logo -->
+                <div class="max-lg:w-[110px] lg:w-[190px] absolute lg:left-1/2 lg:text-center h-20 table float-left align-middle z-10 duration-500 lg:-translate-x-1/2">
+                    <a href="{{ url('/') }}" class="table-cell lg:align-middle">
+                        <img class="w-[140px] z-[2] object-contain relative inline-block" src="{{ getFile($meta->logo) ?? asset('clinet/package/src/assets/images/logo-black.png') }}" alt="{{ $meta->web_name ?? 'BeautyZone' }}">
+                    </a>
+                </div>
+                <!-- nav toggle button -->
+                <button class="navbar-toggler relative lg:hidden w-5 h-4.5 relative rotate-0 duration-500 ease-in-out cursor-pointer md:mt-6.25 mt-4.5 md:mb-4.5 mb-3.5 md:ml-3.75 ml-2.5 float-right" type="button">
+                    <span class="block absolute h-0.5 w-full rounded-[1px] opacity-100 left-0 rotate-0 bg-[#666] duration-200 ease-in-out top-0"></span>
+                    <span class="block absolute h-0.5 w-full rounded-[1px] opacity-100 left-0 rotate-0 bg-[#666] duration-200 ease-in-out top-[7px]"></span>
+                    <span class="block absolute h-0.5 w-full rounded-[1px] opacity-100 left-0 rotate-0 bg-[#666] duration-200 ease-in-out top-3.5"></span>
+                </button>
+                <!-- main nav -->
+                <div class="Navigationbar lg:flex relative lg:justify-between max-lg:justify-end max-lg:fixed max-lg:h-full max-lg:top-0 max-lg:left-[-300px] max-lg:bg-white max-lg:z-10 max-lg:w-72 max-lg:overflow-y-scroll max-lg:duration-700">
+                    <div class="max-lg:block lg:hidden border-b border-[rgb(213_204_204)] max-lg:py-5 max-lg:px-3.75">
+                        <a href="{{ url('/') }}" class="flex justify-center">
+                            <img class="w-[140px] z-[2] object-contain relative" src="{{ getFile($meta->logo) ?? asset('clinet/package/src/assets/images/logo-black.png') }}" alt="{{ $meta->web_name ?? 'BeautyZone' }}">
+                        </a>
+                    </div>
+                    
                     @php
-                        $submenus = $menuItems[$parent->id] ?? collect();
-                        $hasSubmenus = $submenus->count() > 0;
+                        $parents = $menu->where('type_1', 'parent');
+                        $menuItems = $menu->groupBy('parent_id');
+                        $menuCount = $parents->count();
+                        $halfCount = ceil($menuCount / 2);
+                        $firstHalf = $parents->take($halfCount);
+                        $secondHalf = $parents->skip($halfCount);
                     @endphp
 
-                    <a href="{{ $parent->type_2 == 'page' ? url('page/' . $parent->slug) : url($parent->slug) }}"
-                        data-target="dropdown{{ $parent->id }}"
-                        class="dropdown-btn group inline-flex items-center text-sm font-semibold text-gray-700 hover:text-black transition-colors {{ $hasSubmenus ? 'parent-link' : '' }}">
-                        <span>{{ $parent->name }}</span>
-                        @if ($hasSubmenus)
-                            <svg class="ml-1 h-4 w-4 text-gray-400 group-hover:text-black transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        @endif
-                    </a>
-                @endforeach
-            </nav>
-
-            <div class="hidden md:flex items-center">
-                @auth
-                    <a href="/portal/login" class="inline-flex items-center justify-center px-5 py-2 border border-transparent text-sm font-medium rounded-full transition-all">
-                        {{ auth()->user()->name }}
-                        <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-icon lucide-circle-user ml-1"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
-                    </a>
-                @else
-                    <a href="/portal/login" class="inline-flex items-center justify-center px-5 py-2 border border-transparent text-sm font-medium rounded-full transition-all">
-                        Sign in
-                        <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1 lucide lucide-log-in-icon lucide-log-in"><path d="m10 17 5-5-5-5"/><path d="M15 12H3"/><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/></svg>
-                    </a>
-                @endauth
-            </div>
-
-            <div class="flex md:hidden items-center">
-                <button id="mobile-menu-btn" type="button" class="text-gray-700 hover:text-black focus:outline-none p-2">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full left-0 shadow-lg h-screen overflow-y-auto pb-20">
-        <div class="px-4 pt-2 pb-6 space-y-1">
-            @foreach ($parents as $parent)
-                @php
-                    $submenus = $menuItems[$parent->id] ?? collect();
-                    $hasSubmenus = $submenus->count() > 0;
-                @endphp
-
-                @if ($hasSubmenus)
-                    <div class="border-b border-gray-50 last:border-0">
-                        <div class="flex items-center justify-between pr-2">
-                            <a href="{{ $parent->type_2 == 'page' ? url('page/' . $parent->slug) : url($parent->slug) }}" 
-                               class="flex-1 block px-3 py-3 text-base font-medium text-gray-700 hover:text-black hover:bg-gray-50 rounded-l-md">
-                                {{ $parent->name }}
-                            </a>
-                            <button type="button" 
-                                    data-target="mobile-sub-{{ $parent->id }}"
-                                    class="mobile-submenu-toggle p-3 text-gray-500 hover:text-black hover:bg-gray-50 rounded-r-md focus:outline-none">
-                                <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div id="mobile-sub-{{ $parent->id }}" class="hidden bg-gray-50 rounded-md mb-2 ml-3">
-                            @foreach ($submenus as $submenu)
-                                <a href="{{ $submenu->type_2 == 'page' ? url('page/' . $submenu->slug) : url($submenu->slug) }}"
-                                   class="block pl-4 pr-3 py-2.5 text-sm font-medium text-gray-600 hover:text-black hover:bg-gray-100 rounded-md">
-                                    {{ $submenu->name }}
+                    <ul class="lg:flex lg:justify-between lg:w-[35%]">    
+                        @foreach ($firstHalf as $parent)
+                            @php
+                                $submenus = $menuItems[$parent->id] ?? collect();
+                                $hasSubmenus = $submenus->count() > 0;
+                            @endphp
+                            <li class="collapse-btn1 max-lg:border-b max-lg:border-[rgb(213_204_204)] uppercase relative group">
+                                <a href="{{ $parent->type_2 == 'page' ? url('page/' . $parent->slug) : url($parent->slug) }}" class="text-[15px] lg:py-7.5 lg:px-3 font-semibold text-black inline-block max-lg:py-2.5 max-lg:px-3.75 lg:group-hover:text-primary duration-500 max-lg:flex max-lg:justify-between max-lg:items-center">
+                                    {{ $parent->name }}
+                                    @if ($hasSubmenus)
+                                        <i class="!text-[9px] ml-[3px] mt-[-3px] align-middle fa fa-chevron-down"></i>
+                                    @endif
                                 </a>
-                            @endforeach
-                        </div>
-                    </div>
-                @else
-                    <a href="{{ $parent->type_2 == 'page' ? url('page/' . $parent->slug) : url($parent->slug) }}" 
-                       class="block px-3 py-3 text-base font-medium text-gray-700 hover:text-black hover:bg-gray-50 rounded-md border-b border-gray-50 last:border-0">
-                        {{ $parent->name }}
-                    </a>
-                @endif
-            @endforeach
-
-            <div class="pt-4 mt-4 border-t border-gray-100">
-                <a href="/portal/login" class="flex items-center justify-center w-full px-4 py-3 text-base font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800">
-                    @auth
-                        Dashboard
-                    @else
-                        Sign in
-                    @endauth
-                </a>
+                                @if ($hasSubmenus)
+                                    <ul class="dropdown-item hidden lg:block bg-white border-t border-primary lg:left-0 lg:opacity-0 lg:py-2.5 lg:absolute lg:invisible lg:w-[220px] z-10 lg:shadow-[0_0_40px_rgba(0,_0,_0,_.2)] lg:group-hover:visible max-lg:bg-[#f6f6f6] lg:group-hover:opacity-100 lg:group-hover:mt-0 duration-500 text-left">
+                                        @foreach ($submenus as $submenu)
+                                            <li class="relative">
+                                                <a href="{{ $submenu->type_2 == 'page' ? url('page/' . $submenu->slug) : url($submenu->slug) }}" class="text-[#505050] block text-sm py-2 px-5 capitalize duration-150 font-montserrat font-medium ease-linear hover:bg-[#F2F2F2] hover:text-primary">
+                                                    {{ $submenu->name }}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>    
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                    
+                    <ul class="lg:flex lg:justify-between lg:w-[35%]">    
+                        @foreach ($secondHalf as $parent)
+                            @php
+                                $submenus = $menuItems[$parent->id] ?? collect();
+                                $hasSubmenus = $submenus->count() > 0;
+                            @endphp
+                            <li class="collapse-btn1 max-lg:border-b max-lg:border-[rgb(213_204_204)] uppercase relative group">
+                                <a href="{{ $parent->type_2 == 'page' ? url('page/' . $parent->slug) : url($parent->slug) }}" class="max-lg:py-2.5 max-lg:px-3.75 rounded-none text-black text-3.75 lg:py-7.5 lg:px-3 cursor-pointer font-semibold inline-block lg:group-hover:text-primary duration-500 max-lg:flex max-lg:justify-between max-lg:items-center">
+                                    {{ $parent->name }}
+                                    @if ($hasSubmenus)
+                                        <i class="ml-[4px] mt-[-3px] align-middle fa fa-chevron-down !text-[9px]"></i>
+                                    @endif
+                                </a>
+                                @if ($hasSubmenus)
+                                    <ul class="dropdown-item hidden bg-white lg:block lg:left-0 lg:opacity-0 lg:py-2.5 lg:absolute lg:invisible lg:w-[220px] z-10 border-t border-primary lg:shadow-[0_0_40px_rgba(0,_0,_0,_.2)] lg:group-hover:visible max-lg:bg-[#f6f6f6] lg:group-hover:opacity-100 lg:group-hover:mt-0 duration-500 text-left">
+                                        @foreach ($submenus as $submenu)
+                                            <li class="relative">
+                                                <a href="{{ $submenu->type_2 == 'page' ? url('page/' . $submenu->slug) : url($submenu->slug) }}" class="text-[#505050] block text-sm py-2 px-5 capitalize duration-150 font-montserrat font-medium ease-linear hover:bg-[#F2F2F2] hover:text-primary">
+                                                    {{ $submenu->name }}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-
-    @foreach ($parents as $parent)
-        @php
-            $submenus = $menuItems[$parent->id] ?? collect();
-        @endphp
-
-        @if ($submenus->count())
-            <div id="dropdown{{ $parent->id }}" class="hidden absolute bg-white shadow rounded w-56 z-50 border border-gray-100 mt-2 py-2">
-                @foreach ($submenus as $submenu)
-                    <a href="{{ $submenu->type_2 == 'page' ? url('page/' . $submenu->slug) : url($submenu->slug) }}"
-                        class="block px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-black transition-colors">
-                        {{ $submenu->name }} 
-                    </a>
-                @endforeach
-            </div>
-        @endif
-    @endforeach
+    <!-- main header END -->
 </header>
+<!-- header end -->
 
 @push('scripts')
-    <script>
-        const dropdownButtons = document.querySelectorAll('.dropdown-btn');
-        const dropdownMenus = document.querySelectorAll('[id^="dropdown"]');
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const mobileSubmenuToggles = document.querySelectorAll('.mobile-submenu-toggle');
-
-        if(mobileMenuBtn){
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-        }
-
-        mobileSubmenuToggles.forEach(toggle => {
-            toggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = toggle.getAttribute('data-target');
-                const targetEl = document.getElementById(targetId);
-                const icon = toggle.querySelector('svg');
-                
-                if(targetEl) {
-                    targetEl.classList.toggle('hidden');
-                    icon.classList.toggle('rotate-180');
-                }
-            });
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const navToggle = document.querySelector('.navbar-toggler');
+    const navMenu = document.querySelector('.Navigationbar');
+    
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('max-lg:left-[-300px]');
+            navMenu.classList.toggle('max-lg:left-0');
         });
-
-        dropdownButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const target = button.getAttribute('data-target');
-
-                dropdownMenus.forEach(menu => {
-                    if (menu.id === target) {
-                        menu.classList.toggle('hidden');
-                        const rect = button.getBoundingClientRect();
-                        menu.style.left = rect.left + 'px'; 
-                    } else {
-                        menu.classList.add('hidden');
-                    }
-                });
-            });
-        });
-
-        window.addEventListener('click', () => {
-            dropdownMenus.forEach(menu => menu.classList.add('hidden'));
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const parentLinks = document.querySelectorAll('.parent-link');
-
-            parentLinks.forEach(link => {
-                let clickCount = 0;
-                let timeout;
-
-                link.addEventListener('click', function(e) {
-                    clickCount++;
-
-                    if (clickCount === 1) {
-                        e.preventDefault();
-                        timeout = setTimeout(() => {
-                            clickCount = 0;
-                        }, 300);
-                    } else if (clickCount === 2) {
-                        e.preventDefault();
-                        clearTimeout(timeout);
-                        clickCount = 0;
-                        window.location.href = this.getAttribute('href');
-                    }
-                });
-            });
-        });
-    </script>
+    }
+});
+</script>
 @endpush
 @endif

@@ -1,45 +1,77 @@
 @extends('layouts.client.app')
 
-@section('header')
-    @include('widget.client.header-section', [
-        'segment' => 'Halaman',
-        'data' => 'Informasi',
-    ])
-@endsection
-
 @section('content')
-    <div class="space-y-2">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 ">
-            @forelse ($info as $item)
-                <div class="border-b border-dashed border-gray-300 p-2">
-                    <div class="flex space-x-4 lg:text-2xl">
-                        <div class="rounded overflow-hidden">
-                            <img src="{{ asset('assets/img/informasi.png') }}" alt="" class="lg:w-10 w-7"
-                                srcset="">
-                        </div>
-                        <div class="flex-1 flex flex-col justify-between ">
-                            <div class="rounded">
-                                <a class="text-gray-700  font-semibold hover:text-gray-600 transition-colors duration-200"
-                                    href="/info/{{ $item->slug }}">
-                                    {{ $item->title }}
-                                </a>
+    <!-- inner page banner -->
+    <section>
+        <div class="lg:h-[300px] md:h-[200px] h-[150px] bg-top bg-cover bg-center table w-full text-left after:content-[''] after:absolute after:bg-primary after:opacity-80 after:left-0 after:top-0 after:size-full relative" style="background-image:url({{ asset('assets/img/dot.png') }});">
+            <div class="container relative z-[1] h-full table">
+                <div class="table-cell align-middle text-center">
+                    <h1 class="text-white font-nunito font-extrabold md:mb-3.75 mb-1.25 text-xl md:text-[48px]/[58px]">Informasi</h1>
+                    <!-- Breadcrumb row Start-->
+                    <div>
+                        <ul class="text-[15px] font-montserrat">
+                            <li class="mr-[3px] text-white inline-block md:text-lg text-[15px] font-medium">
+                                <a href="{{ route('beranda') }}" class="after:content-['\f105'] after:ml-[7px] after:font-[fontawesome] after:text-sm">Beranda</a>
+                            </li>
+                            <li class="mr-[3px] text-white inline-block md:text-lg text-[15px] font-medium">Informasi</li>
+                        </ul>
+                    </div>
+                    <!-- Breadcrumb row END -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- inner page banner END -->
+
+    <!-- section Blog large start -->
+    <section>
+        <div class="md:pt-14.5 py-7.5 md:mb-13.5">
+            <div class="container">
+                @forelse ($info as $item)
+                <!-- Blog large img -->
+                <div class="relative md:mb-4.75 mb-7.5">
+                    <div class="rounded-[4px] block overflow-hidden align-middle group">
+                        <a href="{{ route('info_detail', $item->slug) }}">
+                            <div class="w-full h-48 bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
+                                <i class="fas fa-info-circle text-white text-6xl"></i>
                             </div>
-                            <div class="flex items-center justify-between gap-x-4 text-xs mt-2">
-                                <time datetime="{{ \Carbon\Carbon::parse($item->published_at)->toDateTimeString() }}"
-                                    class="text-gray-500">
-                                    {{ \Carbon\Carbon::parse($item->published_at)->locale('id')->translatedFormat('l, d M Y') }}
-                                </time>
-                            </div>
+                        </a>
+                    </div>
+                    <div class="relative">
+                        <div class="mb-1.25 px-1.25 pt-4">
+                            <ul class="flex items-center -mx-1 capitalize font-montserrat">
+                                <li class="inline-block text-[#707070] font-medium text-[13px] after:content-['|'] after:inline-block after:font-normal after:mx-1 after:opacity-50">{{ \Carbon\Carbon::parse($item->published_at)->locale('id')->translatedFormat('d M Y') }}</li>
+                                <li class="inline-block text-[#707070] font-medium text-[13px] after:inline-block after:font-normal after:mx-1 after:opacity-50">Oleh <a href="#">{{ $item->createdBy->name ?? 'Admin' }}</a></li>
+                            </ul>
                         </div>
                     </div>
+                    <div class="mb-1.25">
+                        <h4 class="mb-1.25 text-2xl text-[#232323] leading-8 font-bold hover:text-primary duration-500 font-nunito">
+                            <a href="{{ route('info_detail', $item->slug) }}">{{ $item->title }}</a>
+                        </h4>
+                    </div>
+                    <div class="mb-2.5">
+                        <p class="leading-6">{{ Str::limit(strip_tags($item->description), 200) }}</p>
+                    </div>
+                    <div class="relative">
+                        <a href="{{ route('info_detail', $item->slug) }}" title="BACA SELENGKAPNYA" rel="bookmark" class="inline-block font-normal text-[#171717] border-b-[2px] hover:text-primary hover:duration-500 duration-500">BACA SELENGKAPNYA</a>
+                    </div>
                 </div>
-            @empty
-                <div class="col-span-2">
-                    @include('widget.client.no-data-search')
+                @empty
+                <div class="text-center py-10">
+                    <h3 class="text-2xl font-bold text-[#232323] mb-4">Tidak ada informasi ditemukan</h3>
+                    <p class="text-[#707070]">Belum ada informasi yang tersedia saat ini.</p>
                 </div>
-            @endforelse
+                @endforelse
+
+                <!-- Pagination -->
+                @if($info->hasPages())
+                <div class="text-center mt-10">
+                    {{ $info->appends(request()->query())->links() }}
+                </div>
+                @endif
+            </div>
         </div>
-    </div>
-    <hr class="w-48 h-1 mx-auto my-4 bg-gray-100 border-0 rounded-sm md:my-10 ">
-    @include('widget.client.paginate', ['data' => $info])
+    </section>
+    <!-- section Blog large end -->
 @endsection
