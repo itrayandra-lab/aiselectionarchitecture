@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Helpers\LogSystemHelper;
 
 class LoginController extends Controller
 {
@@ -77,6 +78,14 @@ class LoginController extends Controller
                 'user_agent' => $request->userAgent(),
             ]);
             
+            // Send to Log System
+            LogSystemHelper::warning('security', 'Login gagal - user tidak ditemukan', [
+                'login_field' => $credentials['email'],
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'timestamp' => now()->format('Y-m-d H:i:s'),
+            ]);
+            
             RateLimiter::hit($this->throttleKey($request));
             return back()->with('error', 'Email atau password salah. Silakan coba lagi.');
         }
@@ -87,6 +96,17 @@ class LoginController extends Controller
                 'email' => $user->email,
                 'status' => $user->status,
                 'ip' => $request->ip(),
+            ]);
+            
+            // Send to Log System
+            LogSystemHelper::warning('security', 'Login gagal - akun tidak aktif', [
+                'login_field' => $credentials['email'],
+                'user_id' => $user->id,
+                'user_email' => $user->email,
+                'user_status' => $user->status,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'timestamp' => now()->format('Y-m-d H:i:s'),
             ]);
             
             return back()->with('error', 'Akun Anda tidak aktif. Silakan hubungi admin.');
@@ -105,6 +125,19 @@ class LoginController extends Controller
                 'remember_me' => $remember,
             ]);
 
+            // Send to Log System
+            LogSystemHelper::info('security', 'Login berhasil', [
+                'login_field' => $credentials['email'],
+                'remember_me' => $remember,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'timestamp' => now()->format('Y-m-d H:i:s'),
+            ], [
+                'user_id' => $user->id,
+                'user_email' => $user->email,
+                'user_name' => $user->name,
+            ]);
+
             RateLimiter::clear($this->throttleKey($request));
 
             return redirect()->intended('/portal/home')->with('success', 'Login berhasil! Selamat datang kembali.');
@@ -115,6 +148,16 @@ class LoginController extends Controller
             'email' => $user->email,
             'ip' => $request->ip(),
             'user_agent' => $request->userAgent(),
+        ]);
+
+        // Send to Log System
+        LogSystemHelper::warning('security', 'Login gagal - password salah', [
+            'login_field' => $credentials['email'],
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'timestamp' => now()->format('Y-m-d H:i:s'),
         ]);
 
         RateLimiter::hit($this->throttleKey($request));

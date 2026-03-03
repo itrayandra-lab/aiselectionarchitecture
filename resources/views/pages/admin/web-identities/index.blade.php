@@ -124,6 +124,118 @@
                                     @enderror
                                 </div>
 
+                                <!-- Google Analytics & Tracking Section -->
+                                <hr>
+                                <h4 class="text-primary"><i class="fa fa-chart-line"></i> Google Analytics & Tracking</h4>
+                                
+                                <div class="form-group">
+                                    <label for="google_analytics_id">Google Analytics ID</label>
+                                    <input type="text" name="google_analytics_id" class="form-control"
+                                        value="{{ old('google_analytics_id', $webIdentity->google_analytics_id ?? '') }}"
+                                        placeholder="G-XXXXXXXXXX">
+                                    <small class="text-muted">Measurement ID dari Google Analytics 4 (GA4)</small>
+                                    @error('google_analytics_id')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="google_tag_manager_id">Google Tag Manager ID</label>
+                                    <input type="text" name="google_tag_manager_id" class="form-control"
+                                        value="{{ old('google_tag_manager_id', $webIdentity->google_tag_manager_id ?? '') }}"
+                                        placeholder="GTM-XXXXXXX">
+                                    <small class="text-muted">Container ID dari Google Tag Manager</small>
+                                    @error('google_tag_manager_id')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="google_site_verification">Google Site Verification</label>
+                                    <input type="text" name="google_site_verification" class="form-control"
+                                        value="{{ old('google_site_verification', $webIdentity->google_site_verification ?? '') }}"
+                                        placeholder="kode-verifikasi-dari-google-search-console">
+                                    <small class="text-muted">Kode verifikasi dari Google Search Console</small>
+                                    @error('google_site_verification')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="facebook_pixel_id">Facebook Pixel ID</label>
+                                    <input type="text" name="facebook_pixel_id" class="form-control"
+                                        value="{{ old('facebook_pixel_id', $webIdentity->facebook_pixel_id ?? '') }}"
+                                        placeholder="1234567890123456">
+                                    <small class="text-muted">Facebook Pixel ID untuk tracking (opsional)</small>
+                                    @error('facebook_pixel_id')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <!-- Advanced Tracking Codes -->
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" href="#advancedTracking">
+                                                <i class="fa fa-code"></i> Advanced Tracking Codes (Opsional)
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="advancedTracking" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <div class="form-group">
+                                                <label for="google_analytics_code">Custom Google Analytics Code</label>
+                                                <textarea name="google_analytics_code" class="form-control" rows="4"
+                                                    placeholder="<!-- Paste full GA tracking code here -->">{{ old('google_analytics_code', $webIdentity->google_analytics_code ?? '') }}</textarea>
+                                                <small class="text-muted">Full tracking code jika ingin custom (opsional)</small>
+                                                @error('google_analytics_code')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="google_tag_manager_head">Custom GTM Head Code</label>
+                                                <textarea name="google_tag_manager_head" class="form-control" rows="4"
+                                                    placeholder="<!-- Paste GTM head code here -->">{{ old('google_tag_manager_head', $webIdentity->google_tag_manager_head ?? '') }}</textarea>
+                                                <small class="text-muted">Custom GTM code untuk &lt;head&gt; (opsional)</small>
+                                                @error('google_tag_manager_head')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="google_tag_manager_body">Custom GTM Body Code</label>
+                                                <textarea name="google_tag_manager_body" class="form-control" rows="4"
+                                                    placeholder="<!-- Paste GTM body code here -->">{{ old('google_tag_manager_body', $webIdentity->google_tag_manager_body ?? '') }}</textarea>
+                                                <small class="text-muted">Custom GTM code untuk &lt;body&gt; (opsional)</small>
+                                                @error('google_tag_manager_body')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="custom_head_scripts">Custom Head Scripts</label>
+                                                <textarea name="custom_head_scripts" class="form-control" rows="4"
+                                                    placeholder="<!-- Custom scripts for <head> -->">{{ old('custom_head_scripts', $webIdentity->custom_head_scripts ?? '') }}</textarea>
+                                                <small class="text-muted">Script custom untuk &lt;head&gt; section</small>
+                                                @error('custom_head_scripts')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="custom_body_scripts">Custom Body Scripts</label>
+                                                <textarea name="custom_body_scripts" class="form-control" rows="4"
+                                                    placeholder="<!-- Custom scripts for <body> -->">{{ old('custom_body_scripts', $webIdentity->custom_body_scripts ?? '') }}</textarea>
+                                                <small class="text-muted">Script custom untuk &lt;body&gt; section</small>
+                                                @error('custom_body_scripts')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                  <div class="form-group">
                                     <label for="status">Status</label>
                                     <select name="status" class="form-control">

@@ -28,9 +28,119 @@ class InterfaceController extends Controller
     #landing start
     public function beranda()
     {
+        // Get or create services section
+        $servicesSection = \App\Models\Section::firstOrCreate(
+            ['unique_section' => 'services_section'],
+            [
+                'name' => 'Services Section',
+                'order' => 1,
+                'is_active' => true,
+                'content' => [
+                    'title' => 'layanan labcos',
+                    'description' => 'Solusi lengkap untuk pengembangan dan pengujian produk kosmetik dengan standar internasional dan teknologi terdepan.',
+                    'services' => [
+                        [
+                            'icon' => 'fas fa-flask',
+                            'title' => 'Cosmetics Testing & Analysis Services',
+                            'description' => 'Pengujian komprehensif untuk memastikan keamanan, kualitas, dan kepatuhan produk kosmetik sesuai standar nasional dan internasional.',
+                        ],
+                        [
+                            'icon' => 'fas fa-microscope',
+                            'title' => 'Research & Development Services',
+                            'description' => 'Inovasi produk berbasis riset untuk menciptakan formula kosmetik yang efektif, aman, dan sesuai kebutuhan pasar.',
+                        ],
+                        [
+                            'icon' => 'fas fa-user-tie',
+                            'title' => 'Consultation',
+                            'description' => 'Konsultasi profesional untuk mendukung pengembangan produk dan strategi pasar yang tepat dengan panduan ahli berpengalaman.',
+                        ],
+                        [
+                            'icon' => 'fas fa-certificate',
+                            'title' => 'Regulatory Compliance Services',
+                            'description' => 'Layanan pendampingan untuk memastikan produk kosmetik memenuhi regulasi BPOM dan standar keamanan yang berlaku di Indonesia.',
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        // Get or create why choose us sections
+        $whySection1 = \App\Models\Section::firstOrCreate(
+            ['unique_section' => 'why_section_1'],
+            [
+                'name' => 'Why Section 1',
+                'order' => 2,
+                'is_active' => true,
+                'content' => [
+                    'title' => 'Pengalaman Expert dengan Hasil Terbaik',
+                    'description' => 'Labcos menggabungkan pengalaman luas dan keahlian teknis untuk membantu brand kosmetik mencapai standar kualitas tertinggi dengan hasil yang nyata.',
+                    'image' => 'assets/img/About-expert.webp',
+                    'features' => [
+                        'Tim Ahli yang Berpengalaman',
+                        'Layanan Pengujian Komprehensif',
+                        'Konsultasi Profesional',
+                    ],
+                ],
+            ]
+        );
+
+        $whySection2 = \App\Models\Section::firstOrCreate(
+            ['unique_section' => 'why_section_2'],
+            [
+                'name' => 'Why Section 2',
+                'order' => 3,
+                'is_active' => true,
+                'content' => [
+                    'title' => 'Kenapa memilih kami ?',
+                    'description' => 'Kami Berkomitmen Menjadi Mitra Strategis dalam Memastikan Produk Anda Mencapai Standar Kualitas Terbaik',
+                    'image' => 'assets/img/why-chooce-min-1.webp',
+                    'features' => [
+                        'Pengujian komprehensif untuk keamanan, efektivitas, dan kepatuhan standar.',
+                        'Membantu brand menciptakan formula kosmetik inovatif dan unggul.',
+                        'Memastikan produk Anda sesuai dengan semua regulasi dan standar.',
+                    ],
+                ],
+            ]
+        );
+
+        // Get or create CTA section
+        $ctaSection = \App\Models\Section::firstOrCreate(
+            ['unique_section' => 'cta_section'],
+            [
+                'name' => 'Call to Action Section',
+                'order' => 4,
+                'is_active' => true,
+                'content' => [
+                    'title' => 'Siap Mengembangkan Produk Kosmetik Anda?',
+                    'description' => 'Hubungi tim ahli kami untuk konsultasi gratis dan dapatkan solusi terbaik untuk kebutuhan pengujian dan pengembangan produk kosmetik Anda.',
+                    'button_text' => 'Hubungi Kami',
+                    'button_url' => 'https://api.whatsapp.com/send/?phone=6285220710909&text=Halo%21+%EF%BF%BD+Terima+kasih+sudah+menghubungi+Labcos.+Ada+yang+bisa+kami+bantu%3F&type=phone_number&app_absent=0',
+                ],
+            ]
+        );
+
+        // Get or create News section
+        $newsSection = \App\Models\Section::firstOrCreate(
+            ['unique_section' => 'news_section'],
+            [
+                'name' => 'News Section',
+                'order' => 5,
+                'is_active' => true,
+                'content' => [
+                    'title' => 'Wawasan & Berita Terbaru',
+                    'description' => 'Temukan informasi terkini seputar inovasi produk, tren pasar kecantikan, dan panduan regulasi langsung dari tim ahli Labcos untuk mendukung kesuksesan brand Anda.',
+                ],
+            ]
+        );
+
         $data = [
             'heros'     => $this->datas->information('banner', 3, true),
             'latestPost'  => $this->datas->latestPublished(6),
+            'servicesSection' => $servicesSection,
+            'whySection1' => $whySection1,
+            'whySection2' => $whySection2,
+            'ctaSection' => $ctaSection,
+            'newsSection' => $newsSection,
         ];
 
         return view('pages.client.beranda', $data);
@@ -450,14 +560,6 @@ class InterfaceController extends Controller
         return view('pages.client.info-detail', $data); 
     }
 
-    #about us
-    public function about() {
-        $data = [
-            'galleryPhotos' => AlbumPhoto::latest()->take(6)->get(),
-        ];
-        return view('pages.client.about-us', $data);
-    }
-
     #contact
     public function contact() {
         $data = [
@@ -476,10 +578,18 @@ class InterfaceController extends Controller
             'counter' => $page->counter + 1
         ]);
         $modifiedContent = $this->applyTailwindClasses($page->content);
+        
+        // Get most popular posts for sidebar
+        $mostPopular = Posts::where('status', 'published')
+            ->orderBy('counter', 'desc')
+            ->take(5)
+            ->get();
+        
         $data = [
             'page' => $page,
             'content' => $modifiedContent,
             'galleryPhotos' => AlbumPhoto::latest()->take(6)->get(),
+            'mostPopular' => $mostPopular,
         ];
         return view('pages.client.page-detail', $data);
     }

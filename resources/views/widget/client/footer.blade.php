@@ -95,7 +95,7 @@
     <!--footer top end -->
     
     <!--footer bottom start -->
-    <div class="py-6.25 text-center" style="background-color: #228fe7; color: white;">
+    <div class="py-6.25 text-center" style="background-color: #00becf; color: white;">
         <div class="container">
             <div class="grid grid-cols-12">
                 <div class="sm:col-span-6 col-span-12 text-center md:text-left">

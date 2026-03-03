@@ -80,6 +80,19 @@ class MetaServiceProvider extends ServiceProvider
                         $defaultMeta['logo'] = $webIdentity->logo ? getFile($webIdentity->logo) : $defaultMeta['logo'];
                         $defaultMeta['status'] = $webIdentity->status ?? $defaultMeta['status'];
                         $defaultMeta['version'] = $webIdentity->version ?? $defaultMeta['version'];
+                        
+                        // Google Analytics & Tag Manager
+                        $defaultMeta['google_analytics_id'] = $webIdentity->google_analytics_id ?? null;
+                        $defaultMeta['google_tag_manager_id'] = $webIdentity->google_tag_manager_id ?? null;
+                        $defaultMeta['google_site_verification'] = $webIdentity->google_site_verification ?? null;
+                        $defaultMeta['google_analytics_code'] = $webIdentity->google_analytics_code ?? null;
+                        $defaultMeta['google_tag_manager_head'] = $webIdentity->google_tag_manager_head ?? null;
+                        $defaultMeta['google_tag_manager_body'] = $webIdentity->google_tag_manager_body ?? null;
+                        
+                        // Facebook Pixel & Custom Scripts
+                        $defaultMeta['facebook_pixel_id'] = $webIdentity->facebook_pixel_id ?? null;
+                        $defaultMeta['custom_head_scripts'] = $webIdentity->custom_head_scripts ?? null;
+                        $defaultMeta['custom_body_scripts'] = $webIdentity->custom_body_scripts ?? null;
                     }
                 }
             } catch (\Exception) {

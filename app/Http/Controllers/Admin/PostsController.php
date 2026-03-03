@@ -113,8 +113,9 @@ class PostsController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'nullable|string',
-            'category_id' => 'nullable|exists:post_categories,id',
-            'tags' => 'nullable|array',
+            'category_id' => 'required|exists:post_categories,id',
+            'tags' => 'required|array|min:1',
+            'tags.*' => 'exists:post_tags,id',
             'status' => 'required|in:active,inactive',
             'domains' => 'nullable|array',
             'domains.*' => 'string',
@@ -227,8 +228,8 @@ class PostsController extends Controller
             'image' => 'nullable|image|max:2048',
             'content' => 'nullable|string',
             'status' => 'required|in:active,inactive',
-            'category_id' => 'nullable|exists:post_categories,id',
-            'tags' => 'nullable|array',
+            'category_id' => 'required|exists:post_categories,id',
+            'tags' => 'required|array|min:1',
             'tags.*' => 'exists:post_tags,id',
             'published_at' => 'nullable|date',
         ]);

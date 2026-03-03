@@ -1,53 +1,10 @@
 @if ($menu->count() > 0)
 <!-- header start -->
 <header class="relative z-10 block">
-    <div class="bg-primary border-b text-white md:block hidden py-[11px]">
-        <div class="container">
-            <div class="flex flex-wrap justify-between">
-                <div class="float-left">
-                    <ul class="flex gap-1.5">
-                        <li class="mr-3.75 inline-block"><i class="fa-solid fa-phone mr-1.25"></i> <a href="tel:{{ $meta->phone_number ?? '001 1234 6789' }}">{{ $meta->phone_number ?? '001 1234 6789' }}</a></li>
-                        <li class="mr-3.75 inline-block"><i class="fa-solid fa-at mr-1.25"></i> {{ $meta->email ?? '6701 Democracy Blvd, Suite 300, USA' }}</li>
-                    </ul>
-                </div>
-                <div class="topbar-social float-right">
-                    <ul class="flex">
-                        @if($meta->facebook ?? false)
-                        <li class="inline-block">
-                            <a target="_blank" href="{{ $meta->facebook }}" class="hover:text-[#3b5998] duration-500 px-1.5 inline-block">
-                                <i class="fa-brands fa-facebook-f ml-2.5"></i>
-                            </a>
-                        </li>
-                        @endif
-                        @if($meta->instagram ?? false)
-                        <li class="inline-block">
-                            <a target="_blank" href="{{ $meta->instagram }}" class="hover:text-[#de4e43] duration-500 px-1.5 inline-block">
-                                <i class="fa-brands fa-instagram ml-2.5"></i>
-                            </a>
-                        </li>
-                        @endif
-                        @if($meta->twitter ?? false)
-                        <li class="inline-block">
-                            <a target="_blank" href="{{ $meta->twitter }}" class="hover:text-black duration-500 px-1.5 inline-block">
-                                <i class="fa-brands fa-x-twitter ml-2.5"></i>
-                            </a>
-                        </li>
-                        @endif
-                        @if($meta->youtube ?? false)
-                        <li class="inline-block">
-                            <a target="_blank" href="{{ $meta->youtube }}" class="hover:text-[#de4e43] duration-500 px-1.5 inline-block">
-                                <i class="fa-brands fa-youtube ml-2.5"></i>
-                            </a>
-                        </li>
-                        @endif
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+   
     <!-- main header -->
-    <div class="sticky-header">
-        <div class="main-bar clearfix">
+    <div class="sticky-header {{ Request::is('/') ? 'home-header-transparent' : '' }}">
+        <div class="main-bar clearfix {{ Request::is('/') ? 'bg-transparent' : 'bg-white' }}">
             <div class="container clearfix">
                 <!-- website logo -->
                 <div class="max-lg:w-[110px] lg:w-[190px] absolute lg:left-1/2 lg:text-center h-20 table float-left align-middle z-10 duration-500 lg:-translate-x-1/2">
@@ -153,7 +110,75 @@ document.addEventListener('DOMContentLoaded', function() {
             navMenu.classList.toggle('max-lg:left-0');
         });
     }
+
+    // Header scroll effect for home page
+    const stickyHeader = document.querySelector('.home-header-transparent');
+    if (stickyHeader) {
+        const mainBar = stickyHeader.querySelector('.main-bar');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                mainBar.classList.remove('bg-transparent');
+                mainBar.classList.add('bg-white', 'shadow-md');
+            } else {
+                mainBar.classList.add('bg-transparent');
+                mainBar.classList.remove('bg-white', 'shadow-md');
+            }
+        });
+    }
 });
 </script>
+
+<style>
+.sticky-header {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+/* Transparent header styles for home page */
+.home-header-transparent {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+}
+
+.home-header-transparent .main-bar {
+    transition: all 0.3s ease;
+}
+
+.home-header-transparent .main-bar.bg-transparent {
+    background-color: transparent !important;
+    box-shadow: none;
+}
+
+/* Text color adjustments for transparent header */
+.home-header-transparent .bg-transparent a,
+.home-header-transparent .bg-transparent .navbar-toggler span {
+    color: white !important;
+}
+
+.home-header-transparent .bg-transparent .navbar-toggler span {
+    background-color: white !important;
+}
+
+/* When scrolled, revert to normal colors */
+.home-header-transparent .bg-white a {
+    color: #000 !important;
+}
+
+.home-header-transparent .bg-white .navbar-toggler span {
+    background-color: #666 !important;
+}
+
+/* Logo filter for better visibility on transparent background */
+.home-header-transparent .bg-transparent img {
+    filter: brightness(0) invert(1);
+}
+
+.home-header-transparent .bg-white img {
+    filter: none;
+}
+</style>
 @endpush
 @endif

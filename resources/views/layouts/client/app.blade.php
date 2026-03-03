@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <!-- TITLE -->
     <title>{{ $meta->meta_title ?? 'BeautyZone : Beauty Spa Salon' }}</title>
@@ -10,15 +10,26 @@
     <meta name="author" content="{{ $meta->web_name ?? 'BeautyZone' }}">
     <meta name="robots" content="index, follow">
     <meta name="format-detection" content="telephone=no">
+    
+    <!-- Google Site Verification -->
+    @if(!empty($meta->google_site_verification))
+    <meta name="google-site-verification" content="{{ $meta->google_site_verification }}">
+    @endif
 
     <meta name="keywords" content="{{ $meta->meta_keywords ?? 'beauty, spa, salon, tailwind css, beauty spa template, salon website, spa design, responsive design, wellness center, beauty salon template' }}">
     <meta name="description" content="{{ $meta->meta_description ?? 'Discover a modern and responsive Beauty Spa Salon template designed with Tailwind CSS. Perfect for wellness centers, beauty salons, and spa services.' }}">
     
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ url()->current() }}">
+    
+    <!-- Open Graph / Facebook -->
     <meta property="og:title" content="{{ $meta->meta_title ?? 'BeautyZone : Beauty Spa Salon' }}">
     <meta property="og:description" content="{{ $meta->meta_description ?? 'Discover a modern and responsive Beauty Spa Salon template designed with Tailwind CSS.' }}">
     <meta property="og:image" content="{{ getFile($meta->og_image) ?? asset('clinet/package/src/assets/images/social-image.png') }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ $meta->web_name ?? 'BeautyZone' }}">
+    <meta property="og:locale" content="id_ID">
     
     <!-- TWITTER META -->
     <meta name="twitter:title" content="{{ $meta->meta_title ?? 'BeautyZone : Beauty Spa Salon' }}">
@@ -31,6 +42,90 @@
     
     <!-- favicon Icons -->
     <link rel="icon" type="image/x-icon" href="{{ getFile($meta->favicon) ?? asset('clinet/package/src/assets/images/favicon.png') }}">
+    
+    <!-- Google Analytics -->
+    @if(!empty($meta->google_analytics_id))
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $meta->google_analytics_id }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ $meta->google_analytics_id }}', {
+        'page_path': window.location.pathname,
+        'page_title': document.title
+      });
+    </script>
+    @endif
+    
+    <!-- Google Tag Manager -->
+    @if(!empty($meta->google_tag_manager_id))
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','{{ $meta->google_tag_manager_id }}');</script>
+    @endif
+    
+    <!-- Custom Google Analytics Code -->
+    @if(!empty($meta->google_analytics_code))
+    {!! $meta->google_analytics_code !!}
+    @endif
+    
+    <!-- Custom GTM Head Code -->
+    @if(!empty($meta->google_tag_manager_head))
+    {!! $meta->google_tag_manager_head !!}
+    @endif
+    
+    <!-- Facebook Pixel -->
+    @if(!empty($meta->facebook_pixel_id))
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '{{ $meta->facebook_pixel_id }}');
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id={{ $meta->facebook_pixel_id }}&ev=PageView&noscript=1"
+    /></noscript>
+    @endif
+    
+    <!-- Custom Head Scripts -->
+    @if(!empty($meta->custom_head_scripts))
+    {!! $meta->custom_head_scripts !!}
+    @endif
+    
+    <!-- Schema.org Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "{{ $meta->web_name ?? 'BeautyZone' }}",
+      "url": "{{ $meta->domain ?? url('/') }}",
+      "logo": "{{ getFile($meta->logo) ?? asset('clinet/package/src/assets/images/logo.png') }}",
+      "description": "{{ $meta->meta_description ?? 'Beauty Spa Salon' }}",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "{{ $meta->phone_number ?? '' }}",
+        "contactType": "Customer Service",
+        "areaServed": "ID",
+        "availableLanguage": ["Indonesian", "English"]
+      },
+      "sameAs": [
+        @if(!empty($meta->facebook_link))"{{ $meta->facebook_link }}",@endif
+        @if(!empty($meta->instagram_link))"{{ $meta->instagram_link }}",@endif
+        @if(!empty($meta->youtube_link))"{{ $meta->youtube_link }}",@endif
+        @if(!empty($meta->twitter_link))"{{ $meta->twitter_link }}"@endif
+      ]
+    }
+    </script>
+    
+    @stack('schema')
     
     <!-- Icons -->
     <link rel="stylesheet" href="{{ asset('clinet/package/src/assets/icons/flaticon/flaticon.css') }}">
@@ -61,8 +156,33 @@
 
     {{-- Stack untuk CSS tambahan --}}
     @stack('styles')
+
+    <style>
+        .benner-swiper-button .swiper-button-prev {
+            border-radius: 40px;
+        }
+        .benner-swiper-button .swiper-button-next {
+            border-radius: 40px;
+        }
+    </style>
 </head>
 <body id="bg" class="selection:bg-primary selection:text-white font-Sans skin-1">
+    
+    <!-- Google Tag Manager (noscript) -->
+    @if(!empty($meta->google_tag_manager_id))
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $meta->google_tag_manager_id }}"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @endif
+    
+    <!-- Custom GTM Body Code -->
+    @if(!empty($meta->google_tag_manager_body))
+    {!! $meta->google_tag_manager_body !!}
+    @endif
+    
+    <!-- Custom Body Scripts -->
+    @if(!empty($meta->custom_body_scripts))
+    {!! $meta->custom_body_scripts !!}
+    @endif
     
     <!-- Preloader Start -->
     <div id="loading-area"></div>
@@ -71,7 +191,6 @@
     <!-- Header Start -->
     @include('widget.client.header')
     <!-- Header End -->
-    
     <!-- Content Start -->
     @yield('content')
     <!-- Content End -->
@@ -100,6 +219,9 @@
     <script src="{{ asset('clinet/package/src/assets/js/dz.carousel.js') }}"></script>
     <script src="{{ asset('clinet/package/src/assets/js/custom.js') }}"></script>
     <script src="{{ asset('clinet/package/src/assets/js/custom-laravel.js') }}"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     {{-- Stack untuk JavaScript tambahan --}}
     @stack('scripts')

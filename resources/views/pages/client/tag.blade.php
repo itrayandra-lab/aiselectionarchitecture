@@ -20,29 +20,26 @@
                                 <div class="md:col-span-6 col-span-12">
                                     <div class="relative mb-4.75">
                                         <div class="rounded-[4px] overflow-hidden align-middle">
-                                            <a href="/{{ $item->category->slug }}/{{ $item->slug }}">
+                                            <a href="/{{ $item?->category?->slug }}/{{ $item->slug }}">
                                                 <img class="w-full h-auto block" src="{{ getFile($item->image) }}" alt="{{ $item->title }}">
                                             </a>
                                         </div>
                                         <div class="relative">
                                             <div class="mb-1.25 px-1.25 pt-4">
                                                 <ul class="flex items-center -mx-1 capitalize font-montserrat">
-                                                    <li class="inline-block text-[#707070] font-medium text-[13px] after:content-['|'] after:inline-block after:font-normal after:mx-1 after:opacity-50">
-                                                        {{ \Carbon\Carbon::parse($item->published_at)->locale('id')->translatedFormat('d M Y') }}
-                                                    </li>
                                                     <li class="inline-block text-[#707070] font-medium text-[13px]">
-                                                        <a href="/{{ $item->category->slug }}/{{ $item->slug }}">{{ $item->counter ?? '0' }}</a>
+                                                        {{ \Carbon\Carbon::parse($item->published_at)->locale('id')->translatedFormat('d M Y') }}
                                                     </li>
                                                 </ul>
                                             </div>
                                         </div>	
                                         <div class="mb-1.25">
                                             <h4 class="mb-1.25 text-xl text-[#232323] leading-8 font-bold hover:text-primary duration-500 font-nunito">
-                                                <a href="/{{ $item->category->slug }}/{{ $item->slug }}">{{ $item->title }}</a>
+                                                <a href="/{{ $item?->category?->slug }}/{{ $item->slug }}">{{ $item->title }}</a>
                                             </h4>
                                         </div>
                                         <div class="relative"> 
-                                            <a href="/{{ $item->category->slug }}/{{ $item->slug }}" title="BACA SELENGKAPNYA" rel="bookmark" class="text-[#171717] border-b-[2px] hover:text-primary hover:duration-500 duration-500 inline-block">BACA SELENGKAPNYA</a>
+                                            <a href="/{{ $item?->category?->slug }}/{{ $item->slug }}" title="BACA SELENGKAPNYA" rel="bookmark" class="text-[#171717] border-b-[2px] hover:text-primary hover:duration-500 duration-500 inline-block">BACA SELENGKAPNYA</a>
                                         </div>
                                     </div>
                                 </div>
@@ -151,16 +148,13 @@
                                         <div class="overflow-hidden table-cell align-middle ml-[110px]">
                                             <div class="dlab-post-header">
                                                 <h6 class="leading-4 mb-2 capitalize text-[15px] text-black font-bold">
-                                                    <a href="/{{ $popular->category->slug }}/{{ $popular->slug }}">{{ Str::limit($popular->title, 50) }}</a>
+                                                    <a href="/{{ $popular?->category?->slug }}/{{ $popular->slug }}">{{ Str::limit($popular->title, 50) }}</a>
                                                 </h6>
                                             </div>
                                             <div class="dlab-post-meta">
                                                 <ul class="flex items-center">
-                                                    <li class="text-[#707070] inline-block text-[13px] after:content-['|'] after:inline-block after:mx-1.25 after:opacity-50">
-                                                        {{ \Carbon\Carbon::parse($popular->published_at)->locale('id')->translatedFormat('d M Y') }}
-                                                    </li>
                                                     <li class="text-[#707070] inline-block text-[13px]">
-                                                        <a href="/{{ $popular->category->slug }}/{{ $popular->slug }}">{{ $popular->counter ?? '0' }}</a>
+                                                        {{ \Carbon\Carbon::parse($popular->published_at)->locale('id')->translatedFormat('d M Y') }}
                                                     </li>
                                                 </ul>
                                             </div>

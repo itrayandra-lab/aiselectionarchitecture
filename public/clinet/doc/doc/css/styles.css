@@ -1,6 +1,6 @@
 ::selection{
 	color: #fff;
-	background-color: #228FE7;
+	background-color: #00becf;
 }
 html {
     font-size: 100%}
@@ -1017,7 +1017,7 @@ a.article, a.article:hover {
 #sidebarCollapse {
     width: 40px;
     height: 40px;
-    background: #228FE7;
+    background: #00becf;
 	border: 1px solid #ffffff;
 }
 
@@ -1051,7 +1051,7 @@ a.article, a.article:hover {
 }
 .top-nav-bar{
 	margin-bottom:0;
-	background-color: #228FE7;
+	background-color: #00becf;
 	position:sticky;
 	top:0;
 	z-index:999;
@@ -1250,7 +1250,7 @@ img {
 }
 .site-button.support-button {
     border: 1px solid #fff;
-    background-color: #228FE7;
+    background-color: #00becf;
     float: right;
     margin: 7px 5px;
 	transition: all 0.5s;
@@ -1259,7 +1259,7 @@ img {
 }
 .site-button.support-button:hover {
 	background-color: #fff;
-    color: #228FE7;
+    color: #00becf;
 }
 .text-yellow{
 	color: #f2d201;
@@ -1329,14 +1329,14 @@ img {
     font-weight: 400;
 }
 .custom-info .gmail {
-    color: #228FE7;
+    color: #00becf;
     font-size: 15px;
     font-weight: 600;
 	margin: 5px;
     text-transform: capitalize;
 }
 .custom-info .gmail i {
-    background-color: #228FE7;
+    background-color: #00becf;
     border-radius: 7px;
     color: #ffffff;
     font-size: 18px;
@@ -1381,7 +1381,7 @@ img {
 .videoplay-bx i{
 	width: 50px;
 	height: 50px;
-	background: #228FE7;
+	background: #00becf;
 	border-radius: 40px;
 	text-align: center;
 	line-height: 50px;
@@ -1443,7 +1443,7 @@ img {
 .lg-actions .lg-prev, 
 .lg-sub-html, 
 .lg-toolbar{
-    background-color: #228FE7;
+    background-color: #00becf;
 }
 .lg-outer .lg-toogle-thumb, 
 .lg-outer .lg-thumb-outer,

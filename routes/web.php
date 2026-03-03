@@ -1,24 +1,26 @@
 <?php
 
-use App\Http\Middleware\IsActive;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdsController;
+use App\Http\Controllers\Admin\AlbumController;
+use App\Http\Controllers\Admin\DomainShareController;
 use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\InformationController;
+use App\Http\Controllers\Admin\MenusController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PostCategories;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Admin\AlbumController;
-use App\Http\Controllers\Admin\MenusController;
 use App\Http\Controllers\Admin\PostsController;
-use App\Http\Controllers\Admin\VideosController;
-use App\Http\Controllers\Admin\UploadImageEditor;
 use App\Http\Controllers\Admin\PostTagsController;
-use App\Http\Controllers\Client\InterfaceController;
-use App\Http\Controllers\Admin\DomainShareController;
-use App\Http\Controllers\Admin\InformationController;
-use App\Http\Controllers\Admin\WebIdentityController;
 use App\Http\Controllers\Admin\RolePermissionController;
+use App\Http\Controllers\Admin\UploadImageEditor;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VideosController;
+use App\Http\Controllers\Admin\WebIdentityController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Client\InterfaceController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Middleware\IsActive;
+use Illuminate\Support\Facades\Route;
+
 
 # Auth
 Route::group(['prefix' => 'portal', 'controller' => LoginController::class], function () {
@@ -182,6 +184,13 @@ Route::group(['prefix' => 'portal', 'middleware' => ['auth']], function () {
         Route::delete('/{id}', 'destroy')->name('domain-share.destroy')->middleware('permission:delete domain-share');
     });
 
+    # Section Inline Editing
+    Route::group(['prefix' => 'sections', 'controller' => \App\Http\Controllers\Admin\SectionController::class], function () {
+        Route::post('/update-inline', 'updateInline')->name('sections.update-inline');
+        Route::post('/upload-image', 'uploadImage')->name('sections.upload-image');
+        Route::get('/{uniqueSection}', 'getByUnique')->name('sections.get-by-unique');
+    });
+
 });
 
 #maintenance
@@ -190,6 +199,9 @@ Route::get('/maintenance', function () {
 });
 
 #client
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
 Route::group(['prefix' => '/', 'controller' => InterfaceController::class, 'middleware' => IsActive::class], function () {
     #dinamis
     Route::get('/', 'beranda')->name('beranda');
@@ -199,7 +211,6 @@ Route::group(['prefix' => '/', 'controller' => InterfaceController::class, 'midd
     Route::get('/albums', 'albums')->name('albums');
     Route::get('/posts', 'posts')->name('posts');
     Route::get('/info', 'info')->name('info');
-    Route::get('/about-us', 'about')->name('about');
     Route::get('/contact', 'contact')->name('contact');
 
     #statis

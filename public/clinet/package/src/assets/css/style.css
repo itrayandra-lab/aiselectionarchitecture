@@ -764,7 +764,7 @@ video {
   white-space: pre;
   border-radius: 0.25rem;
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
   padding-top: 0.625rem;
   padding-bottom: 0.625rem;
   padding-left: 1.25rem;
@@ -903,7 +903,7 @@ video {
 
 .btn-primary:hover{
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
 }
 
 .sw-theme-default .site-button{
@@ -914,7 +914,7 @@ video {
   width: 40px !important;
   height: 40px !important;
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
   text-align: center !important;
   font-size: 15px !important;
   line-height: 40px !important;
@@ -924,7 +924,7 @@ video {
   width: 40px !important;
   height: 40px !important;
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
   text-align: center !important;
   font-size: 15px !important;
   line-height: 40px !important;
@@ -951,7 +951,7 @@ video {
 
 .price .ui-slider-range{
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
 }
 
 .price .ui-state-default{
@@ -1015,7 +1015,7 @@ ol.comment-list li .comment-body:after{
 
 .rev-slider .tparrows{
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
 }
 
 .pointer-events-none{
@@ -2914,7 +2914,7 @@ ol.comment-list li .comment-body:after{
 
 .bg-primary{
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
 }
 
 .bg-red-400{
@@ -4695,7 +4695,7 @@ input[type=number] {
 	.owl-dots-white-full.owl-theme .owl-dots .owl-dot.active span{
   margin: 0.25rem;
   width: 25px;
-  background-color: #0074cd;
+  background-color: #038a96;
   --tw-bg-opacity: 1;
   background-color: rgb(134 151 145 / var(--tw-bg-opacity, 1));
   opacity: 1;
@@ -4726,7 +4726,7 @@ input[type=number] {
   height: 0.625rem;
   border-radius: 30px;
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
   opacity: 0.5;
   transition-duration: 200ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -4736,7 +4736,7 @@ input[type=number] {
 	.owl-dots-black-full.owl-theme .owl-dots .owl-dot.active span,
 	.owl-dots-white-full.owl-theme .owl-dots .owl-dot.active span{
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
 }
 
 .team-carousel .owl-item.center .team-box {
@@ -4834,7 +4834,7 @@ input[type=number] {
 .lg-sub-html,
 .lg-toolbar{
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
 }
 
 .lg-outer .lg-toogle-thumb,
@@ -4874,7 +4874,7 @@ input[type=number] {
 .lg-sub-html,
 .lg-toolbar{
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
@@ -4884,7 +4884,7 @@ input[type=number] {
 .lg-sub-html,
 .lg-toolbar{
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
@@ -4951,7 +4951,7 @@ input:checked ~ .custom-control-label::after{
   --tw-border-opacity: 1;
   border-color: rgb(0 123 255 / var(--tw-border-opacity, 1));
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
   background-size: 10px;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
 }
@@ -4984,7 +4984,7 @@ input:checked ~ .custom-control-label::after{
   --tw-border-opacity: 1;
   border-color: rgb(0 190 207 / var(--tw-border-opacity, 1));
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
   font-weight: 700;
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
@@ -5100,7 +5100,7 @@ input:checked ~ .custom-control-label-circle::after{
   --tw-border-opacity: 1;
   border-color: rgb(0 123 255 / var(--tw-border-opacity, 1));
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
   background-size: 10px;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
 }
@@ -5324,12 +5324,12 @@ input:checked ~ .custom-control-label-circle::after{
 
 .selection\:bg-primary *::-moz-selection{
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
 }
 
 .selection\:bg-primary *::selection{
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
 }
 
 .selection\:text-white *::-moz-selection{
@@ -5344,12 +5344,12 @@ input:checked ~ .custom-control-label-circle::after{
 
 .selection\:bg-primary::-moz-selection{
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
 }
 
 .selection\:bg-primary::selection{
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
 }
 
 .selection\:text-white::-moz-selection{
@@ -6153,7 +6153,7 @@ input:checked ~ .custom-control-label-circle::after{
 .after\:bg-primary::after{
   content: var(--tw-content);
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
 }
 
 .after\:bg-white::after{
@@ -6531,7 +6531,7 @@ input:checked ~ .custom-control-label-circle::after{
 
 .hover\:bg-primary:hover{
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
 }
 
 .hover\:bg-transparent:hover{
@@ -6807,7 +6807,7 @@ input:checked ~ .custom-control-label-circle::after{
 
 .peer:checked ~ .peer-checked\:bg-primary{
   --tw-bg-opacity: 1;
-  background-color: #0074cd;
+  background-color: #038a96;
 }
 
 .peer:checked ~ .peer-checked\:bg-red-500{

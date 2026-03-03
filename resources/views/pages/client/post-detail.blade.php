@@ -22,11 +22,8 @@
                                     <li class="inline-block text-[#707070] font-medium text-[13px] after:content-['|'] after:inline-block after:font-normal after:mx-1 after:opacity-50">
                                         {{ \Carbon\Carbon::parse($post->published_at)->locale('id')->translatedFormat('d M Y') }}
                                     </li>
-                                    <li class="inline-block text-[#707070] font-medium text-[13px] after:content-['|'] after:inline-block after:font-normal after:mx-1 after:opacity-50">
-                                        Oleh <a href="/author/{{ $post->createdBy->slug }}" class="hover:text-primary">{{ $post->createdBy->name }}</a>
-                                    </li>
                                     <li class="inline-block text-[#707070] font-medium text-[13px]">
-                                        {{ $post->counter ?? '0' }} dilihat
+                                        Oleh <a href="/author/{{ $post->createdBy->slug }}" class="hover:text-primary">{{ $post->createdBy->name }}</a>
                                     </li>
                                 </ul>
                             </div>
@@ -58,7 +55,7 @@
                         </div>
                         
                      
-                        <!-- blog END -->
+                        <!-- blog EN    D -->
                     </div>
                     <!-- Blog large img END -->
                     
@@ -90,16 +87,13 @@
                                         <div class="overflow-hidden table-cell align-middle ml-[110px]">
                                             <div class="dlab-post-header">
                                                 <h6 class="leading-4 mb-2 capitalize text-[15px] text-black font-bold">
-                                                    <a href="/{{ $recentPost->category->slug }}/{{ $recentPost->slug }}">{{ Str::limit($recentPost->title, 50) }}</a>
+                                                    <a href="/{{ $recentPost?->category?->slug }}/{{ $recentPost->slug }}">{{ Str::limit($recentPost->title, 50) }}</a>
                                                 </h6>
                                             </div>
                                             <div class="dlab-post-meta">
                                                 <ul class="flex items-center">
-                                                    <li class="text-[#707070] inline-block text-[13px] after:content-['|'] after:inline-block after:mx-1.25 after:opacity-50">
-                                                        {{ \Carbon\Carbon::parse($recentPost->published_at)->locale('id')->translatedFormat('d M Y') }}
-                                                    </li>
                                                     <li class="text-[#707070] inline-block text-[13px]">
-                                                        <a href="/{{ $recentPost->category->slug }}/{{ $recentPost->slug }}">{{ $recentPost->counter ?? '0' }}</a>
+                                                        {{ \Carbon\Carbon::parse($recentPost->published_at)->locale('id')->translatedFormat('d M Y') }}
                                                     </li>
                                                 </ul>
                                             </div>
@@ -123,16 +117,13 @@
                                         <div class="overflow-hidden table-cell align-middle ml-[110px]">
                                             <div class="dlab-post-header">
                                                 <h6 class="leading-4 mb-2 capitalize text-[15px] text-black font-bold">
-                                                    <a href="/{{ $popular->category->slug }}/{{ $popular->slug }}">{{ Str::limit($popular->title, 50) }}</a>
+                                                    <a href="/{{ $popular?->category?->slug }}/{{ $popular->slug }}">{{ Str::limit($popular->title, 50) }}</a>
                                                 </h6>
                                             </div>
                                             <div class="dlab-post-meta">
                                                 <ul class="flex items-center">
-                                                    <li class="text-[#707070] inline-block text-[13px] after:content-['|'] after:inline-block after:mx-1.25 after:opacity-50">
-                                                        {{ \Carbon\Carbon::parse($popular->published_at)->locale('id')->translatedFormat('d M Y') }}
-                                                    </li>
                                                     <li class="text-[#707070] inline-block text-[13px]">
-                                                        <a href="/{{ $popular->category->slug }}/{{ $popular->slug }}">{{ $popular->counter ?? '0' }}</a>
+                                                        {{ \Carbon\Carbon::parse($popular->published_at)->locale('id')->translatedFormat('d M Y') }}
                                                     </li>
                                                 </ul>
                                             </div>
@@ -151,6 +142,81 @@
     </section>
     <!-- section Blog large end -->
 @endsection
+
+@push('schema')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ $post->title }}",
+  "description": "{{ strip_tags(Str::limit($post->content, 200)) }}",
+  "image": {
+    "@type": "ImageObject",
+    "url": "{{ getFile($post->image) }}",
+    "width": 1200,
+    "height": 630
+  },
+  "author": {
+    "@type": "Person",
+    "name": "{{ $post->createdBy->name }}",
+    "url": "{{ url('/author/' . $post->createdBy->slug) }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ $meta->web_name ?? config('app.name') }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ getFile($meta->logo ?? asset('assets/img/logo.png')) }}"
+    }
+  },
+  "datePublished": "{{ $post->published_at->toIso8601String() }}",
+  "dateModified": "{{ $post->updated_at->toIso8601String() }}",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ url()->current() }}"
+  },
+  "articleSection": "{{ $post->category->name }}",
+  @if($post->tags)
+  "keywords": [
+    @foreach(json_decode($post->tags) as $index => $tagId)
+      @php $tag = App\Models\PostTags::tagById($tagId) @endphp
+      "{{ $tag->name }}"{{ $loop->last ? '' : ',' }}
+    @endforeach
+  ],
+  @endif
+  "inLanguage": "id-ID",
+  "url": "{{ url()->current() }}"
+}
+</script>
+
+<!-- BreadcrumbList Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Beranda",
+      "item": "{{ url('/') }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "{{ $post->category->name }}",
+      "item": "{{ url('/' . $post->category->slug) }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ $post->title }}",
+      "item": "{{ url()->current() }}"
+    }
+  ]
+}
+</script>
+@endpush
 
 @push('scripts')
 <script>

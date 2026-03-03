@@ -27,11 +27,8 @@
                                         <div class="relative">
                                             <div class="mb-1.25 px-1.25 pt-4">
                                                 <ul class="flex items-center -mx-1 capitalize font-montserrat">
-                                                    <li class="inline-block text-[#707070] font-medium text-[13px] after:content-['|'] after:inline-block after:font-normal after:mx-1 after:opacity-50">
-                                                        {{ \Carbon\Carbon::parse($item->created_at)->locale('id')->translatedFormat('d M Y') }}
-                                                    </li>
                                                     <li class="inline-block text-[#707070] font-medium text-[13px]">
-                                                        <a href="{{ route('banner_detail', $item->slug) }}">{{ $item->counter ?? '0' }}</a>
+                                                        {{ \Carbon\Carbon::parse($item->created_at)->locale('id')->translatedFormat('d M Y') }}
                                                     </li>
                                                 </ul>
                                             </div>
@@ -139,11 +136,8 @@
                                             </div>
                                             <div class="dlab-post-meta">
                                                 <ul class="flex items-center">
-                                                    <li class="text-[#707070] inline-block text-[13px] after:content-['|'] after:inline-block after:mx-1.25 after:opacity-50">
-                                                        {{ \Carbon\Carbon::parse($recentBanner->created_at)->locale('id')->translatedFormat('d M Y') }}
-                                                    </li>
                                                     <li class="text-[#707070] inline-block text-[13px]">
-                                                        <a href="{{ route('banner_detail', $recentBanner->slug) }}">{{ $recentBanner->counter ?? '0' }}</a>
+                                                        {{ \Carbon\Carbon::parse($recentBanner->created_at)->locale('id')->translatedFormat('d M Y') }}
                                                     </li>
                                                 </ul>
                                             </div>

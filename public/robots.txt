@@ -1,2 +1,20 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Disallow admin pages
+Disallow: /portal/
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+
+# Disallow API
+Disallow: /api/
+
+# Allow CSS and JS
+Allow: /clinet/
+Allow: /assets/
+Allow: /*.css$
+Allow: /*.js$
+
+# Sitemap
+Sitemap: {{ url('/') }}/sitemap.xml

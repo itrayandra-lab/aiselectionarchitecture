@@ -143,6 +143,29 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'deletion' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/deletion.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => env('LOG_DAILY_DAYS', 90),
+            'replace_placeholders' => true,
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Log System Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for external log system integration
+    |
+    */
+
+    'log_system' => [
+        'enabled' => env('LOG_SYSTEM_ENABLED', false),
+        'url' => env('LOG_SYSTEM_URL', 'http://localhost:8080'),
+        'domain' => env('LOG_SYSTEM_DOMAIN', 'default-domain'),
     ],
 
 ];
