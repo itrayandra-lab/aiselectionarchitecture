@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+{!! '<' . '?xml version="1.0" encoding="UTF-8"?' . '>' !!}
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
     
-    <!-- Homepage -->
     <url>
         <loc>{{ url('/') }}</loc>
         <lastmod>{{ now()->toAtomString() }}</lastmod>
@@ -10,7 +9,6 @@
         <priority>1.0</priority>
     </url>
     
-    <!-- Static Pages -->
     <url>
         <loc>{{ url('/posts') }}</loc>
         <lastmod>{{ now()->toAtomString() }}</lastmod>
@@ -39,7 +37,6 @@
         <priority>0.7</priority>
     </url>
     
-    <!-- Categories -->
     @foreach($categories as $category)
     <url>
         <loc>{{ url('/category/' . $category->slug) }}</loc>
@@ -49,10 +46,9 @@
     </url>
     @endforeach
     
-    <!-- Posts -->
     @foreach($posts as $post)
     <url>
-        <loc>{{ url('/' . $post?->category?->slug . '/' . $post->slug) }}</loc>
+        <loc>{{ url('/' . ($post->category->slug ?? 'uncategorized') . '/' . $post->slug) }}</loc>
         <lastmod>{{ $post->updated_at->toAtomString() }}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
@@ -65,7 +61,6 @@
     </url>
     @endforeach
     
-    <!-- Pages -->
     @foreach($pages as $page)
     <url>
         <loc>{{ url('/page/' . $page->slug) }}</loc>
