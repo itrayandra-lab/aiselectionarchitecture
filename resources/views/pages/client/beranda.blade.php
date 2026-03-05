@@ -214,11 +214,21 @@
 }
 
 /* Why Section Edit Buttons - Make sure they're visible */
+#why-section-1,
+#why-section-2 {
+    position: relative;
+    z-index: 1;
+    isolation: isolate;
+}
+
+#why-section-1 > div,
+#why-section-2 > div {
+    position: relative;
+    z-index: 1;
+}
+
 #why-section-1 > div > div:first-child,
 #why-section-2 > div > div:first-child {
-    position: absolute !important;
-    top: 1rem !important;
-    right: 1rem !important;
     z-index: 100 !important;
 }
 
@@ -226,7 +236,6 @@
 #why-section-2 button {
     display: inline-flex !important;
     align-items: center !important;
-    gap: 0.5rem !important;
 }
 
 /* CTA Section Editable Content */
@@ -257,6 +266,32 @@
 .editable-news-content[contenteditable="true"]:hover {
     background-color: rgba(255, 105, 180, 0.05);
 }
+
+/* Ensure sections don't overlap */
+section {
+    position: relative;
+    clear: both;
+    display: block;
+}
+
+section > div {
+    position: relative;
+}
+
+/* Fix any absolute positioning issues */
+.container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Ensure proper stacking context for all sections */
+#why-section-1,
+#why-section-2,
+#cta-section,
+#news-section {
+    isolation: isolate;
+}
+
 </style>
 @endpush
 
@@ -479,7 +514,7 @@
         <div class="container">
             <div class="grid grid-cols-12 gap-x-7.5">
                 <div class="lg:col-span-5 col-span-12 mb-7.5 self-center">
-                    <div class="table-cell align-middle mb-7.5">							
+                    <div class="mb-7.5">							
                         <h2 class="md:text-4.5xl text-[30px] font-extrabold leading-[48px] text-[#232323] font-nunito mt-0 mb-2.5 editable-why-content" 
                             contenteditable="false" 
                             data-field="title">
@@ -501,10 +536,10 @@
                         </ul>
                     </div>
                 </div>
-                <div class="lg:col-span-7 col-span-12 lg:ml-15.5">
-                    <div class="relative flex-wrap flex items-center image-wrapper-section">
-                        <div class="w-12 inline-block px-2.5 relative">
-                            <img class="section-image-1" 
+                <div class="lg:col-span-7 col-span-12">
+                    <div class="relative">
+                        <div class="w-full relative">
+                            <img class="section-image-1 w-full h-auto" 
                                  src="{{ getFile($whySection1->content['image'] ?? 'assets/img/About-expert.webp') }}" 
                                  alt="Expert Image">
                             
@@ -528,7 +563,7 @@
     </div>
 </section>
 
-<section id="why-section-2" data-section-id="{{ $whySection2->id }}" data-section-unique="why_section_2" class="relative">		
+<section id="why-section-2" data-section-id="{{ $whySection2->id }}" data-section-unique="why_section_2" class="relative z-10">		
     <div class="md:py-20 py-7.5 relative bg-white bg-cover" style="background-image: url('{{ asset('assets/img/imgi_55_bg-expert.png') }}');">
         @auth
         <!-- Edit Button for Logged In Users -->
@@ -539,12 +574,12 @@
             </button>
         </div>
         @endauth
-        <div class="container">
+        <div class="container relative z-10">
             <div class="grid grid-cols-12 gap-x-7.5">
-                <div class="lg:col-span-7 col-span-12 lg:ml-15.5">
-                    <div class="relative flex-wrap flex items-center image-wrapper-section">
-                        <div class="w-12 inline-block px-2.5 relative">
-                            <img class="border-8 border-white shadow-frame section-image-2" 
+                <div class="lg:col-span-7 col-span-12 mb-7.5 lg:mb-0">
+                    <div class="relative">
+                        <div class="w-full relative">
+                            <img class="section-image-2 w-full h-auto" 
                                  style="border-radius: 20px;" 
                                  src="{{ getFile($whySection2->content['image'] ?? 'assets/img/why-chooce-min-1.webp') }}" 
                                  alt="Why Choose Us">
@@ -565,8 +600,8 @@
                     </div>
                 </div>
 
-                <div class="lg:col-span-5 col-span-12 mb-7.5 self-center">
-                    <div class="table-cell align-middle mb-7.5">							
+                <div class="lg:col-span-5 col-span-12 self-center">
+                    <div class="mb-7.5">							
                         <h2 class="md:text-4.5xl text-[30px] font-extrabold leading-[48px] text-[#232323] font-nunito mt-0 mb-2.5 editable-why-content" 
                             contenteditable="false" 
                             data-field="title">
@@ -596,8 +631,8 @@
     
 
 <!-- Call to Action -->
-<section id="cta-section" data-section-id="{{ $ctaSection->id }}" data-section-unique="cta_section" class="relative">
-    <div class="lg:py-20 py-8 bg-[#fef7fe]">
+<section id="cta-section" data-section-id="{{ $ctaSection->id }}" data-section-unique="cta_section" class="relative z-10">
+    <div class="lg:py-20 py-8 bg-[#fef7fe] relative">
         @auth
         <!-- Edit Button for Logged In Users -->
         <div class="absolute top-4 right-5 z-[100]">
@@ -608,7 +643,7 @@
         </div>
         @endauth
         
-        <div class="container">
+        <div class="container relative z-10">
             <div class="text-center">
                 <h2 class="lg:text-4.5xl text-3xl font-extrabold mb-2.5 text-primary font-nunito editable-cta-content" 
                     contenteditable="false" 
@@ -654,12 +689,14 @@
 </section>
 <!-- section Our Professional Team start -->
 	
-<section id="news-section" data-section-id="{{ $newsSection->id }}" data-section-unique="news_section" class="relative">
-    <div class="lg:pt-20 lg:pb-13.5 py-8 relative bg-[position:bottom,_top] bg-no-repeat bg-[length:100%] after:content-[''] after:absolute after:bg-white after:opacity-70 after:top-0 after:left-0 after:size-full after:z-0"
+<section id="news-section" data-section-id="{{ $newsSection->id }}" data-section-unique="news_section" class="relative z-10">
+    <div class="lg:pt-20 lg:pb-13.5 py-8 relative bg-[position:bottom,_top] bg-no-repeat bg-[length:100%]"
      style="background-image: url('{{ asset('assets/img/imgi_55_bg-expert.png') }}'), url('{{ asset('assets/img/imgi_55_bg-expert.png') }}');">
+        <div class="absolute inset-0 bg-white opacity-70 z-0"></div>
+        
         @auth
         <!-- Edit Button for Logged In Users -->
-        <div class="absolute top-4 right-5" style="z-index: 99999">
+        <div class="absolute top-4 right-5 z-[100]">
             <button onclick="toggleNewsEditMode()" class="bg-primary text-white px-4 py-2 rounded-lg shadow-lg hover:bg-opacity-90 transition">
                 <i class="fa fa-edit mr-2"></i>
                 <span id="news-edit-mode-text">Edit Mode</span>
@@ -667,7 +704,7 @@
         </div>
         @endauth
         
-        <div class="container relative z-[1]">
+        <div class="container relative z-10">
             <div class="text-center mb-14">
                 <h2 class="lg:text-4.5xl text-3xl font-bold text-primary font-nunito mb-2.5 editable-news-content" 
                     contenteditable="false" 
@@ -1040,12 +1077,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Validate file size (max 2MB)
-            if (file.size > 2 * 1024 * 1024) {
+            // Validate file size (max 3MB)
+            if (file.size > 3 * 1024 * 1024) {
                 Swal.fire({
                     icon: 'error',
                     title: 'File Too Large',
-                    text: 'Image size must be less than 2MB',
+                    text: 'Image size must be less than 3MB',
                     confirmButtonColor: '#ff69b4'
                 });
                 return;
@@ -1077,10 +1114,12 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Update image preview
+                    // Update image preview with correct path
                     const img = document.querySelector('.section-image-' + sectionNumber);
                     if (img) {
-                        img.src = '/storage/' + data.path;
+                        // FileHelper returns path like 'assets/app/sections/filename.jpg'
+                        // We need to add leading slash for absolute path
+                        img.src = '/' + data.path;
                     }
                     
                     Swal.fire({
