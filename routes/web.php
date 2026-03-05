@@ -210,6 +210,7 @@ Route::group(['prefix' => '/', 'controller' => InterfaceController::class, 'midd
     Route::get('/banners', 'banners')->name('banners');
     Route::get('/albums', 'albums')->name('albums');
     Route::get('/posts', 'posts')->name('posts');
+    Route::get('/insight', 'posts')->name('insight');
     Route::get('/info', 'info')->name('info');
     Route::get('/contact', 'contact')->name('contact');
 
