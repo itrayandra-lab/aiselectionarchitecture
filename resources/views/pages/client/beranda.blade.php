@@ -505,7 +505,7 @@
                     <div class="relative flex-wrap flex items-center image-wrapper-section">
                         <div class="w-12 inline-block px-2.5 relative">
                             <img class="section-image-1" 
-                                 src="{{ getFile($whySection1->content['image'] ?? 'assets/img/About-expert.webp') }}" 
+                                 src="/storage{{ getFile($whySection1->content['image'] ?? 'assets/img/About-expert.webp') }}" 
                                  alt="Expert Image">
                             
                             <!-- Image Upload Overlay (Hidden by default) -->
@@ -546,7 +546,7 @@
                         <div class="w-12 inline-block px-2.5 relative">
                             <img class="border-8 border-white shadow-frame section-image-2" 
                                  style="border-radius: 20px;" 
-                                 src="{{ getFile($whySection2->content['image'] ?? 'assets/img/why-chooce-min-1.webp') }}" 
+                                 src="/storage{{ getFile($whySection2->content['image'] ?? 'assets/img/why-chooce-min-1.webp') }}" 
                                  alt="Why Choose Us">
                             
                             <!-- Image Upload Overlay (Hidden by default) -->
