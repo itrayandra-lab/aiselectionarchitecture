@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Section;
 use Illuminate\Support\Facades\Log;
+use App\Helpers\FileHelper;
 
 class SectionController extends Controller
 {
@@ -48,7 +49,7 @@ class SectionController extends Controller
     {
         try {
             $request->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:3072', // 3MB = 3072KB
                 'section_id' => 'required|exists:sections,id',
             ]);
 
@@ -56,8 +57,14 @@ class SectionController extends Controller
             
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                $filename = 'section_' . $section->id . '_' . time() . '.' . $image->getClientOriginalExtension();
-                $path = $image->storeAs('sections', $filename, 'public');
+                
+                // Hapus gambar lama jika ada
+                if (isset($section->content['image']) && !empty($section->content['image'])) {
+                    FileHelper::deleteFile($section->content['image']);
+                }
+                
+                // Simpan gambar baru menggunakan FileHelper
+                $path = FileHelper::saveFile($image, 'sections', 'section_' . $section->id);
                 
                 // Update section content with new image path
                 $content = $section->content;
