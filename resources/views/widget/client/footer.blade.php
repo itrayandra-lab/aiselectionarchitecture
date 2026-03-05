@@ -82,8 +82,8 @@
                         </div>
                         
                         <!-- Web Description -->
-                        @if($meta->web_description ?? false)
-                        <p class="mb-5 text-sm leading-6 text-gray-600">{{ $meta->web_description }}</p>
+                        @if($meta->meta_description ?? false)
+                        <p class="mb-5 text-sm leading-6 text-gray-600">{{ $meta->meta_description }}</p>
                         @else
                         <p class="mb-5 text-sm leading-6 text-gray-600">{{ $meta->web_name ?? 'Laboratorium Kosmetik' }} - Solusi terpercaya untuk pengujian dan pengembangan produk kosmetik dengan standar internasional.</p>
                         @endif
